@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<InGameDefEditor>Change Equipment Stats</InGameDefEditor>
+	
+	<InGameDefEditor.Apply>Apply</InGameDefEditor.Apply>
+	<InGameDefEditor.ResetAll>Reset All</InGameDefEditor.ResetAll>
+	
+	<InGameDefEditor.RangedStats>Ranged Stats</InGameDefEditor.RangedStats>
+	<InGameDefEditor.MeleeStats>Melee Stats</InGameDefEditor.MeleeStats>
+
+	<InGameDefEditor.Weapons>Weapons</InGameDefEditor.Weapons>
+	<InGameDefEditor.Projectiles>Projectiles</InGameDefEditor.Projectiles>
+</LanguageData>

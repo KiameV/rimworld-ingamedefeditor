@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+
+	<KeyBindingDef>
+		<category>ShowInGameDefEditorShortcuts</category>
+		<defName>ShowInGameDefEditorDialog</defName>
+		<label>Show Dialog</label>
+		<defaultKeyCodeA>F10</defaultKeyCodeA>
+		<devModeOnly>true</devModeOnly>
+	</KeyBindingDef>
+
+</Defs>
