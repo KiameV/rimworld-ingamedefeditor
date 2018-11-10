@@ -301,6 +301,9 @@ namespace InGameDefEditor.Gui.EditorWidgets
             this.VerbWidgets.ForEach((VerbWidget w) => w.ResetBuffers());
             this.ToolWidgets.ForEach((ToolWidget w) => w.ResetBuffers());
             this.EquipmentModifiers.ForEach((StatModifierWidget w) => w.ResetBuffers());
+
+            if (this.projectileWidget != null)
+                this.projectileWidget.ResetBuffers();
         }
     }
 }

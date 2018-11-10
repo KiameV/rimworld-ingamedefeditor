@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml.Serialization;
 using Verse;
 
-namespace InGameDefEditor
+namespace InGameDefEditor.Stats.Misc
 {
     public class ToolStats
     {

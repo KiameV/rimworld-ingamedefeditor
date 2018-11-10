@@ -74,23 +74,30 @@
   <ItemGroup>
     <Compile Include="Backup.cs" />
     <Compile Include="DefLookupUtil.cs" />
-    <Compile Include="Equipment.cs" />
+    <Compile Include="Defs.cs" />
     <Compile Include="Gui\Dialog_Name.cs" />
     <Compile Include="Gui\EditorWidgets\Interfaces.cs" />
     <Compile Include="Gui\EditorWidgets\MiscWidgets.cs" />
     <Compile Include="Gui\EditorWidgets\ThingDefWidget.cs" />
     <Compile Include="Gui\WindowUtil.cs" />
     <Compile Include="HarmonyPatches.cs" />
+    <Compile Include="IOUtil.cs" />
     <Compile Include="KeyBindingDefOf.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Stats\AllStats.cs" />
-    <Compile Include="Stats\ProjectileStats.cs" />
-    <Compile Include="Stats\Stat.cs" />
-    <Compile Include="Stats\Stats.cs" />
-    <Compile Include="Stats\ToolStats.cs" />
-    <Compile Include="Stats\VerbStats.cs" />
+    <Compile Include="Stats\BiomStat.cs" />
+    <Compile Include="Stats\Misc\FloatValueDoubleDefStat.cs" />
+    <Compile Include="Stats\Misc\DefStat.cs" />
+    <Compile Include="Stats\Misc\MinMaxStat.cs" />
+    <Compile Include="Stats\Misc\ProjectileStats.cs" />
+    <Compile Include="Stats\Misc\FloatValueStat.cs" />
+    <Compile Include="Stats\Misc\TerrainPatchMakerStats.cs" />
+    <Compile Include="Stats\ThingDefStats.cs" />
+    <Compile Include="Stats\Misc\ToolStats.cs" />
+    <Compile Include="Stats\Misc\VerbStats.cs" />
     <Compile Include="Gui\Window.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

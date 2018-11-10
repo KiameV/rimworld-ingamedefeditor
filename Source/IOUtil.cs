@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using InGameDefEditor.Stats.Misc;
+using System;
 using System.IO;
 using System.Reflection;
 using System.Xml.Serialization;
@@ -7,59 +7,13 @@ using Verse;
 
 namespace InGameDefEditor
 {
-    static class Equipment
+    static class IOUtil
     {
-        public static readonly SortedDictionary<string, ThingDef> ApparelDefs = new SortedDictionary<string, ThingDef>();
-        public static readonly SortedDictionary<string, ThingDef> WeaponDefs = new SortedDictionary<string, ThingDef>();
-        public static readonly SortedDictionary<string, ThingDef> ProjectileDefs = new SortedDictionary<string, ThingDef>();
-
-        private static bool isInit = false;
-        private static void Init()
-        {
-            if (!isInit)
-            {
-                foreach (ThingDef d in DefDatabase<ThingDef>.AllDefs)
-                {
-                    if (d.IsApparel)
-                    {
-                        ApparelDefs[d.label] = d;
-                    }
-                    if (d.IsWeapon)
-                    {
-                        WeaponDefs[d.label] = d;
-
-                        if (d.IsWeaponUsingProjectiles && d.Verbs != null)
-                        {
-                            foreach (VerbProperties v in d.Verbs)
-                            {
-                                if (v.defaultProjectile != null)
-                                {
-                                    ProjectileDefs[v.defaultProjectile.label] = v.defaultProjectile;
-                                }
-                            }
-                        }
-                    }
-                    if (d.defName.StartsWith("Arrow_") || 
-                        d.defName.StartsWith("Bullet_") || 
-                        d.defName.StartsWith("Proj_"))
-                    {
-                        ProjectileDefs[d.label] = d;
-                    }
-                }
-
-                if (ApparelDefs.Count > 0)
-                {
-                    Backup.Init(ApparelDefs.Values, WeaponDefs.Values);
-                    
-                    isInit = true;
-                }
-            }
-        }
-
         private static bool hasLoaded = false;
+
         public static void LoadData()
         {
-            Init();
+            Defs.Initialize();
             if (!hasLoaded)
             {
                 try
@@ -80,7 +34,7 @@ namespace InGameDefEditor
                         fs = new FileStream(path, FileMode.Open);
                         allStats = (AllStats)serializer.Deserialize(fs);
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Log.Error(e.GetType().Name + Environment.NewLine + e.Message);
                     }
@@ -89,7 +43,7 @@ namespace InGameDefEditor
                         if (fs != null)
                             fs.Close();
                     }
-                    
+
                     if (allStats.projectileStats != null)
                     {
                         foreach (ProjectileStats s in allStats.projectileStats)
@@ -110,9 +64,9 @@ namespace InGameDefEditor
                         Log.Warning("No Projectiles");
                     }
 
-                    if (allStats.apparelWeaponStats != null)
+                    if (allStats.thingDefStats != null)
                     {
-                        foreach (Stats s in allStats.apparelWeaponStats)
+                        foreach (ThingDefStats s in allStats.thingDefStats)
                         {
                             if (s.Initialize())
                             {
@@ -123,7 +77,7 @@ namespace InGameDefEditor
                                 Log.Warning("Unable to apply settings to " + s.defName);
                             }
                         }
-                        allStats.apparelWeaponStats.Clear();
+                        allStats.thingDefStats.Clear();
                     }
                     else
                     {
@@ -141,28 +95,28 @@ namespace InGameDefEditor
             }
         }
 
-        internal static void SaveData()
+        public static void SaveData()
         {
             AllStats allStats = new AllStats();
-            foreach (ThingDef d in ApparelDefs.Values)
+            foreach (ThingDef d in Defs.ApparelDefs.Values)
             {
-                Stats s = new Stats(d);
+                ThingDefStats s = new ThingDefStats(d);
                 if (Backup.HasChanged(s))
                 {
-                    allStats.apparelWeaponStats.Add(s);
+                    allStats.thingDefStats.Add(s);
                 }
             }
 
-            foreach (ThingDef d in WeaponDefs.Values)
+            foreach (ThingDef d in Defs.WeaponDefs.Values)
             {
-                Stats s = new Stats(d);
+                ThingDefStats s = new ThingDefStats(d);
                 if (Backup.HasChanged(s))
                 {
-                    allStats.apparelWeaponStats.Add(s);
+                    allStats.thingDefStats.Add(s);
                 }
             }
 
-            foreach (ThingDef d in ProjectileDefs.Values)
+            foreach (ThingDef d in Defs.ProjectileDefs.Values)
             {
                 ProjectileStats s = new ProjectileStats(d);
                 if (Backup.HasChanged(s))

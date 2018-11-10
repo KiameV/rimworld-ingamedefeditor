@@ -20,7 +20,7 @@ namespace InGameDefEditor
 
         public InGameDefEditorWindow()
         {
-            Equipment.LoadData();
+            IOUtil.LoadData();
         }
 
         public override void DoWindowContents(Rect rect)
@@ -91,12 +91,17 @@ namespace InGameDefEditor
                     "Reset everything to the original game's settings?",
                     delegate
                     {
-                        foreach (ThingDef d in Equipment.ApparelDefs.Values)
+                        foreach (ThingDef d in Defs.ApparelDefs.Values)
                         {
                             Backup.ApplyStats(d);
                         }
 
-                        foreach (ThingDef d in Equipment.WeaponDefs.Values)
+                        foreach (ThingDef d in Defs.WeaponDefs.Values)
+                        {
+                            Backup.ApplyStats(d);
+                        }
+
+                        foreach (ThingDef d in Defs.ProjectileDefs.Values)
                         {
                             Backup.ApplyStats(d);
                         }
@@ -109,9 +114,9 @@ namespace InGameDefEditor
 
         private void ResetSelected()
         {
-            if (this.selected is ThingDefWidget)
+            if (this.selected is ThingDefWidget w)
             {
-                Backup.ApplyStats(((ThingDefWidget)this.selected).ThingDef);
+                Backup.ApplyStats(w.ThingDef);
             }
             this.selected.Rebuild();
         }
@@ -122,7 +127,7 @@ namespace InGameDefEditor
             if (this.selected != null && this.selected is ThingDefWidget)
             {
                 ThingDef d = ((ThingDefWidget)this.selected).ThingDef;
-                if (Equipment.ProjectileDefs.ContainsKey(d.label))
+                if (Defs.ProjectileDefs.ContainsKey(d.label))
                     label = d.label;
             }
             if (label == null)
@@ -130,7 +135,7 @@ namespace InGameDefEditor
 
             if (Widgets.ButtonText(rect, label))
             {
-                WindowUtil.DrawFloatingOptions(Equipment.ProjectileDefs.Values,
+                WindowUtil.DrawFloatingOptions(Defs.ProjectileDefs.Values,
                     delegate (ThingDef d) { return d.label; },
                     delegate (ThingDef d)
                     {
@@ -154,7 +159,7 @@ namespace InGameDefEditor
 
             if (Widgets.ButtonText(rect, label))
             {
-                WindowUtil.DrawFloatingOptions(Equipment.WeaponDefs.Values,
+                WindowUtil.DrawFloatingOptions(Defs.WeaponDefs.Values,
                     delegate (ThingDef d) { return d.label; },
                     delegate (ThingDef d)
                     {
@@ -178,7 +183,7 @@ namespace InGameDefEditor
 
             if (Widgets.ButtonText(rect, label))
             {
-                WindowUtil.DrawFloatingOptions(Equipment.ApparelDefs.Values,
+                WindowUtil.DrawFloatingOptions(Defs.ApparelDefs.Values,
                     delegate (ThingDef d) { return d.label; },
                     delegate (ThingDef d)
                     {
@@ -196,7 +201,7 @@ namespace InGameDefEditor
         public override void PostClose()
         {
             base.PostClose();
-            Equipment.SaveData();
+            IOUtil.SaveData();
         }
     }
 }

@@ -25,7 +25,7 @@ namespace InGameDefEditor
     {
         static void Postfix()
         {
-            Equipment.LoadData();
+            IOUtil.LoadData();
         }
     }
 
@@ -34,7 +34,7 @@ namespace InGameDefEditor
     {
         static void Postfix()
         {
-            Equipment.LoadData();
+            IOUtil.LoadData();
         }
     }
 

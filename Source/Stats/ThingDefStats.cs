@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using InGameDefEditor.Stats.Misc;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,17 +8,17 @@ using Verse;
 
 namespace InGameDefEditor
 {
-    public class Stats
+    public class ThingDefStats
     {
         [XmlIgnore]
         protected ThingDef def;
 
         [XmlElement(IsNullable = false)]
         public string defName;
-        public List<Stat> StatModifiers = null;
+        public List<FloatValueStat<StatDef>> StatModifiers = null;
         public List<VerbStats> VerbStats = null;
         public List<ToolStats> Tools = null;
-        public List<Stat> EquippedStatOffsets = null;
+        public List<FloatValueStat<StatDef>> EquippedStatOffsets = null;
 
         public ThingDef Def => this.def;
         public string DefName => this.def.defName;
@@ -25,8 +26,8 @@ namespace InGameDefEditor
         public bool IsApparel => this.def.IsApparel;
         public bool IsWeapon => this.def.IsWeapon;
 
-        public Stats() { }
-        public Stats(ThingDef d)
+        public ThingDefStats() { }
+        public ThingDefStats(ThingDef d)
         {
             this.def = d;
             this.defName = this.def.defName;
@@ -38,6 +39,7 @@ namespace InGameDefEditor
 
         public bool Initialize()
         {
+            IEnumerable<StatDef> statDefs = DefDatabase<StatDef>.AllDefsListForReading;
             if (this.def == null)
             {
                 def = DefDatabase<ThingDef>.AllDefsListForReading.Find(
@@ -52,9 +54,9 @@ namespace InGameDefEditor
 
             if (this.StatModifiers != null)
             {
-                foreach (Stat s in this.StatModifiers)
+                foreach (var s in this.StatModifiers)
                 {
-                    if (!s.Initialize())
+                    if (!s.Initialize(statDefs))
                     {
                         Log.Error("Failed to initialize Stat Modifier " + s.DefName + " for " + this.defName);
                     }
@@ -85,9 +87,9 @@ namespace InGameDefEditor
 
             if (this.EquippedStatOffsets != null)
             {
-                foreach (Stat s in this.EquippedStatOffsets)
+                foreach (var s in this.EquippedStatOffsets)
                 {
-                    if (!s.Initialize())
+                    if (!s.Initialize(statDefs))
                     {
                         Log.Error("Failed to initialize Equipped Stat Offsets " + s.DefName + " for " + this.defName);
                     }
@@ -104,48 +106,13 @@ namespace InGameDefEditor
 
         public override bool Equals(object obj)
         {
-            if (obj is Stats stats)
+            if (obj is ThingDefStats stats)
             {
-                if (!string.Equals(this.DefName, stats.DefName))
+                if (!string.Equals(this.DefName, stats.DefName) ||
+                    !Util.ListsRoughlyEqual(this.VerbStats, stats.VerbStats) ||
+                    !Util.ListsRoughlyEqual(this.Tools, stats.Tools))
                 {
-#if DEBUG
-                    Log.Error(this.DefName + " DefNames not equal");
-#endif
                     return false;
-                }
-
-                if (!ListsRoughlyEqual(this.StatModifiers, stats.StatModifiers) ||
-                    !ListsRoughlyEqual(this.VerbStats, stats.VerbStats) ||
-                    !ListsRoughlyEqual(this.Tools, stats.Tools) ||
-                    !ListsRoughlyEqual(this.EquippedStatOffsets, stats.EquippedStatOffsets))
-                {
-#if DEBUG
-                    Log.Error(this.DefName + " Lists not roughly equal");
-#endif
-                    return false;
-                }
-
-                if (this.StatModifiers != null)
-                {
-                    Dictionary<string, Stat> lookup = new Dictionary<string, Stat>();
-                    foreach (Stat s in this.StatModifiers)
-                    {
-                        lookup.Add(s.DefName, s);
-                    }
-
-                    foreach (Stat s in stats.StatModifiers)
-                    {
-                        if (!lookup.TryGetValue(s.DefName, out Stat sFound) ||
-                            sFound.value != s.value)
-                        {
-#if DEBUG
-                            Log.Error(this.DefName + " " + s.DefName + " StatModifiers Not found");
-#endif
-                            return false;
-                        }
-                    }
-                    lookup.Clear();
-                    lookup = null;
                 }
 
                 if (this.VerbStats != null)
@@ -194,43 +161,12 @@ namespace InGameDefEditor
                     lookup = null;
                 }
 
-                if (this.EquippedStatOffsets != null)
-                {
-                    Dictionary<string, Stat> lookup = new Dictionary<string, Stat>();
-                    foreach (Stat s in this.EquippedStatOffsets)
-                    {
-                        lookup.Add(s.DefName, s);
-                    }
+                if (!Util.Equals(this.StatModifiers, stats.StatModifiers))
+                    return false;
 
-                    foreach (Stat s in stats.EquippedStatOffsets)
-                    {
-                        if (!lookup.TryGetValue(s.DefName, out Stat sFound) ||
-                            sFound.value != s.value)
-                        {
-#if DEBUG
-                            Log.Error(this.DefName + " " + s.DefName + " EquippedStatOffsets Not found");
-#endif
-                            return false;
-                        }
-                    }
-                    lookup.Clear();
-                    lookup = null;
-                }
-                return true;
-            }
-            return false;
-        }
-
-        private bool ListsRoughlyEqual<T>(List<T> l1, List<T> l2)
-        {
-            if ((l1 == null || l1.Count == 0) &&
-                (l2 == null || l2.Count == 0))
-            {
-                return true;
-            }
-            if (l1 != null && l2 != null &&
-                l1.Count == l2.Count)
-            {
+                if (!Util.Equals(this.EquippedStatOffsets, stats.EquippedStatOffsets))
+                    return false;
+                
                 return true;
             }
             return false;
@@ -264,10 +200,10 @@ namespace InGameDefEditor
         {
             if (offsets != null)
             {
-                this.EquippedStatOffsets = new List<Stat>(offsets.Count);
+                this.EquippedStatOffsets = new List<FloatValueStat<StatDef>>(offsets.Count);
                 foreach (StatModifier m in offsets)
                 {
-                    this.EquippedStatOffsets.Add(new Stat(m.stat)
+                    this.EquippedStatOffsets.Add(new FloatValueStat<StatDef>(m.stat)
                     {
                         value = m.value
                     });
@@ -279,10 +215,10 @@ namespace InGameDefEditor
         {
             if (modifiers != null)
             {
-                this.StatModifiers = new List<Stat>(modifiers.Count);
+                this.StatModifiers = new List<FloatValueStat<StatDef>>(modifiers.Count);
                 foreach (StatModifier m in modifiers)
                 {
-                    this.StatModifiers.Add(new Stat(m.stat)
+                    this.StatModifiers.Add(new FloatValueStat<StatDef>(m.stat)
                     {
                         value = m.value
                     });
@@ -326,7 +262,7 @@ namespace InGameDefEditor
             foreach (StatModifier to in d.equippedStatOffsets)
                 lookup.Add(to.stat.defName, to);
             
-            foreach (Stat from in this.EquippedStatOffsets)
+            foreach (var from in this.EquippedStatOffsets)
             {
                 if (lookup.TryGetValue(from.DefName, out StatModifier to))
                 {
@@ -360,7 +296,7 @@ namespace InGameDefEditor
                 lookup.Add(m.stat.ToString(), m);
             }
 
-            foreach (Stat from in this.StatModifiers)
+            foreach (var from in this.StatModifiers)
             {
                 if (lookup.TryGetValue(from.DefName, out StatModifier to))
                 {
@@ -442,7 +378,7 @@ namespace InGameDefEditor
             sb.AppendLine("    StatModifiers: " + ((this.StatModifiers == null) ? "null" : ""));
             if (this.StatModifiers != null)
             {
-                foreach (Stat s in this.StatModifiers)
+                foreach (var s in this.StatModifiers)
                     sb.AppendLine(s.ToString());
             }
             sb.AppendLine("    VerbStats: " + ((this.VerbStats == null) ? "null" : ""));
@@ -460,7 +396,7 @@ namespace InGameDefEditor
             sb.AppendLine("    EquippedStatOffsets: " + ((this.EquippedStatOffsets == null) ? "null" : ""));
             if (this.EquippedStatOffsets != null)
             {
-                foreach (Stat s in this.EquippedStatOffsets)
+                foreach (var s in this.EquippedStatOffsets)
                     sb.AppendLine(s.ToString());
             }
             return sb.ToString();

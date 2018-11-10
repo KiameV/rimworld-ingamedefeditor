@@ -1,9 +1,10 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Reflection;
 using System.Xml.Serialization;
 using Verse;
 
-namespace InGameDefEditor
+namespace InGameDefEditor.Stats.Misc
 {
     public class ProjectileStats
     {
@@ -65,17 +66,15 @@ namespace InGameDefEditor
             Log.Warning(this.ToString());
             Log.Warning(obj.ToString());
 #endif
-            if (base.Equals(obj) &&
-                obj is ProjectileStats)
+            if (obj != null &&
+                obj is ProjectileStats p)
             {
-                ProjectileStats p = obj as ProjectileStats;
                 return
                     string.Equals(this.DefName, p.DefName) &&
                     this.damage == p.damage &&
                     this.stoppingPower == p.stoppingPower &&
                     this.armorPenetration == p.armorPenetration &&
                     this.speed == p.speed;
-
             }
             return false;
         }
@@ -88,7 +87,7 @@ namespace InGameDefEditor
         public override string ToString()
         {
             return
-                typeof(Stat).Name + Environment.NewLine +
+                typeof(FloatValueStat<StatDef>).Name + Environment.NewLine +
                 "    defName: " + this.defName + Environment.NewLine +
                 "    def set: " + ((this.def == null) ? "no" : "yes") + Environment.NewLine +
                 "    damage: " + this.damage + Environment.NewLine +

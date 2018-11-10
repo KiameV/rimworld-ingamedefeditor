@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using InGameDefEditor.Stats.Misc;
+using RimWorld;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -123,7 +124,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                     delegate
                     {
                         WindowUtil.DrawFloatingOptions(
-                            Equipment.ProjectileDefs.Values,
+                            Defs.ProjectileDefs.Values,
                             delegate (ThingDef d) { return d.label; },
                             delegate (ThingDef d)
                             {
