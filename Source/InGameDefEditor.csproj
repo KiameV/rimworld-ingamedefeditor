@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <PropertyGroup>
     <ProjectGuid>{F7CA6E64-0F04-4A4F-A6F1-77B90F63D138}</ProjectGuid>
     <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -49,6 +49,13 @@
     <OutputPath>D:\Steam\steamapps\common\RimWorld\Mods\InGameDefEditor\Assemblies\</OutputPath>
     <DefineConstants>
     </DefineConstants>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
@@ -86,11 +93,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Stats\AllStats.cs" />
-    <Compile Include="Stats\BiomStat.cs" />
+    <Compile Include="Stats\BiomStats.cs" />
+    <Compile Include="Stats\IParentStat.cs" />
     <Compile Include="Stats\Misc\FloatValueDoubleDefStat.cs" />
     <Compile Include="Stats\Misc\DefStat.cs" />
+    <Compile Include="Stats\Misc\IDefStat.cs" />
     <Compile Include="Stats\Misc\MinMaxStat.cs" />
-    <Compile Include="Stats\Misc\ProjectileStats.cs" />
+    <Compile Include="Stats\ProjectileStats.cs" />
     <Compile Include="Stats\Misc\FloatValueStat.cs" />
     <Compile Include="Stats\Misc\TerrainPatchMakerStats.cs" />
     <Compile Include="Stats\ThingDefStats.cs" />

@@ -1,4 +1,4 @@
-﻿using InGameDefEditor.Stats.Misc;
+﻿using InGameDefEditor.Stats;
 using RimWorld;
 using System.Collections.Generic;
 using UnityEngine;

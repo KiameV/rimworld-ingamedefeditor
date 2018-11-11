@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Xml.Serialization;
 using Verse;
 
 namespace InGameDefEditor.Stats.Misc
@@ -14,17 +13,9 @@ namespace InGameDefEditor.Stats.Misc
         public float muzzleFlashScale = 0;
         public float aiAvoidFriendlyRadius = 0;
 
-        [XmlIgnore]
-        public SoundDef SoundCastDef;
-        public string soundCastDefName;
-
-        [XmlIgnore]
-        public SoundDef SoundCastTailDef;
-        public string soundCastTailDefName;
-
-        [XmlIgnore]
-        public ThingDef ProjectileDef;
-        public string projectileDefName;
+        public DefStat<SoundDef> SoundCastDefStat = null;
+        public DefStat<SoundDef> SoundCastTailDefStat = null;
+        public DefStat<ThingDef> ProjectileDefStat = null;
 
         public VerbStats() { }
         public VerbStats(VerbProperties v)
@@ -36,13 +27,12 @@ namespace InGameDefEditor.Stats.Misc
             this.burstShotCount = v.burstShotCount;
             this.muzzleFlashScale = v.muzzleFlashScale;
             this.aiAvoidFriendlyRadius = v.ai_AvoidFriendlyFireRadius;
-            this.SoundCastDef = v.soundCast;
-            this.SoundCastTailDef = v.soundCastTail;
+            if (v.soundCast != null)
+                this.SoundCastDefStat = new DefStat<SoundDef>(v.soundCast);
+            if (v.soundCastTail != null)
+                this.SoundCastTailDefStat = new DefStat<SoundDef>(v.soundCastTail);
             if (v.defaultProjectile != null)
-            {
-                this.ProjectileDef = v.defaultProjectile;
-                this.projectileDefName = v.defaultProjectile.defName;
-            }
+                this.ProjectileDefStat = new DefStat<ThingDef>(v.defaultProjectile);
         }
 
         public void ApplyStats(VerbProperties to)
@@ -61,37 +51,24 @@ namespace InGameDefEditor.Stats.Misc
             to.burstShotCount = (int)this.burstShotCount;
             to.muzzleFlashScale = this.muzzleFlashScale;
             to.ai_AvoidFriendlyFireRadius = this.aiAvoidFriendlyRadius;
-            to.defaultProjectile = this.ProjectileDef;
-            to.soundCast = this.SoundCastDef;
-            to.soundCastTail = this.SoundCastTailDef;
+            to.defaultProjectile = this.ProjectileDefStat.Def;
+            to.soundCast = null;
+            if (this.SoundCastDefStat != null)
+                to.soundCast = this.SoundCastDefStat.Def;
+            to.soundCastTail = null;
+            if (this.SoundCastTailDefStat != null)
+                to.soundCastTail = this.SoundCastTailDefStat.Def;
         }
 
         public bool Initialize()
         {
-            if (this.projectileDefName == null || this.projectileDefName.Length == 0)
-                return false;
-
-            if (this.ProjectileDef == null)
-            {
-                this.ProjectileDef = DefDatabase<ThingDef>.AllDefsListForReading.Find(
-                    delegate (ThingDef d) { return d.defName.Equals(this.projectileDefName); });
-            }
-
-            if (this.SoundCastDef == null || this.SoundCastTailDef == null)
-            {
-                foreach (SoundDef d in DefDatabase<SoundDef>.AllDefsListForReading)
-                {
-                    if (d.defName.Equals(this.soundCastDefName))
-                        this.SoundCastDef = d;
-                    if (d.defName.Equals(this.soundCastTailDefName))
-                        this.SoundCastTailDef = d;
-
-                    if (this.SoundCastDef != null && this.SoundCastTailDef != null)
-                        break;
-                }
-            }
-
-            return this.ProjectileDef != null;
+            if (this.SoundCastDefStat != null)
+                this.SoundCastDefStat.Initialize();
+            if (this.SoundCastTailDefStat != null)
+                this.SoundCastTailDefStat.Initialize();
+            if (this.ProjectileDefStat != null)
+                this.ProjectileDefStat.Initialize();
+            return true;
         }
 
         public override bool Equals(object obj)
@@ -113,9 +90,9 @@ namespace InGameDefEditor.Stats.Misc
                     this.burstShotCount == v.burstShotCount &&
                     this.muzzleFlashScale == v.muzzleFlashScale &&
                     this.aiAvoidFriendlyRadius == v.aiAvoidFriendlyRadius &&
-                    String.Equals(this.projectileDefName, v.projectileDefName) && 
-                    String.Equals(this.soundCastDefName, v.soundCastDefName) && 
-                    String.Equals(this.soundCastTailDefName, v.soundCastTailDefName);
+                    Util.AreEqual(this.ProjectileDefStat, v.ProjectileDefStat) &&
+                    Util.AreEqual(this.SoundCastDefStat, v.SoundCastDefStat) &&
+                    Util.AreEqual(this.SoundCastTailDefStat, v.SoundCastTailDefStat);
             }
             return false;
         }
@@ -135,9 +112,9 @@ namespace InGameDefEditor.Stats.Misc
                 "    burstShotCount: " + this.burstShotCount + Environment.NewLine +
                 "    muzzleFlashScale: " + this.muzzleFlashScale + Environment.NewLine +
                 "    aiAvoidFriendlyRadius: " + this.aiAvoidFriendlyRadius + Environment.NewLine +
-                "    projectileDefName: " + this.projectileDefName + Environment.NewLine +
-                "    soundCastDefName: " + this.soundCastDefName + Environment.NewLine +
-                "    soundCastTailDefName: " + this.soundCastTailDefName;
+                "    projectileDefName: " + this.ProjectileDefStat.ToString() + Environment.NewLine +
+                "    soundCastDefName: " + this.SoundCastDefStat.ToString() + Environment.NewLine +
+                "    soundCastTailDefName: " + this.SoundCastTailDefStat.ToString();
         }
     }
 }

@@ -12,33 +12,32 @@ namespace InGameDefEditor.Stats.Misc
         [XmlElement(IsNullable = false)]
         public string defName2;
 
+        public D2 Def2 => this.def2;
+        public string DefName2 => this.defName2;
+
         public FloatValueDoubleDefStat() { }
         public FloatValueDoubleDefStat(D1 d1, D2 d2) : base(d1)
         {
             this.def2 = d2;
             this.defName2 = this.def2.defName;
         }
-
-        public bool Initialize(System.Collections.Generic.IEnumerable<D1> defs1, System.Collections.Generic.IEnumerable<D2> defs2)
+        public FloatValueDoubleDefStat(FloatValueDoubleDefStat<D1, D2> s) : base(s)
         {
-            if (!base.Initialize(defs1))
-                return false;
+            this.def2 = s.def2;
+            this.defName2 = this.def2.defName;
+        }
 
+        public override bool Initialize()
+        {
+            if (!base.Initialize())
+                return false;
+            
             if (this.def2 == null)
             {
-                foreach (D2 d in defs2)
-                {
-                    if (d.defName.Equals(this.defName2))
-                    {
-                        this.def2 = d;
-                        return true;
-                    }
-                }
-                Log.Error("Could not load def " + this.defName2);
-                return false;
+                if (!Util.TryGetDef(this.defName2, out this.def2))
+                    Log.Error("Could not load def " + this.defName2);
             }
-
-            return true;
+            return this.def2 != null;
         }
 
         public override bool Equals(object obj)
@@ -55,7 +54,7 @@ namespace InGameDefEditor.Stats.Misc
 
         public override int GetHashCode()
         {
-            return base.GetHashCode() + (this.defName2 + this.value).GetHashCode();
+            return base.Def.GetHashCode() + this.Def2.GetHashCode();
         }
 
         public override string ToString()

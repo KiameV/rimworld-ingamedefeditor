@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Xml.Serialization;
 using Verse;
 
 namespace InGameDefEditor.Stats.Misc
@@ -12,7 +11,7 @@ namespace InGameDefEditor.Stats.Misc
         public float power;
         public float armorPenetration;
         public float cooldownTime;
-        public List<ToolCapacityDefStat> capabilities;
+        public List<DefStat<ToolCapacityDef>> capabilities;
 
         public ToolStats() { }
         public ToolStats(Tool t)
@@ -23,11 +22,10 @@ namespace InGameDefEditor.Stats.Misc
             this.cooldownTime = t.cooldownTime;
             if (t.capacities != null)
             {
-                this.capabilities = new List<ToolCapacityDefStat>();
+                this.capabilities = new List<DefStat<ToolCapacityDef>>();
                 foreach (ToolCapacityDef d in t.capacities)
                 {
-                    ToolCapacityDefStat td = new ToolCapacityDefStat(d);
-                    this.capabilities.Add(td);
+                    this.capabilities.Add(new DefStat<ToolCapacityDef>(d));
                 }
             }
         }
@@ -38,30 +36,17 @@ namespace InGameDefEditor.Stats.Misc
             to.power = this.power;
             to.armorPenetration = this.armorPenetration;
             to.cooldownTime = this.cooldownTime;
-            if (to.capacities != null)
-            {
-                to.capacities.Clear();
-            }
 
-            if (this.capabilities != null)
-            {
+            if (this.capabilities != null && to.capacities == null)
                 to.capacities = new List<ToolCapacityDef>(this.capabilities.Count);
-                foreach (ToolCapacityDefStat s in this.capabilities)
-                {
-                    to.capacities.Add(s.Def);
-                }
-            }
+            Util.Populate(to.capacities, this.capabilities, delegate (DefStat<ToolCapacityDef> s) { return s.Def; });
         }
 
         public bool Initialize()
         {
             if (this.capabilities != null)
-            {
-                foreach (ToolCapacityDefStat s in this.capabilities)
-                {
-                    s.Initialize();
-                }
-            }
+                foreach (var v in this.capabilities)
+                    v.Initialize();
             return true;
         }
 
@@ -79,9 +64,9 @@ namespace InGameDefEditor.Stats.Misc
                 if (String.Equals(this.label, t.label) &&
                     this.power == t.power &&
                     this.armorPenetration == t.armorPenetration &&
-                    this.cooldownTime == t.cooldownTime)
+                    this.cooldownTime == t.cooldownTime)// && 
+                    //Util.AreEqual(this.capabilities, t.capabilities))
                 {
-                    // TODO Add Capabilities check
                     return true;
                 }
             }
@@ -102,47 +87,11 @@ namespace InGameDefEditor.Stats.Misc
                 "    armorPenetration: " + this.armorPenetration + Environment.NewLine +
                 "    cooldownTime: " + this.cooldownTime + Environment.NewLine + 
                 "    Capabilities:" + Environment.NewLine);
-            foreach (ToolCapacityDefStat s in this.capabilities)
+            foreach (var v in this.capabilities)
             {
-                sb.AppendLine("    " + s.defName);
+                sb.AppendLine("    " + v.defName);
             }
             return sb.ToString();
-        }
-    }
-
-    public class ToolCapacityDefStat
-    {
-        [XmlIgnore]
-        protected ToolCapacityDef def;
-
-        [XmlElement(IsNullable = false)]
-        public string defName;
-
-        public ToolCapacityDef Def => this.def;
-        public string DefName => this.def.defName;
-        public string Label => this.def.label;
-
-        public ToolCapacityDefStat() : base() { }
-        public ToolCapacityDefStat(ToolCapacityDef def)
-        {
-            this.def = def;
-            this.defName = this.def.defName;
-        }
-
-        public bool Initialize()
-        {
-            if (this.def == null)
-            {
-                def = DefDatabase<ToolCapacityDef>.AllDefsListForReading.Find(
-                    delegate (ToolCapacityDef d) { return d.defName.Equals(this.defName); });
-
-                if (this.def == null)
-                {
-                    Log.Error("Could not load def " + this.defName);
-                }
-            }
-
-            return this.def != null;
         }
     }
 }

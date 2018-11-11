@@ -3,98 +3,61 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Xml.Serialization;
 using Verse;
 
-namespace InGameDefEditor
+namespace InGameDefEditor.Stats
 {
-    public class ThingDefStats
+    public class ThingDefStats : DefStat<ThingDef>, IParentStat
     {
-        [XmlIgnore]
-        protected ThingDef def;
-
-        [XmlElement(IsNullable = false)]
-        public string defName;
         public List<FloatValueStat<StatDef>> StatModifiers = null;
         public List<VerbStats> VerbStats = null;
         public List<ToolStats> Tools = null;
         public List<FloatValueStat<StatDef>> EquippedStatOffsets = null;
-
-        public ThingDef Def => this.def;
-        public string DefName => this.def.defName;
-        public string Label => this.def.label;
-        public bool IsApparel => this.def.IsApparel;
-        public bool IsWeapon => this.def.IsWeapon;
+        
+        public bool IsApparel => base.Def.IsApparel;
+        public bool IsWeapon => base.Def.IsWeapon;
 
         public ThingDefStats() { }
-        public ThingDefStats(ThingDef d)
+        public ThingDefStats(ThingDef d) : base(d)
         {
-            this.def = d;
-            this.defName = this.def.defName;
             this.SetStatModifiers(d.statBases);
             this.SetVerbs(d.Verbs);
             this.SetTools(d.tools);
             this.SetEquippedStatOffsets(d.equippedStatOffsets);
         }
 
-        public bool Initialize()
+        public override bool Initialize()
         {
-            IEnumerable<StatDef> statDefs = DefDatabase<StatDef>.AllDefsListForReading;
-            if (this.def == null)
-            {
-                def = DefDatabase<ThingDef>.AllDefsListForReading.Find(
-                    delegate (ThingDef d) { return d.defName.Equals(this.defName); });
-
-                if (this.def == null)
-                {
-                    Log.Error("Could not load def " + this.defName);
-                    return false;
-                }
-            }
+            if (!base.Initialize())
+                return false;
 
             if (this.StatModifiers != null)
-            {
                 foreach (var s in this.StatModifiers)
-                {
-                    if (!s.Initialize(statDefs))
+                    if (!s.Initialize())
                     {
                         Log.Error("Failed to initialize Stat Modifier " + s.DefName + " for " + this.defName);
                     }
-                }
-            }
 
             if (this.VerbStats != null)
-            {
                 foreach (VerbStats vs in this.VerbStats)
-                {
                     if (!vs.Initialize())
                     {
                         Log.Error("Failed to initialize Verb " + vs.name + " for " + this.defName);
                     }
-                }
-            }
 
             if (this.Tools != null)
-            {
                 foreach (ToolStats ts in this.Tools)
-                {
                     if (!ts.Initialize())
                     {
                         Log.Error("Failed to initialize Tool " + ts.label + " for " + this.defName);
                     }
-                }
-            }
 
             if (this.EquippedStatOffsets != null)
-            {
                 foreach (var s in this.EquippedStatOffsets)
-                {
-                    if (!s.Initialize(statDefs))
+                    if (!s.Initialize())
                     {
                         Log.Error("Failed to initialize Equipped Stat Offsets " + s.DefName + " for " + this.defName);
                     }
-                }
-            }
 
             return true;
         }
@@ -106,67 +69,16 @@ namespace InGameDefEditor
 
         public override bool Equals(object obj)
         {
-            if (obj is ThingDefStats stats)
+            if (base.Equals(obj) &&
+                obj is ThingDefStats stats)
             {
-                if (!string.Equals(this.DefName, stats.DefName) ||
-                    !Util.ListsRoughlyEqual(this.VerbStats, stats.VerbStats) ||
-                    !Util.ListsRoughlyEqual(this.Tools, stats.Tools))
+                if (!Util.AreEqual(this.StatModifiers, stats.StatModifiers) ||
+                    !Util.AreEqual(this.EquippedStatOffsets, stats.EquippedStatOffsets) || 
+                    !Util.AreEqual(this.VerbStats, stats.VerbStats, null) || 
+                    !Util.AreEqual(this.Tools, stats.Tools, null))
                 {
                     return false;
                 }
-
-                if (this.VerbStats != null)
-                {
-                    Dictionary<string, VerbStats> lookup = new Dictionary<string, VerbStats>();
-                    foreach (VerbStats vs in this.VerbStats)
-                    {
-                        lookup.Add(vs.name, vs);
-                    }
-
-                    foreach (VerbStats s in stats.VerbStats)
-                    {
-                        if (!lookup.TryGetValue(s.name, out VerbStats vsFound) ||
-                            !vsFound.Equals(s))
-                        {
-#if DEBUG
-                            Log.Error(this.DefName + " " + s.name + " VerbStats Not found");
-#endif
-                            return false;
-                        }
-                    }
-                    lookup.Clear();
-                    lookup = null;
-                }
-
-                if (this.Tools != null)
-                {
-                    Dictionary<string, ToolStats> lookup = new Dictionary<string, ToolStats>();
-                    foreach (ToolStats ts in this.Tools)
-                    {
-                        lookup.Add(ts.label, ts);
-                    }
-
-                    foreach (ToolStats s in stats.Tools)
-                    {
-                        if (!lookup.TryGetValue(s.label, out ToolStats tsFound) ||
-                            !tsFound.Equals(s))
-                        {
-#if DEBUG
-                            Log.Error(this.DefName + " " + s.label + " Tools Not found");
-#endif
-                            return false;
-                        }
-                    }
-                    lookup.Clear();
-                    lookup = null;
-                }
-
-                if (!Util.Equals(this.StatModifiers, stats.StatModifiers))
-                    return false;
-
-                if (!Util.Equals(this.EquippedStatOffsets, stats.EquippedStatOffsets))
-                    return false;
-                
                 return true;
             }
             return false;
@@ -226,25 +138,30 @@ namespace InGameDefEditor
             }
         }
 
-        public void ApplyStats(ThingDef d)
+        public void ApplyStats(Def def)
         {
 #if DEBUG
-            Log.Warning("ApplyStats for " + d.label);
+            Log.Warning("ApplyStats for " + def.label);
 #endif
-            try
+            if (def is ThingDef to)
             {
-                this.ApplyStatModifiers(d);
-                this.ApplyVerbStats(d);
-                this.ApplyTools(d);
-                this.ApplyEquipmentStatOffsets(d);
-            }
-            catch (Exception e)
-            {
-                Log.Warning("Failed to apply stats [" + d.defName + "]\n" + e.Message);
-            }
+                try
+                {
+                    this.ApplyStatModifiers(to);
+                    this.ApplyVerbStats(to);
+                    this.ApplyTools(to);
+                    this.ApplyEquipmentStatOffsets(to);
+                }
+                catch (Exception e)
+                {
+                    Log.Warning("Failed to apply stats [" + to.defName + "]\n" + e.Message);
+                }
 #if DEBUG
             Log.Warning("ApplyStats Done");
 #endif
+            }
+            else
+                Log.Error("ThingDefStat passed none ThingDef!");
         }
 
         private void ApplyEquipmentStatOffsets(ThingDef d)
@@ -266,14 +183,14 @@ namespace InGameDefEditor
             {
                 if (lookup.TryGetValue(from.DefName, out StatModifier to))
                 {
-                    to.value = from.value;
+                    to.value = ((FloatValueStat<StatDef>)from).value;
                 }
                 else
                 {
                     d.equippedStatOffsets.Add(new StatModifier
                     {
                         stat = from.Def,
-                        value = from.value
+                        value = ((FloatValueStat<StatDef>)from).value
                     });
                 }
             }
@@ -300,14 +217,14 @@ namespace InGameDefEditor
             {
                 if (lookup.TryGetValue(from.DefName, out StatModifier to))
                 {
-                    to.value = from.value;
+                    to.value = ((FloatValueStat<StatDef>)from).value;
                 }
                 else
                 {
                     d.statBases.Add(new StatModifier
                     {
                         stat = from.Def,
-                        value = from.value
+                        value = ((FloatValueStat<StatDef>)from).value
                     });
                 }
             }
@@ -356,16 +273,15 @@ namespace InGameDefEditor
 
             foreach (ToolStats from in this.Tools)
             {
-                Tool to;
-                if (lookup.TryGetValue(from.label, out to))
+                if (lookup.TryGetValue(from.label, out Tool to))
                 {
                     from.ApplyStats(to);
                 }
                 else
                 {
-                    to = new Tool();
-                    from.ApplyStats(to);
-                    d.tools.Add(to);
+                    Tool t = new Tool();
+                    from.ApplyStats(t);
+                    d.tools.Add(t);
                 }
             }
         }

@@ -1,62 +1,48 @@
-﻿using RimWorld;
+﻿using InGameDefEditor.Stats.Misc;
+using RimWorld;
 using System;
 using System.Reflection;
 using System.Xml.Serialization;
 using Verse;
 
-namespace InGameDefEditor.Stats.Misc
+namespace InGameDefEditor.Stats
 {
-    public class ProjectileStats
+    public class ProjectileStats : DefStat<ThingDef>, IParentStat
     {
-        [XmlIgnore]
-        protected ThingDef def;
-
-        [XmlElement(IsNullable = false)]
-        public string defName;
         public int damage;
         public float stoppingPower;
         public float armorPenetration;
         public float speed;
 
-        public ThingDef Def => this.def;
-        public string DefName => this.def.defName;
-        public string Label => this.def.label;
-
         public ProjectileStats() { }
-        public ProjectileStats(ThingDef d)
+        public ProjectileStats(ThingDef d) : base(d)
         {
-            this.def = d;
-            this.defName = this.def.defName;
             this.damage = GetDamage(d.projectile);
             this.stoppingPower = d.projectile.stoppingPower;
             this.armorPenetration = GetArmorPenetration(d.projectile);
             this.speed = d.projectile.speed;
         }
 
-        public void ApplyStats(ThingDef def)
+        public void ApplyStats(Def def)
         {
+            if (def is ThingDef to)
+            {
 #if DEBUG
             Log.Error("Applying stats " + def.defName);
             Log.Error(this.ToString());
 #endif
-            SetDamage(def.projectile, this.damage);
-            def.projectile.stoppingPower = this.stoppingPower;
-            SetArmorPenetration(def.projectile, this.armorPenetration);
-            def.projectile.speed = this.speed;
+                SetDamage(to.projectile, this.damage);
+                to.projectile.stoppingPower = this.stoppingPower;
+                SetArmorPenetration(to.projectile, this.armorPenetration);
+                to.projectile.speed = this.speed;
+            }
+            else
+                Log.Error("ProjectileStats passed none ThingDef!");
         }
 
-        public bool Initialize()
+        public override int GetHashCode()
         {
-            if (this.def == null)
-            {
-                def = DefDatabase<ThingDef>.AllDefsListForReading.Find(
-                    delegate (ThingDef d) { return d.defName.Equals(this.defName); });
-
-                if (this.def == null)
-                    Log.Error("Could not load def " + this.defName);
-            }
-
-            return this.def != null;
+            return base.GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -66,7 +52,7 @@ namespace InGameDefEditor.Stats.Misc
             Log.Warning(this.ToString());
             Log.Warning(obj.ToString());
 #endif
-            if (obj != null &&
+            if (base.Equals(obj) &&
                 obj is ProjectileStats p)
             {
                 return
@@ -79,17 +65,10 @@ namespace InGameDefEditor.Stats.Misc
             return false;
         }
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
         public override string ToString()
         {
             return
-                typeof(FloatValueStat<StatDef>).Name + Environment.NewLine +
-                "    defName: " + this.defName + Environment.NewLine +
-                "    def set: " + ((this.def == null) ? "no" : "yes") + Environment.NewLine +
+                base.ToString() + Environment.NewLine +
                 "    damage: " + this.damage + Environment.NewLine +
                 "    stoppingPower: " + this.stoppingPower + Environment.NewLine +
                 "    armorPenetration: " + this.armorPenetration + Environment.NewLine +

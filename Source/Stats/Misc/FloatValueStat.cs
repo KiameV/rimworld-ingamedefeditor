@@ -9,6 +9,10 @@ namespace InGameDefEditor.Stats.Misc
 
         public FloatValueStat() { }
         public FloatValueStat(D d) : base(d) { }
+        public FloatValueStat(FloatValueStat<D> s) : base(s.Def)
+        {
+            this.value = s.value;
+        }
 
         public override bool Equals(object obj)
         {
@@ -24,7 +28,7 @@ namespace InGameDefEditor.Stats.Misc
 
         public override int GetHashCode()
         {
-            return this.ToString().GetHashCode();
+            return base.GetHashCode();
         }
 
         public override string ToString()

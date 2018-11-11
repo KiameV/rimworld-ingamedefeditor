@@ -14,8 +14,10 @@ namespace InGameDefEditor
         {
             if (!isInit)
             {
+                int i = 0;
                 foreach (ThingDef d in DefDatabase<ThingDef>.AllDefs)
                 {
+                    ++i;
                     if (d.IsApparel)
                     {
                         ApparelDefs[d.label] = d;
@@ -43,10 +45,9 @@ namespace InGameDefEditor
                     }
                 }
 
-                if (ApparelDefs.Count > 0)
+                if (i > 0)
                 {
                     Backup.Initialize();
-                    
                     isInit = true;
                 }
             }

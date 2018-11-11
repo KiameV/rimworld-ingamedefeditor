@@ -25,7 +25,7 @@ namespace InGameDefEditor
             y += 40;
             return s;
         }
-
+        
         public static void DrawInput(float x, ref float y, float width, string label, int labelWidth, string buttonText, Action onClick, bool isBolded = false)
         {
             DrawLabel(x, y, labelWidth, label, isBolded);
@@ -82,7 +82,7 @@ namespace InGameDefEditor
             }
             Find.WindowStack.Add(new FloatMenu(options));
         }
-
+        
         public static void PlusMinusLabel(
             float x, ref float y, int labelWidth, string label, Action add, Action subtract)
         {

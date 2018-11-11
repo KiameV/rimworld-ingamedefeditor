@@ -1,4 +1,4 @@
-﻿using InGameDefEditor.Stats.Misc;
+﻿using InGameDefEditor.Stats;
 using System;
 using System.IO;
 using System.Reflection;
@@ -43,6 +43,9 @@ namespace InGameDefEditor
                         if (fs != null)
                             fs.Close();
                     }
+
+                    //Log.Error("ThingDefs: " + allStats.thingDefStats.Count);
+                    //Log.Error("ProjectileDefs: " + allStats.projectileStats.Count);
 
                     if (allStats.projectileStats != null)
                     {
@@ -91,6 +94,7 @@ namespace InGameDefEditor
                 finally
                 {
                     hasLoaded = true;
+                    Util.ClearDefDic();
                 }
             }
         }
@@ -124,6 +128,9 @@ namespace InGameDefEditor
                     allStats.projectileStats.Add(s);
                 }
             }
+
+            //Log.Error("ThingDefs: " + allStats.thingDefStats.Count);
+            //Log.Error("ProjectileDefs: " + allStats.projectileStats.Count);
 
             XmlSerializer serializer = new XmlSerializer(typeof(AllStats));
             FileStream fs = null;

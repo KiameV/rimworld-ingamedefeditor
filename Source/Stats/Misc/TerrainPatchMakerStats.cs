@@ -5,7 +5,7 @@ using Verse;
 
 namespace InGameDefEditor.Stats.Misc
 {
-    class TerrainPatchMakerStats
+    public class TerrainPatchMakerStats
     {
         public List<MinMaxStat<TerrainDef>> thresholds = new List<MinMaxStat<TerrainDef>>();
         public float perlinFrequency;
@@ -16,6 +16,7 @@ namespace InGameDefEditor.Stats.Misc
         public float maxFertility;
         public int minSize;
 
+        public TerrainPatchMakerStats() { }
         public TerrainPatchMakerStats(TerrainPatchMaker m)
         {
             this.perlinFrequency = m.perlinFrequency;
@@ -73,10 +74,9 @@ namespace InGameDefEditor.Stats.Misc
 
         public bool Initialize()
         {
-            IEnumerable<TerrainDef> d = DefDatabase<TerrainDef>.AllDefsListForReading;
             if (this.thresholds != null)
                 foreach (var v in this.thresholds)
-                    v.Initialize(d);
+                    v.Initialize();
             return true;
         }
 
