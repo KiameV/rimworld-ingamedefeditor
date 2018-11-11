@@ -6,7 +6,7 @@ using Verse;
 
 namespace InGameDefEditor
 {
-    static class WindowUtil
+    public static class WindowUtil
     {
         public static string DrawInput(float x, ref float y, string label, ref float value, string valueBuffer)
         {
@@ -26,12 +26,12 @@ namespace InGameDefEditor
             return s;
         }
         
-        public static void DrawInput(float x, ref float y, float width, string label, int labelWidth, string buttonText, Action onClick, bool isBolded = false)
+        public static void DrawInput<T>(float x, ref float y, float width, string label, int labelWidth, string buttonText, DrawFloatOptionsArgs<T> floatingOptionArgs, bool isBolded = false)
         {
             DrawLabel(x, y, labelWidth, label, isBolded);
             x = x + labelWidth + 10;
             if (Widgets.ButtonText(new Rect(x, y, width - x - 10, 30), buttonText))
-                onClick();
+                DrawFloatingOptions(floatingOptionArgs);
             y += 40;
         }
 
@@ -60,24 +60,31 @@ namespace InGameDefEditor
 
         public delegate string GetDisplayName<T>(T t);
         public delegate void OnSelect<T>(T t);
-
-        public static void DrawFloatingOptions<T>(
-            IEnumerable<T> items, GetDisplayName<T> getDisplayName, OnSelect<T> onSelect, bool includeNullOption = false)
+        public delegate IEnumerable<T> UpdateItems<T>();
+        public class DrawFloatOptionsArgs<T>
         {
-            if (items == null || items.Count() == 0)
+            public IEnumerable<T> items = null;
+            public UpdateItems<T> updateItems = null;
+            public GetDisplayName<T> getDisplayName = null;
+            public OnSelect<T> onSelect = null;
+            public bool includeNullOption = false;
+        }
+        public static void DrawFloatingOptions<T>(DrawFloatOptionsArgs<T> args)
+        {
+            if (args.items == null || args.items.Count() == 0)
                 return;
 
             List<FloatMenuOption> options = new List<FloatMenuOption>();
-            if (includeNullOption)
+            if (args.includeNullOption)
             {
                 options.Add(new FloatMenuOption(
-                    "<none>", delegate { onSelect(default(T)); },
+                    "<none>", delegate { args.onSelect(default(T)); },
                     MenuOptionPriority.High, null, null, 0f, null, null));
             }
-            foreach (T t in items)
+            foreach (T t in args.items)
             {
                 options.Add(new FloatMenuOption(
-                    getDisplayName(t), delegate { onSelect(t); }, 
+                    args.getDisplayName(t), delegate { args.onSelect(t); }, 
                     MenuOptionPriority.Default, null, null, 0f, null, null));
             }
             Find.WindowStack.Add(new FloatMenu(options));
@@ -96,6 +103,34 @@ namespace InGameDefEditor
                 subtract();
             }
             y += 40;
+        }
+
+        public static void PlusMinusLabel<T, U>(
+            float x, ref float y, int labelWidth, string label,
+            DrawFloatOptionsArgs<T> addFloatOptions, 
+            DrawFloatOptionsArgs<U> removeFloatOptions)
+        {
+            PlusMinusLabel(x, ref y, labelWidth, label,
+                delegate ()
+                {
+                    if (addFloatOptions.updateItems != null)
+                    {
+                        if (addFloatOptions.items == null)
+                            addFloatOptions.items = new List<T>();
+                        addFloatOptions.items = addFloatOptions.updateItems.Invoke();
+                    }
+                    DrawFloatingOptions(addFloatOptions);
+                },
+                delegate ()
+                {
+                    if (removeFloatOptions.updateItems != null)
+                    {
+                        if (removeFloatOptions.items == null)
+                            removeFloatOptions.items = new List<U>();
+                        removeFloatOptions.items = removeFloatOptions.updateItems.Invoke();
+                    }
+                    DrawFloatingOptions(removeFloatOptions);
+                });
         }
     }
 }

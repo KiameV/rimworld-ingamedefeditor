@@ -7,21 +7,24 @@
         Projectile
     };
 
-    interface IParentStatWidget
+    interface IStatWidget
     {
-        string Label { get; }
+        string DisplayLabel { get; }
+        void ResetBuffers();
+    }
+
+    interface IParentStatWidget : IStatWidget
+    {
         WidgetType Type { get; }
 
         void DrawLeft(float x, ref float y, float width);
         void DrawMiddle(float x, ref float y, float width);
         void DrawRight(float x, ref float y, float width);
-        void ResetBuffers();
         void Rebuild();
     }
 
-    interface IStatWidget
+    interface IDefEditorWidget : IStatWidget
     {
         void Draw(float x, ref float y, float width);
-        void ResetBuffers();
     }
 }

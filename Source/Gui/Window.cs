@@ -76,7 +76,7 @@ namespace InGameDefEditor
 
                 if (Widgets.ButtonText(new Rect(30, rect.yMax - 100, 100, 32), "Reset".Translate()))
                 {
-                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("Reset " + this.selected.Label + "?", delegate { this.ResetSelected(); }));
+                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("Reset " + this.selected.DisplayLabel + "?", delegate { this.ResetSelected(); }));
                 }
             }
 
@@ -135,12 +135,16 @@ namespace InGameDefEditor
 
             if (Widgets.ButtonText(rect, label))
             {
-                WindowUtil.DrawFloatingOptions(Defs.ProjectileDefs.Values,
-                    delegate (ThingDef d) { return d.label; },
-                    delegate (ThingDef d)
+                WindowUtil.DrawFloatingOptions(
+                    new WindowUtil.DrawFloatOptionsArgs<ThingDef>()
                     {
-                        this.selected = new ThingDefWidget(d, WidgetType.Projectile);
-                        this.ResetScrolls();
+                        items = Defs.ProjectileDefs.Values,
+                        getDisplayName = delegate (ThingDef d) { return d.label; },
+                        onSelect = delegate (ThingDef d)
+                        {
+                            this.selected = new ThingDefWidget(d, WidgetType.Projectile);
+                            this.ResetScrolls();
+                        }
                     });
             }
         }
@@ -159,12 +163,16 @@ namespace InGameDefEditor
 
             if (Widgets.ButtonText(rect, label))
             {
-                WindowUtil.DrawFloatingOptions(Defs.WeaponDefs.Values,
-                    delegate (ThingDef d) { return d.label; },
-                    delegate (ThingDef d)
+                WindowUtil.DrawFloatingOptions(
+                    new WindowUtil.DrawFloatOptionsArgs<ThingDef>()
                     {
-                        this.selected = new ThingDefWidget(d, WidgetType.Weapon);
-                        this.ResetScrolls();
+                        items = Defs.WeaponDefs.Values,
+                        getDisplayName = delegate (ThingDef d) { return d.label; },
+                        onSelect = delegate (ThingDef d)
+                        {
+                            this.selected = new ThingDefWidget(d, WidgetType.Weapon);
+                            this.ResetScrolls();
+                        }
                     });
             }
         }
@@ -183,12 +191,16 @@ namespace InGameDefEditor
 
             if (Widgets.ButtonText(rect, label))
             {
-                WindowUtil.DrawFloatingOptions(Defs.ApparelDefs.Values,
-                    delegate (ThingDef d) { return d.label; },
-                    delegate (ThingDef d)
+                WindowUtil.DrawFloatingOptions(
+                    new WindowUtil.DrawFloatOptionsArgs<ThingDef>()
                     {
-                        this.selected = new ThingDefWidget(d, WidgetType.Apparel);
-                        this.ResetScrolls();
+                        items = Defs.ApparelDefs.Values,
+                        getDisplayName = delegate (ThingDef d) { return d.label; },
+                        onSelect = delegate (ThingDef d)
+                        {
+                            this.selected = new ThingDefWidget(d, WidgetType.Apparel);
+                            this.ResetScrolls();
+                        }
                     });
             }
         }

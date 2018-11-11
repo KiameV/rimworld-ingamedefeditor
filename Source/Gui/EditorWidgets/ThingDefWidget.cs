@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using InGameDefEditor.Gui.EditorWidgets.Misc;
+using RimWorld;
 using System.Collections.Generic;
 using Verse;
 
@@ -9,15 +10,15 @@ namespace InGameDefEditor.Gui.EditorWidgets
         public readonly ThingDef ThingDef;
         public readonly WidgetType type;
 
-        private List<StatModifierWidget> StatModifiers = new List<StatModifierWidget>();
+        private List<DefStatValueWidget> StatModifiers = new List<DefStatValueWidget>();
         private List<VerbWidget> VerbWidgets = new List<VerbWidget>();
         private List<ToolWidget> ToolWidgets = new List<ToolWidget>();
-        private List<StatModifierWidget> EquipmentModifiers = new List<StatModifierWidget>();
+        private List<DefStatValueWidget> EquipmentModifiers = new List<DefStatValueWidget>();
 
-        public string Label => ThingDef.label;
+        public string DisplayLabel => ThingDef.label;
         public WidgetType Type => type;
 
-        private readonly ProjectileWidget projectileWidget = null;
+        private readonly ProjectileDefWidget projectileWidget = null;
 
         public ThingDefWidget(ThingDef d, WidgetType type)
         {
@@ -25,7 +26,13 @@ namespace InGameDefEditor.Gui.EditorWidgets
             this.type = type;
 
             if (this.type == WidgetType.Projectile)
-                this.projectileWidget = new ProjectileWidget(d);
+                this.projectileWidget = new ProjectileDefWidget(d);
+
+            if (this.ThingDef.statBases == null)
+                this.ThingDef.statBases = new List<StatModifier>();
+
+            if (this.ThingDef.equippedStatOffsets == null)
+                this.ThingDef.equippedStatOffsets = new List<StatModifier>();
 
             this.Rebuild();
         }
@@ -75,53 +82,48 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         private void DrawStatModifiers(float x, ref float y, float width)
         {
-            WindowUtil.PlusMinusLabel(x, ref y, 150, "Base Modifiers",
-                   delegate
-                   {
-                       WindowUtil.DrawFloatingOptions(
-                           this.GetPossibleStatModifiers(this.ThingDef.statBases),
-                           delegate (StatDef d) { return d.label; },
-                           delegate (StatDef d)
-                           {
-                               if (this.ThingDef.statBases == null)
-                                   this.ThingDef.statBases = new List<StatModifier>();
+            WindowUtil.PlusMinusLabel(
+                x, ref y, 150, "Base Modifiers",
+                new WindowUtil.DrawFloatOptionsArgs<StatDef>()
+                {
+                    items = this.GetPossibleStatModifiers(this.ThingDef.statBases),
+                    getDisplayName = delegate (StatDef d) { return d.label; },
+                    onSelect = delegate (StatDef d)
+                    {
+                        // Add
+                        StatModifier m = new StatModifier()
+                        {
+                            stat = d,
+                            value = 0
+                        };
+                        this.ThingDef.statBases.Add(m);
+                        this.StatModifiers.Add(new DefStatValueWidget(m));
+                    }
+                },
+                new WindowUtil.DrawFloatOptionsArgs<StatModifier>()
+                {
+                    items = this.ThingDef.statBases,
+                    getDisplayName = delegate (StatModifier s) { return s.stat.defName; },
+                    onSelect = delegate (StatModifier s)
+                    {
+                        // Remove
+                        for (int i = 0; i < this.StatModifiers.Count; ++i)
+                            if (this.StatModifiers[i].StatModifier.stat == s.stat)
+                            {
+                                this.StatModifiers.RemoveAt(i);
+                                break;
+                            }
 
-                               StatModifier m = new StatModifier()
-                               {
-                                   stat = d,
-                                   value = 0
-                               };
-                               this.ThingDef.statBases.Add(m);
-                               this.StatModifiers.Add(new StatModifierWidget(m));
-                           });
-                   },
-                   delegate
-                   {
-                       WindowUtil.DrawFloatingOptions(
-                           this.ThingDef.statBases,
-                           delegate (StatModifier s) { return s.stat.defName; },
-                           delegate (StatModifier s)
-                           {
-                               for (int i = 0; i < this.StatModifiers.Count; ++i)
-                               {
-                                   if (this.StatModifiers[i].StatModifier.stat == s.stat)
-                                   {
-                                       this.StatModifiers.RemoveAt(i);
-                                       break;
-                                   }
-                               }
-                               for (int i = 0; i < this.ThingDef.statBases.Count; ++i)
-                               {
-                                   if (this.ThingDef.statBases[i].stat == s.stat)
-                                   {
-                                       this.ThingDef.statBases.RemoveAt(i);
-                                       break;
-                                   }
-                               }
-                           });
-                   });
+                        for (int i = 0; i < this.ThingDef.statBases.Count; ++i)
+                            if (this.ThingDef.statBases[i].stat == s.stat)
+                            {
+                                this.ThingDef.statBases.RemoveAt(i);
+                                break;
+                            }
+                    }
+                });
             x += 10;
-            foreach (StatModifierWidget w in this.StatModifiers)
+            foreach (DefStatValueWidget w in this.StatModifiers)
             {
                 w.Draw(x, ref y, width);
             }
@@ -155,24 +157,27 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 delegate
                 {
                     WindowUtil.DrawFloatingOptions(
-                        this.ThingDef.tools,
-                        delegate (Tool t) { return t.label; },
-                        delegate (Tool t)
+                        new WindowUtil.DrawFloatOptionsArgs<Tool>()
                         {
-                            for (int i = 0; i < this.ThingDef.tools.Count; ++i)
+                            items = this.ThingDef.tools,
+                            getDisplayName = delegate (Tool t) { return t.label; },
+                            onSelect = delegate (Tool t)
                             {
-                                if (this.ThingDef.tools[i].label.Equals(t.label))
+                                for (int i = 0; i < this.ThingDef.tools.Count; ++i)
                                 {
-                                    this.ThingDef.tools.RemoveAt(i);
-                                    break;
+                                    if (this.ThingDef.tools[i].label.Equals(t.label))
+                                    {
+                                        this.ThingDef.tools.RemoveAt(i);
+                                        break;
+                                    }
                                 }
-                            }
-                            for (int i = 0; i < this.ToolWidgets.Count; ++i)
-                            {
-                                if (this.ToolWidgets[i].Tool.label.Equals(t.label))
+                                for (int i = 0; i < this.ToolWidgets.Count; ++i)
                                 {
-                                    this.ToolWidgets.RemoveAt(i);
-                                    break;
+                                    if (this.ToolWidgets[i].Tool.label.Equals(t.label))
+                                    {
+                                        this.ToolWidgets.RemoveAt(i);
+                                        break;
+                                    }
                                 }
                             }
                         });
@@ -190,52 +195,47 @@ namespace InGameDefEditor.Gui.EditorWidgets
         private void DrawEquipmentStatOffsets(float x, ref float y, float width)
         {
             WindowUtil.PlusMinusLabel(x, ref y, 200, "Equipped Stat Offsets",
-                   delegate
-                   {
-                       WindowUtil.DrawFloatingOptions(
-                           this.GetPossibleStatModifiers(this.ThingDef.equippedStatOffsets),
-                           delegate (StatDef d) { return d.label; },
-                           delegate (StatDef d)
-                           {
-                               if (this.ThingDef.equippedStatOffsets == null)
-                                   this.ThingDef.equippedStatOffsets = new List<StatModifier>();
+                new WindowUtil.DrawFloatOptionsArgs<StatDef>()
+                {
+                    items = this.GetPossibleStatModifiers(this.ThingDef.equippedStatOffsets),
+                    getDisplayName = delegate (StatDef d) { return d.label; },
+                    onSelect = delegate (StatDef d)
+                    {
+                        StatModifier m = new StatModifier()
+                        {
+                            stat = d,
+                            value = 0
+                        };
+                        this.ThingDef.equippedStatOffsets.Add(m);
+                        this.EquipmentModifiers.Add(new DefStatValueWidget(m));
+                    }
+                },
+                new WindowUtil.DrawFloatOptionsArgs<StatModifier>()
+                {
+                    items = this.ThingDef.equippedStatOffsets,
+                    getDisplayName = delegate (StatModifier s) { return s.stat.defName; },
+                    onSelect = delegate (StatModifier s)
+                    {
+                        for (int i = 0; i < this.EquipmentModifiers.Count; ++i)
+                        {
+                            if (this.EquipmentModifiers[i].StatModifier.stat == s.stat)
+                            {
+                                this.EquipmentModifiers.RemoveAt(i);
+                                break;
+                            }
+                        }
+                        for (int i = 0; i < this.ThingDef.equippedStatOffsets.Count; ++i)
+                        {
+                            if (this.ThingDef.equippedStatOffsets[i].stat == s.stat)
+                            {
+                                this.ThingDef.equippedStatOffsets.RemoveAt(i);
+                                break;
+                            }
+                        }
+                    }
+                });
 
-                               StatModifier m = new StatModifier()
-                               {
-                                   stat = d,
-                                   value = 0
-                               };
-                               this.ThingDef.equippedStatOffsets.Add(m);
-                               this.EquipmentModifiers.Add(new StatModifierWidget(m));
-                           });
-                   },
-                   delegate
-                   {
-                       WindowUtil.DrawFloatingOptions(
-                           this.ThingDef.equippedStatOffsets,
-                           delegate (StatModifier s) { return s.stat.defName; },
-                           delegate (StatModifier s)
-                           {
-                               for (int i = 0; i < this.EquipmentModifiers.Count; ++i)
-                               {
-                                   if (this.EquipmentModifiers[i].StatModifier.stat == s.stat)
-                                   {
-                                       this.EquipmentModifiers.RemoveAt(i);
-                                       break;
-                                   }
-                               }
-                               for (int i = 0; i < this.ThingDef.equippedStatOffsets.Count; ++i)
-                               {
-                                   if (this.ThingDef.equippedStatOffsets[i].stat == s.stat)
-                                   {
-                                       this.ThingDef.equippedStatOffsets.RemoveAt(i);
-                                       break;
-                                   }
-                               }
-                           });
-                   });
-
-            foreach (StatModifierWidget w in this.EquipmentModifiers)
+            foreach (DefStatValueWidget w in this.EquipmentModifiers)
             {
                 w.Draw(x, ref y, width);
             }
@@ -265,7 +265,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 this.StatModifiers.Clear();
                 foreach (StatModifier s in this.ThingDef.statBases)
                 {
-                    this.StatModifiers.Add(new StatModifierWidget(s));
+                    this.StatModifiers.Add(new DefStatValueWidget(s));
                 }
             }
             if (this.ThingDef.Verbs != null)
@@ -289,7 +289,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 this.EquipmentModifiers.Clear();
                 foreach (StatModifier s in this.ThingDef.equippedStatOffsets)
                 {
-                    this.EquipmentModifiers.Add(new StatModifierWidget(s));
+                    this.EquipmentModifiers.Add(new DefStatValueWidget(s));
                 }
             }
             this.ResetBuffers();
@@ -297,10 +297,10 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         public void ResetBuffers()
         {
-            this.StatModifiers.ForEach((StatModifierWidget w) => w.ResetBuffers());
+            this.StatModifiers.ForEach((DefStatValueWidget w) => w.ResetBuffers());
             this.VerbWidgets.ForEach((VerbWidget w) => w.ResetBuffers());
             this.ToolWidgets.ForEach((ToolWidget w) => w.ResetBuffers());
-            this.EquipmentModifiers.ForEach((StatModifierWidget w) => w.ResetBuffers());
+            this.EquipmentModifiers.ForEach((DefStatValueWidget w) => w.ResetBuffers());
 
             if (this.projectileWidget != null)
                 this.projectileWidget.ResetBuffers();
