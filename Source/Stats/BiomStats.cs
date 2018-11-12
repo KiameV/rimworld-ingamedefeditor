@@ -91,7 +91,7 @@ namespace InGameDefEditor.Stats
                     this.terrainPatchMakers.Add(new TerrainPatchMakerStats(v));
             }
 
-            List<BiomePlantRecord> plants = this.GetWildPlants();
+            List<BiomePlantRecord> plants = GetWildPlants(base.Def);
             if (plants != null)
             {
                 this.wildPlants = new List<FloatValueStat<ThingDef>>(plants.Count);
@@ -102,7 +102,7 @@ namespace InGameDefEditor.Stats
                     });
             }
 
-            List<BiomeAnimalRecord> animals = this.GetWildAnimals();
+            List<BiomeAnimalRecord> animals = GetWildAnimals(base.Def);
             if (animals != null)
             {
                 this.wildAnimals = new List<FloatValueStat<PawnKindDef>>(animals.Count);
@@ -113,7 +113,7 @@ namespace InGameDefEditor.Stats
                     });
             }
 
-            List<BiomeDiseaseRecord> diseases = this.GetDiseases();
+            List<BiomeDiseaseRecord> diseases = GetDiseases(base.Def);
             if (diseases != null)
             {
                 this.diseases = new List<FloatValueDoubleDefStat<IncidentDef, BiomeDef>>(diseases.Count);
@@ -124,7 +124,7 @@ namespace InGameDefEditor.Stats
                     });
             }
 
-            List<ThingDef> allowedPackAnimals = GetAllowedPackAnimals();
+            List<ThingDef> allowedPackAnimals = GetAllowedPackAnimals(base.Def);
             if (d != null)
             {
                 this.allowedPackAnimals = new List<DefStat<PawnKindDef>>(allowedPackAnimals.Count);
@@ -257,11 +257,11 @@ namespace InGameDefEditor.Stats
                     return v;
                 });
 
-                List<BiomePlantRecord> wildPlants = this.GetWildPlants();
+                List<BiomePlantRecord> wildPlants = GetWildPlants(base.Def);
                 if (this.wildPlants != null && wildPlants == null)
                 {
                     wildPlants = new List<BiomePlantRecord>(this.wildPlants.Count);
-                    this.SetWildPlants(wildPlants);
+                    SetWildPlants(base.Def, wildPlants);
                 }
                 Util.Populate(wildPlants, this.wildPlants, delegate (FloatValueStat<ThingDef> s)
                 {
@@ -272,11 +272,11 @@ namespace InGameDefEditor.Stats
                     };
                 });
 
-                List<BiomeAnimalRecord> wildAnimals = this.GetWildAnimals();
+                List<BiomeAnimalRecord> wildAnimals = GetWildAnimals(base.Def);
                 if (this.wildAnimals != null && wildAnimals == null)
                 {
                     wildAnimals = new List<BiomeAnimalRecord>(this.wildAnimals.Count);
-                    this.SetWildAnimals(wildAnimals);
+                    SetWildAnimals(base.Def, wildAnimals);
                 }
                 Util.Populate(wildAnimals, this.wildAnimals, delegate (FloatValueStat<PawnKindDef> s)
                 {
@@ -287,11 +287,11 @@ namespace InGameDefEditor.Stats
                     };
                 });
 
-                List<BiomeDiseaseRecord> diseases = this.GetDiseases();
+                List<BiomeDiseaseRecord> diseases = GetDiseases(base.Def);
                 if (this.diseases != null && diseases == null)
                 {
                     diseases = new List<BiomeDiseaseRecord>(this.diseases.Count);
-                    this.SetDiseases(diseases);
+                    SetDiseases(base.Def, diseases);
                 }
                 Util.Populate(diseases, this.diseases, delegate (FloatValueDoubleDefStat<IncidentDef, BiomeDef> s)
                 {
@@ -303,11 +303,11 @@ namespace InGameDefEditor.Stats
                     };
                 });
                 
-                List<ThingDef> allowedPackAnimals = this.GetAllowedPackAnimals();
+                List<ThingDef> allowedPackAnimals = GetAllowedPackAnimals(base.Def);
                 if (this.allowedPackAnimals != null && allowedPackAnimals == null)
                 {
                     allowedPackAnimals = new List<ThingDef>(this.allowedPackAnimals.Count);
-                    this.SetAllowedPackAnimals(allowedPackAnimals);
+                    SetAllowedPackAnimals(base.Def, allowedPackAnimals);
                 }
                 Util.Populate(allowedPackAnimals, this.allowedPackAnimals, delegate (DefStat<PawnKindDef> s)
                 {
@@ -325,24 +325,35 @@ namespace InGameDefEditor.Stats
 
         public override string ToString()
         {
-            return
+            System.Text.StringBuilder sb = new System.Text.StringBuilder(
                 base.ToString() + Environment.NewLine +
-                "canBuildBase" + this.canBuildBase + Environment.NewLine +
-                "canAutoChoose" + this.canAutoChoose + Environment.NewLine +
-                "allowRoads" + this.allowRoads + Environment.NewLine +
-                "allowRivers" + this.allowRivers + Environment.NewLine +
-                "animalDensity" + this.animalDensity + Environment.NewLine +
-                "plantDensity" + this.plantDensity + Environment.NewLine +
-                "diseaseMtbDays" + this.diseaseMtbDays + Environment.NewLine +
-                "settlementSelectionWeight" + this.settlementSelectionWeight + Environment.NewLine +
-                "impassable" + this.impassable + Environment.NewLine +
-                "hasVirtualPlants" + this.hasVirtualPlants + Environment.NewLine +
-                "forageability" + this.forageability + Environment.NewLine +
-                "foragedFood" + ((this.foragedFood == null) ? "null" : this.foragedFood.DefName) + Environment.NewLine +
-                "wildPlantsCareAboutLocalFertility" + this.wildPlantsCareAboutLocalFertility + Environment.NewLine +
-                "wildPlantRegrowDays" + this.wildPlantRegrowDays + Environment.NewLine +
-                "movementDifficulty" + this.movementDifficulty + Environment.NewLine +
-                "hasBedrock" + this.hasBedrock;
+                "canBuildBase: " + this.canBuildBase + Environment.NewLine +
+                "canAutoChoose: " + this.canAutoChoose + Environment.NewLine +
+                "allowRoads: " + this.allowRoads + Environment.NewLine +
+                "allowRivers: " + this.allowRivers + Environment.NewLine +
+                "animalDensity: " + this.animalDensity + Environment.NewLine +
+                "plantDensity: " + this.plantDensity + Environment.NewLine +
+                "diseaseMtbDays: " + this.diseaseMtbDays + Environment.NewLine +
+                "settlementSelectionWeight: " + this.settlementSelectionWeight + Environment.NewLine +
+                "impassable: " + this.impassable + Environment.NewLine +
+                "hasVirtualPlants: " + this.hasVirtualPlants + Environment.NewLine +
+                "forageability: " + this.forageability + Environment.NewLine +
+                "foragedFood: " + ((this.foragedFood == null) ? "null" : this.foragedFood.DefName) + Environment.NewLine +
+                "wildPlantsCareAboutLocalFertility: " + this.wildPlantsCareAboutLocalFertility + Environment.NewLine +
+                "wildPlantRegrowDays: " + this.wildPlantRegrowDays + Environment.NewLine +
+                "movementDifficulty: " + this.movementDifficulty + Environment.NewLine +
+                "hasBedrock: " + this.hasBedrock + Environment.NewLine);
+            sb.AppendLine("Weather Commonalities:");
+            if (base.Def.baseWeatherCommonalities != null)
+            {
+                foreach (var v in base.Def.baseWeatherCommonalities)
+                {
+                    sb.AppendLine("    " + v.weather.label + " " + v.commonality);
+                }
+            }
+            else
+                sb.AppendLine("  is null");
+            return sb.ToString();
         }
 
         public override bool Equals(object obj)
@@ -365,11 +376,11 @@ namespace InGameDefEditor.Stats
                     this.impassable == s.impassable &&
                     this.hasVirtualPlants == s.hasVirtualPlants &&
                     this.forageability == s.forageability &&
-                    this.foragedFood == s.foragedFood &&
                     this.wildPlantsCareAboutLocalFertility == s.wildPlantsCareAboutLocalFertility &&
                     this.wildPlantRegrowDays == s.wildPlantRegrowDays &&
                     this.movementDifficulty == s.movementDifficulty &&
                     this.hasBedrock == s.hasBedrock &&
+                    object.Equals(this.foragedFood, s.foragedFood)&&
                     Util.AreEqual(this.weatherCommonalities, s.weatherCommonalities) &&
                     Util.AreEqual(this.terrainsByFertility, s.terrainsByFertility) &&
                     Util.AreEqual(this.soundsAmbient, s.soundsAmbient) &&
@@ -385,44 +396,44 @@ namespace InGameDefEditor.Stats
             return false;
         }
 
-        private List<BiomePlantRecord> GetWildPlants()
+        public static List<BiomePlantRecord> GetWildPlants(BiomeDef def)
         {
-            return typeof(BiomeDef).GetField("wildPlants", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(base.Def) as List<BiomePlantRecord>;
+            return typeof(BiomeDef).GetField("wildPlants", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(def) as List<BiomePlantRecord>;
         }
 
-        private void SetWildPlants(List<BiomePlantRecord> value)
+        public static void SetWildPlants(BiomeDef def, List<BiomePlantRecord> value)
         {
-            typeof(BiomeDef).GetField("wildPlants", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(base.Def, value);
+            typeof(BiomeDef).GetField("wildPlants", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(def, value);
         }
 
-        private List<BiomeAnimalRecord> GetWildAnimals()
+        public static List<BiomeAnimalRecord> GetWildAnimals(BiomeDef def)
         {
-            return typeof(BiomeDef).GetField("wildAnimals", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(base.Def) as List<BiomeAnimalRecord>;
+            return typeof(BiomeDef).GetField("wildAnimals", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(def) as List<BiomeAnimalRecord>;
         }
 
-        private void SetWildAnimals(List<BiomeAnimalRecord> value)
+        public static void SetWildAnimals(BiomeDef def, List<BiomeAnimalRecord> value)
         {
-            typeof(BiomeDef).GetField("wildAnimals", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(base.Def, value);
+            typeof(BiomeDef).GetField("wildAnimals", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(def, value);
         }
 
-        private List<BiomeDiseaseRecord> GetDiseases()
+        public static List<BiomeDiseaseRecord> GetDiseases(BiomeDef def)
         {
-            return typeof(BiomeDef).GetField("diseases", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(base.Def) as List<BiomeDiseaseRecord>;
+            return typeof(BiomeDef).GetField("diseases", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(def) as List<BiomeDiseaseRecord>;
         }
 
-        private void SetDiseases(List<BiomeDiseaseRecord> value)
+        public static void SetDiseases(BiomeDef def, List<BiomeDiseaseRecord> value)
         {
-            typeof(BiomeDef).GetField("diseases", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(base.Def, value);
+            typeof(BiomeDef).GetField("diseases", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(def, value);
         }
 
-        private List<ThingDef> GetAllowedPackAnimals()
+        public static List<ThingDef> GetAllowedPackAnimals(BiomeDef def)
         {
-            return typeof(BiomeDef).GetField("allowedPackAnimals", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(base.Def) as List<ThingDef>;
+            return typeof(BiomeDef).GetField("allowedPackAnimals", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(def) as List<ThingDef>;
         }
 
-        private void SetAllowedPackAnimals(List<ThingDef> value)
+        public static void SetAllowedPackAnimals(BiomeDef def, List<ThingDef> value)
         {
-            typeof(BiomeDef).GetField("allowedPackAnimals", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(base.Def, value);
+            typeof(BiomeDef).GetField("allowedPackAnimals", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(def, value);
         }
     }
 }

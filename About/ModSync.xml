@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ModSyncNinjaData>
-  <ModName>ChangeEquipmentStats</ModName>
-  <Version>1.0.1.1</Version>
+  <ModName>In-Game Definition Editor</ModName>
+  <Version>1.0.0.1</Version>
   <SaveBreaking>False</SaveBreaking>
   <Host name="Github">
     <Owner>KiameV</Owner>
-    <Project>rimworld-changeequipmentstats</Project>
+    <Project>rimworld-ingamedefeditor</Project>
     <AboutDir>About</AboutDir>
     <DownloadFrom>ModSyncReleases</DownloadFrom>
     <Branch>master</Branch>

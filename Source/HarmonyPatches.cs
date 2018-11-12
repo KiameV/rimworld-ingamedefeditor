@@ -10,11 +10,12 @@ namespace InGameDefEditor
     {
         static HarmonyPatches()
         {
-            var harmony = HarmonyInstance.Create("com.InGameDefEditor.rimworld.mod");
+            var harmony = HarmonyInstance.Create("com.ingamedefeditor.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             Log.Message(
                 "InGameDefEditor Harmony Patches:" + Environment.NewLine +
-                "  Prefix:" + Environment.NewLine +
+                "  Postfix:" + Environment.NewLine +
+                "    UIRoot.UIRootOnGUI" + Environment.NewLine +
                 "    GameComponentUtility.StartedNewGame" + Environment.NewLine +
                 "    GameComponentUtility.LoadedGame");
         }
@@ -23,18 +24,22 @@ namespace InGameDefEditor
     [HarmonyPatch(typeof(GameComponentUtility), "StartedNewGame")]
     static class Patch_GameComponentUtility_StartedNewGame
     {
+        [HarmonyPriority(Priority.Last)]
         static void Postfix()
         {
             IOUtil.LoadData();
+            Log.Message("InGameDefEditor".Translate() + ": Settings Applied");
         }
     }
 
     [HarmonyPatch(typeof(GameComponentUtility), "LoadedGame")]
     static class Patch_GameComponentUtility_LoadedGame
     {
+        [HarmonyPriority(Priority.Last)]
         static void Postfix()
         {
             IOUtil.LoadData();
+            Log.Message("InGameDefEditor".Translate() + ": Settings Applied");
         }
     }
 

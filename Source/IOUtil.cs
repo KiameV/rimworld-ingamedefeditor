@@ -143,7 +143,8 @@ namespace InGameDefEditor
                 BiomeStats s = new BiomeStats(d);
                 if (Backup.HasChanged(s))
                 {
-                    //allStats.biomeStats.Add(s);
+                    // TODO
+                    // allStats.biomeStats.Add(s);
                 }
             }
 

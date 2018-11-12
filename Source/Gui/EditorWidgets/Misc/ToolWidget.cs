@@ -1,5 +1,6 @@
 ﻿using InGameDefEditor.Gui.EditorWidgets.Misc;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -47,10 +48,14 @@ namespace InGameDefEditor.Gui.EditorWidgets
                     getDisplayName = delegate (ToolCapacityDef d) { return d.defName; },
                     updateItems = delegate()
                     {
+                        HashSet<ToolCapacityDef> lookup = new HashSet<ToolCapacityDef>();
+                        if (this.Tool.capacities != null)
+                            this.Tool.capacities.ForEach((ToolCapacityDef d) => lookup.Add(d));
+
                         IEnumerable<ToolCapacityDef> defs = DefDatabase<ToolCapacityDef>.AllDefsListForReading;
-                        List<ToolCapacityDef> list = new List<ToolCapacityDef>(defs);
+                        List<ToolCapacityDef> list = new List<ToolCapacityDef>(defs.Count());
                         foreach (var tool in defs)
-                            if (!this.Tool.capacities.Contains(tool))
+                            if (!lookup.Contains(tool))
                                 list.Add(tool);
                         return list;
                     },
@@ -58,7 +63,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 },
                 new WindowUtil.DrawFloatOptionsArgs<ToolCapacityDef>()
                 {
-                    // Subtract
+                    // Remove
                     items = this.Tool.capacities,
                     getDisplayName = delegate (ToolCapacityDef d) { return d.defName; },
                     onSelect = delegate (ToolCapacityDef d) { this.Tool.capacities.Remove(d); }

@@ -107,22 +107,9 @@ namespace InGameDefEditor.Stats.Misc
                     this.minFertility == s.minFertility &&
                     this.maxFertility == s.maxFertility &&
                     this.minSize == s.minSize &&
-                    Util.ListsRoughlyEqual(this.thresholds, s.thresholds))
+                    Util.AreEqual(this.thresholds, s.thresholds))
                 {
-                    Dictionary<TerrainDef, MinMaxStat<TerrainDef>> lookup = new Dictionary<TerrainDef, MinMaxStat<TerrainDef>>();
-                    foreach (var v in this.thresholds)
-                        lookup[v.Def] = v;
-
-                    foreach(var v in s.thresholds)
-                    {
-                        if (lookup.TryGetValue(v.Def, out var found))
-                        {
-                            if (!v.Equals(found))
-                                return false;
-                        }
-                        else
-                            return false;
-                    }
+                    return true;
                 }
             }
             return false;
