@@ -1,4 +1,6 @@
-﻿using InGameDefEditor.Stats;
+﻿using InGameDefEditor.Gui.EditorWidgets.Misc;
+using InGameDefEditor.Stats;
+using System.Collections.Generic;
 using Verse;
 
 namespace InGameDefEditor.Gui.EditorWidgets
@@ -7,11 +9,20 @@ namespace InGameDefEditor.Gui.EditorWidgets
     {
         public readonly ThingDef ProjectileDef;
 
-        private string[] buffer = new string[4];
+        private readonly List<IInputWidget> inputWidgets;
 
         public ProjectileDefWidget(ThingDef d)
         {
             this.ProjectileDef = d;
+
+            this.inputWidgets = new List<IInputWidget>()
+            {
+                new IntInputWidget<ProjectileProperties>(this.ProjectileDef.projectile, "Base Damage", (ProjectileProperties p) => ProjectileStats.GetDamage(p), (ProjectileProperties p, int i) => ProjectileStats.SetDamage(p, i)),
+                new FloatInputWidget<ProjectileProperties>(this.ProjectileDef.projectile, "Stopping Power", (ProjectileProperties p) => p.stoppingPower, (ProjectileProperties p, float f) => this.ProjectileDef.projectile.stoppingPower = f),
+                new FloatInputWidget<ProjectileProperties>(this.ProjectileDef.projectile, "Armor Penetration", (ProjectileProperties p) => ProjectileStats.GetArmorPenetration(p), (ProjectileProperties p, float f) => ProjectileStats.SetArmorPenetration(this.ProjectileDef.projectile, f)),
+                new FloatInputWidget<ProjectileProperties>(this.ProjectileDef.projectile, "Speed", (ProjectileProperties p) => p.speed, (ProjectileProperties p, float f) => p.speed = f)
+            };
+
             this.ResetBuffers();
         }
 
@@ -19,25 +30,14 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         public void Draw(float x, ref float y, float width)
         {
-            int i = ProjectileStats.GetDamage(this.ProjectileDef.projectile);
-            this.buffer[0] = WindowUtil.DrawInput(x, ref y, "Base Damage", ref i, this.buffer[0]);
-            ProjectileStats.SetDamage(this.ProjectileDef.projectile, i);
-
-            this.buffer[1] = WindowUtil.DrawInput(x, ref y, "Stopping Power", ref this.ProjectileDef.projectile.stoppingPower, this.buffer[1]);
-
-            float f = ProjectileStats.GetArmorPenetration(this.ProjectileDef.projectile);
-            this.buffer[2] = WindowUtil.DrawInput(x, ref y, "Armor Penetration", ref f, this.buffer[2]);
-            ProjectileStats.SetArmorPenetration(this.ProjectileDef.projectile, f);
-
-            this.buffer[3] = WindowUtil.DrawInput(x, ref y, "Speed", ref this.ProjectileDef.projectile.speed, this.buffer[3]);
+            foreach (var w in this.inputWidgets)
+                w.Draw(x, ref y, width);
         }
 
         public void ResetBuffers()
         {
-            this.buffer[0] = ProjectileStats.GetDamage(this.ProjectileDef.projectile).ToString();
-            this.buffer[1] = this.ProjectileDef.projectile.stoppingPower.ToString();
-            this.buffer[2] = ProjectileStats.GetArmorPenetration(this.ProjectileDef.projectile).ToString();
-            this.buffer[3] = this.ProjectileDef.projectile.speed.ToString();
+            foreach (var w in this.inputWidgets)
+                w.ResetBuffers();
         }
     }
 }

@@ -10,4 +10,7 @@
 
 	<InGameDefEditor.Weapons>Weapons</InGameDefEditor.Weapons>
 	<InGameDefEditor.Projectiles>Projectiles</InGameDefEditor.Projectiles>
+
+	<InGameDefEditor.SoundCast>Sound Cast</InGameDefEditor.SoundCast>
+	<InGameDefEditor.SoundCastTail>Sound Cast Tail</InGameDefEditor.SoundCastTail>
 </LanguageData>

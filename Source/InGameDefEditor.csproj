@@ -83,9 +83,10 @@
     <Compile Include="DefLookupUtil.cs" />
     <Compile Include="Defs.cs" />
     <Compile Include="Gui\Dialog_Name.cs" />
+    <Compile Include="Gui\EditorWidgets\BiomeWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Interfaces.cs" />
+    <Compile Include="Gui\EditorWidgets\Misc\InputWidgets.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\ToolWidget.cs" />
-    <Compile Include="Gui\EditorWidgets\Misc\DefStatValueWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\VerbWidget.cs" />
     <Compile Include="Gui\EditorWidgets\ThingDefWidget.cs" />
     <Compile Include="Gui\EditorWidgets\ProjectileDefWidget.cs" />

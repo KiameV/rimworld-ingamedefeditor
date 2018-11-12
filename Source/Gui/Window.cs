@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using Verse;
 using InGameDefEditor.Gui.EditorWidgets;
+using RimWorld;
+using System.Collections.Generic;
 
 namespace InGameDefEditor
 {
@@ -16,11 +18,21 @@ namespace InGameDefEditor
                       previousYMaxMiddle = 0,
                       previousYMaxRight = 0;
 
+        private readonly List<IButtonWidget> buttons;
+
         public override Vector2 InitialSize => new Vector2((float)UI.screenWidth - 20, (float)UI.screenHeight - 20);
 
         public InGameDefEditorWindow()
         {
             IOUtil.LoadData();
+
+            buttons = new List<IButtonWidget>()
+            {
+                new ButtonWidget<ThingDef>("Apparel", WidgetType.Apparel, Defs.ApparelDefs.Values, this.CreateSelected),
+                new ButtonWidget<ThingDef>("Weapons", WidgetType.Weapon, Defs.WeaponDefs.Values, this.CreateSelected),
+                new ButtonWidget<ThingDef>("Projectiles", WidgetType.Projectile, Defs.ProjectileDefs.Values, this.CreateSelected),
+                new ButtonWidget<BiomeDef>("Biomes", WidgetType.Biome, Defs.BiomeDefs.Values, this.CreateSelected)
+            };
         }
 
         public override void DoWindowContents(Rect rect)
@@ -29,12 +41,19 @@ namespace InGameDefEditor
             float outerY = 0;
 
             float x = 10;
-            this.DrawApparelButton(new Rect(x, outerY, 150, 30));
-            x += 160;
-            this.DrawWeaponButton(new Rect(x, outerY, 150, 30));
-            x += 160;
-            this.DrawProjectileButton(new Rect(x, outerY, 150, 30));
+            float buttonX = x;
+            foreach (var w in this.buttons)
+            {
+                w.Draw(buttonX, outerY, 150, this.selected);
+                buttonX += 160;
 
+                if (buttonX + 150 > rect.xMax)
+                {
+                    buttonX = 10;
+                    outerY += 40;
+                }
+            }
+            
             outerY += 60;
 
             if (this.selected != null)
@@ -106,6 +125,11 @@ namespace InGameDefEditor
                             Backup.ApplyStats(d);
                         }
 
+                        foreach (BiomeDef d in Defs.BiomeDefs.Values)
+                        {
+                            Backup.ApplyStats(d);
+                        }
+
                         if (this.selected != null)
                             this.selected.Rebuild();
                     }));
@@ -114,95 +138,8 @@ namespace InGameDefEditor
 
         private void ResetSelected()
         {
-            if (this.selected is ThingDefWidget w)
-            {
-                Backup.ApplyStats(w.ThingDef);
-            }
+            Backup.ApplyStats(this.selected.BaseDef);
             this.selected.Rebuild();
-        }
-
-        private void DrawProjectileButton(Rect rect)
-        {
-            string label = null;
-            if (this.selected != null && this.selected is ThingDefWidget)
-            {
-                ThingDef d = ((ThingDefWidget)this.selected).ThingDef;
-                if (Defs.ProjectileDefs.ContainsKey(d.label))
-                    label = d.label;
-            }
-            if (label == null)
-                label = "InGameDefEditor.Projectiles".Translate();
-
-            if (Widgets.ButtonText(rect, label))
-            {
-                WindowUtil.DrawFloatingOptions(
-                    new WindowUtil.DrawFloatOptionsArgs<ThingDef>()
-                    {
-                        items = Defs.ProjectileDefs.Values,
-                        getDisplayName = delegate (ThingDef d) { return d.label; },
-                        onSelect = delegate (ThingDef d)
-                        {
-                            this.selected = new ThingDefWidget(d, WidgetType.Projectile);
-                            this.ResetScrolls();
-                        }
-                    });
-            }
-        }
-
-        private void DrawWeaponButton(Rect rect)
-        {
-            string label = null;
-            if (this.selected != null && this.selected is ThingDefWidget)
-            {
-                ThingDef d = ((ThingDefWidget)this.selected).ThingDef;
-                if (d.IsWeapon)
-                    label = d.label;
-            }
-            if (label == null)
-                label = "InGameDefEditor.Weapons".Translate();
-
-            if (Widgets.ButtonText(rect, label))
-            {
-                WindowUtil.DrawFloatingOptions(
-                    new WindowUtil.DrawFloatOptionsArgs<ThingDef>()
-                    {
-                        items = Defs.WeaponDefs.Values,
-                        getDisplayName = delegate (ThingDef d) { return d.label; },
-                        onSelect = delegate (ThingDef d)
-                        {
-                            this.selected = new ThingDefWidget(d, WidgetType.Weapon);
-                            this.ResetScrolls();
-                        }
-                    });
-            }
-        }
-
-        private void DrawApparelButton(Rect rect)
-        {
-            string label = null;
-            if (this.selected != null && this.selected is ThingDefWidget)
-            {
-                ThingDef d = ((ThingDefWidget)this.selected).ThingDef;
-                if (d.IsApparel)
-                    label = d.label;
-            }
-            if (label == null)
-                label = "Apparel".Translate();
-
-            if (Widgets.ButtonText(rect, label))
-            {
-                WindowUtil.DrawFloatingOptions(
-                    new WindowUtil.DrawFloatOptionsArgs<ThingDef>()
-                    {
-                        items = Defs.ApparelDefs.Values,
-                        getDisplayName = delegate (ThingDef d) { return d.label; },
-                        onSelect = delegate (ThingDef d)
-                        {
-                            this.selected = new ThingDefWidget(d, WidgetType.Apparel);
-                            this.ResetScrolls();
-                        }
-                    });
-            }
         }
 
         public void ResetScrolls()
@@ -215,5 +152,67 @@ namespace InGameDefEditor
             base.PostClose();
             IOUtil.SaveData();
         }
+
+        private void CreateSelected(Def d, WidgetType type)
+        {
+            switch (type)
+            {
+                case WidgetType.Apparel:
+                case WidgetType.Projectile:
+                case WidgetType.Weapon:
+                    this.selected = new ThingDefWidget(d as ThingDef, type);
+                    break;
+                case WidgetType.Biome:
+                    this.selected = new BiomeWidget(d as BiomeDef, type);
+                    break;
+            }
+            this.ResetScrolls();
+        }
+
+        #region ButonWidget
+        private interface IButtonWidget
+        {
+            void Draw(float x, float y, float width, IParentStatWidget selected);
+        }
+
+        private class ButtonWidget<D> : IButtonWidget where D : Def
+        {
+            public delegate void OnSelect(Def d, WidgetType type);
+
+            private readonly string label;
+            private readonly WidgetType type;
+            private readonly IEnumerable<D> possibleDefs;
+            private readonly OnSelect onSelect;
+
+            public ButtonWidget(string label, WidgetType type, IEnumerable<D> possibleDefs, OnSelect onSelect)
+            {
+                this.label = label;
+                this.type = type;
+                this.possibleDefs = possibleDefs;
+                this.onSelect = onSelect;
+            }
+
+            public void Draw(float x, float y, float width, IParentStatWidget selected)
+            {
+                string label = this.label;
+                if (selected != null && selected.Type == this.type)
+                    label = selected.DisplayLabel;
+
+                if (Widgets.ButtonText(new Rect(x, y, width, 30), label))
+                {
+                    WindowUtil.DrawFloatingOptions(
+                        new WindowUtil.DrawFloatOptionsArgs<D>()
+                        {
+                            items = possibleDefs,
+                            getDisplayName = delegate (D d) { return d.label; },
+                            onSelect = delegate (D d)
+                            {
+                                this.onSelect(d, this.type);
+                            }
+                        });
+                }
+            }
+        }
+        #endregion
     }
 }

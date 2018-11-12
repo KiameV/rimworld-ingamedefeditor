@@ -237,6 +237,12 @@ namespace InGameDefEditor.Stats
             if (d.Verbs == null || d.Verbs.Count == 0)
                 return;
 
+            if (this.VerbStats == null || this.VerbStats.Count == 0)
+            {
+                Log.Error("Null or Empty verbs " + this.Def.defName);
+                return;
+            }
+
             Dictionary<string, VerbProperties> lookup = new Dictionary<string, VerbProperties>();
             foreach (VerbProperties v in d.Verbs)
             {

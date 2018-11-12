@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using InGameDefEditor.Gui.EditorWidgets.Misc;
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
@@ -8,14 +9,21 @@ namespace InGameDefEditor.Gui.EditorWidgets
     {
         public readonly Tool Tool;
 
-        private string[] comBuffer = new string[3];
+        private readonly List<IInputWidget> inputWidgets;
 
-        public ToolWidget(Tool t)
+        public ToolWidget(Tool tool)
         {
-            this.Tool = t;
+            this.Tool = tool;
 
             if (this.Tool.capacities == null)
                 this.Tool.capacities = new List<ToolCapacityDef>();
+
+            inputWidgets = new List<IInputWidget>()
+            {
+                new FloatInputWidget<Tool>(this.Tool, "Power", (Tool t) => this.Tool.power, (Tool t, float f) => this.Tool.power = f),
+                new FloatInputWidget<Tool>(this.Tool, "Armor Penetration", (Tool t) => this.Tool.armorPenetration, (Tool t, float f) => this.Tool.armorPenetration = f),
+                new FloatInputWidget<Tool>(this.Tool, "Cooldown Time", (Tool t) => this.Tool.cooldownTime, (Tool t, float f) => this.Tool.cooldownTime = f)
+            };
 
             this.ResetBuffers();
         }
@@ -27,9 +35,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
             WindowUtil.DrawLabel(x, y, 300, this.DisplayLabel);
             y += 40;
 
-            this.comBuffer[0] = WindowUtil.DrawInput(x + 20, ref y, "Power", ref this.Tool.power, this.comBuffer[0]);
-            this.comBuffer[1] = WindowUtil.DrawInput(x + 20, ref y, "Armor Penetration", ref this.Tool.armorPenetration, this.comBuffer[1]);
-            this.comBuffer[2] = WindowUtil.DrawInput(x + 20, ref y, "Cooldown Time", ref this.Tool.cooldownTime, this.comBuffer[2]);
+            foreach (IInputWidget w in this.inputWidgets)
+                w.Draw(x, ref y, width);
 
             x += 20;
             WindowUtil.PlusMinusLabel(
@@ -67,9 +74,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         public void ResetBuffers()
         {
-            comBuffer[0] = this.Tool.power.ToString();
-            comBuffer[1] = this.Tool.armorPenetration.ToString();
-            comBuffer[2] = this.Tool.cooldownTime.ToString();
+            foreach (IInputWidget w in this.inputWidgets)
+                w.ResetBuffers();
         }
     }
 }

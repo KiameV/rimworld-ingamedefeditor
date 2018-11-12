@@ -27,10 +27,6 @@ namespace InGameDefEditor.Stats
         {
             if (def is ThingDef to)
             {
-#if DEBUG
-            Log.Error("Applying stats " + def.defName);
-            Log.Error(this.ToString());
-#endif
                 SetDamage(to.projectile, this.damage);
                 to.projectile.stoppingPower = this.stoppingPower;
                 SetArmorPenetration(to.projectile, this.armorPenetration);
@@ -47,11 +43,6 @@ namespace InGameDefEditor.Stats
 
         public override bool Equals(object obj)
         {
-#if DEBUG
-            Log.Warning("Equals:");
-            Log.Warning(this.ToString());
-            Log.Warning(obj.ToString());
-#endif
             if (base.Equals(obj) &&
                 obj is ProjectileStats p)
             {

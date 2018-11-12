@@ -1,9 +1,7 @@
 ﻿using InGameDefEditor.Stats.Misc;
 using RimWorld;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Verse;
 
 namespace InGameDefEditor
@@ -17,8 +15,9 @@ namespace InGameDefEditor
 
         public static bool ListsRoughlyEqual<T>(IEnumerable<T> l, IEnumerable<T> r)
         {
-            if ((l == null || l.Count() == 0) &&
-                (r == null || r.Count() == 0))
+            //Log.Error("L: " + ((l == null) ? "null" : l.Count().ToString()) + " R: " + ((r == null) ? "null" : r.Count().ToString()));
+            if ((l == null || (l != null && l.Count() == 0)) &&
+                (r == null || (r != null && r.Count() == 0)))
             {
                 return true;
             }
@@ -35,114 +34,114 @@ namespace InGameDefEditor
             if (!ListsRoughlyEqual(l, r))
                 return false;
 
-            if (l != null)
-            {
-                Dictionary<Def, IDefStat> lookup = new Dictionary<Def, IDefStat>();
-                foreach (var v in l)
-                    lookup[v.BaseDef] = v;
+            if (l == null || r == null)
+                return true;
 
-                try
+            Dictionary<Def, IDefStat> lookup = new Dictionary<Def, IDefStat>();
+            foreach (var v in l)
+                lookup[v.BaseDef] = v;
+
+            try
+            {
+                foreach (var v in r)
                 {
-                    foreach (var v in r)
+                    if (lookup.TryGetValue(v.BaseDef, out var found))
                     {
-                        if (lookup.TryGetValue(v.BaseDef, out var found))
+                        if (!v.Equals(found))
                         {
-                            if (!v.Equals(found))
-                            {
-                                //Log.Error("Not Equal");
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            //Log.Error("Not Found");
+                            //Log.Error("Not Equal");
                             return false;
                         }
                     }
+                    else
+                    {
+                        //Log.Error("Not Found");
+                        return false;
+                    }
                 }
-                finally
-                {
-                    lookup.Clear();
-                    lookup = null;
-                }
+            }
+            finally
+            {
+                lookup.Clear();
+                lookup = null;
             }
             return true;
         }
 
-        public static bool AreEqual<D>(List<DefStat<D>> l, IEnumerable<DefStat<D>> r) where D : Def
+        public static bool AreEqual<D>(IEnumerable<DefStat<D>> l, IEnumerable<DefStat<D>> r) where D : Def
         {
             if (!ListsRoughlyEqual(l, r))
                 return false;
 
-            if (l != null)
-            {
+            if (l == null || r == null)
+                return true;
+            
                 Dictionary<Def, IDefStat> lookup = new Dictionary<Def, IDefStat>();
                 foreach (var v in l)
                     lookup[v.BaseDef] = v;
 
-                try
+            try
+            {
+                foreach (var v in r)
                 {
-                    foreach (var v in r)
+                    if (lookup.TryGetValue(v.BaseDef, out var found))
                     {
-                        if (lookup.TryGetValue(v.BaseDef, out var found))
+                        if (!v.Equals(found))
                         {
-                            if (!v.Equals(found))
-                            {
-                                //Log.Error("Not Equal");
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            //Log.Error("Not Found");
+                            //Log.Error("Not Equal");
                             return false;
                         }
                     }
+                    else
+                    {
+                        //Log.Error("Not Found");
+                        return false;
+                    }
                 }
-                finally
-                {
-                    lookup.Clear();
-                    lookup = null;
-                }
+            }
+            finally
+            {
+                lookup.Clear();
+                lookup = null;
             }
             return true;
         }
 
-        public static bool AreEqual<D>(List<FloatValueStat<D>> l, IEnumerable<FloatValueStat<D>> r) where D : Def
+        public static bool AreEqual<D>(IEnumerable<FloatValueStat<D>> l, IEnumerable<FloatValueStat<D>> r) where D : Def
         {
             if (!ListsRoughlyEqual(l, r))
                 return false;
 
-            if (l != null)
-            {
-                Dictionary<Def, IDefStat> lookup = new Dictionary<Def, IDefStat>();
-                foreach (var v in l)
-                    lookup[v.BaseDef] = v;
+            if (l == null || r == null)
+                return true;
 
-                try
+            Dictionary<Def, IDefStat> lookup = new Dictionary<Def, IDefStat>();
+            foreach (var v in l)
+                lookup[v.BaseDef] = v;
+
+            try
+            {
+                foreach (var v in r)
                 {
-                    foreach (var v in r)
+                    if (lookup.TryGetValue(v.BaseDef, out var found))
                     {
-                        if (lookup.TryGetValue(v.BaseDef, out var found))
+                        if (!v.Equals(found))
                         {
-                            if (!v.Equals(found))
-                            {
-                                //Log.Error("Not Equal");
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            //Log.Error("Not Found");
+                            //Log.Error("Not Equal");
                             return false;
                         }
                     }
+                    else
+                    {
+                        //Log.Error("Not Found");
+                        return false;
+                    }
                 }
-                finally
-                {
-                    lookup.Clear();
-                    lookup = null;
-                }
+            }
+            finally
+            {
+                lookup.Clear();
+                lookup = null;
             }
             return true;
         }
@@ -152,36 +151,36 @@ namespace InGameDefEditor
             if (!ListsRoughlyEqual(l, r))
                 return false;
 
-            if (l != null)
-            {
+            if (l == null || r == null)
+                return true;
+            
                 Dictionary<Def, IDefStat> lookup = new Dictionary<Def, IDefStat>();
                 foreach (var v in l)
                     lookup[v.BaseDef] = v;
 
-                try
+            try
+            {
+                foreach (var v in r)
                 {
-                    foreach (var v in r)
+                    if (lookup.TryGetValue(v.BaseDef, out var found))
                     {
-                        if (lookup.TryGetValue(v.BaseDef, out var found))
+                        if (!v.Equals(found))
                         {
-                            if (!v.Equals(found))
-                            {
-                                //Log.Error("Not Equal");
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            //Log.Error("Not Found");
+                            //Log.Error("Not Equal");
                             return false;
                         }
                     }
+                    else
+                    {
+                        //Log.Error("Not Found");
+                        return false;
+                    }
                 }
-                finally
-                {
-                    lookup.Clear();
-                    lookup = null;
-                }
+            }
+            finally
+            {
+                lookup.Clear();
+                lookup = null;
             }
             return true;
         }
@@ -191,36 +190,36 @@ namespace InGameDefEditor
             if (!ListsRoughlyEqual(l, r))
                 return false;
 
-            if (l != null)
-            {
-                Dictionary<Def, IDefStat> lookup = new Dictionary<Def, IDefStat>();
-                foreach (var v in l)
-                    lookup[v.BaseDef] = v;
+            if (l == null || r == null)
+                return true;
 
-                try
+            Dictionary<Def, IDefStat> lookup = new Dictionary<Def, IDefStat>();
+            foreach (var v in l)
+                lookup[v.BaseDef] = v;
+
+            try
+            {
+                foreach (var v in r)
                 {
-                    foreach (var v in r)
+                    if (lookup.TryGetValue(v.BaseDef, out var found))
                     {
-                        if (lookup.TryGetValue(v.BaseDef, out var found))
+                        if (!v.Equals(found))
                         {
-                            if (!v.Equals(found))
-                            {
-                                //Log.Error("Not Equal");
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            //Log.Error("Not Found");
+                            //Log.Error("Not Equal");
                             return false;
                         }
                     }
+                    else
+                    {
+                        //Log.Error("Not Found");
+                        return false;
+                    }
                 }
-                finally
-                {
-                    lookup.Clear();
-                    lookup = null;
-                }
+            }
+            finally
+            {
+                lookup.Clear();
+                lookup = null;
             }
             return true;
         }
@@ -231,7 +230,7 @@ namespace InGameDefEditor
             if (!ListsRoughlyEqual(l, r))
                 return false;
 
-            if (l == null)
+            if (l == null || r == null)
                 return true;
 
             LinkedList<T> ll = new LinkedList<T>(l);
@@ -297,6 +296,7 @@ namespace InGameDefEditor
                 AddToDefDic(DefDatabase<PawnKindDef>.AllDefsListForReading);
                 AddToDefDic(DefDatabase<BiomeDef>.AllDefsListForReading);
                 AddToDefDic(DefDatabase<ToolCapacityDef>.AllDefsListForReading);
+                AddToDefDic(DefDatabase<IncidentDef>.AllDefsListForReading);
             }
             if (defDic.TryGetValue(defName, out Def d))
             {
@@ -306,11 +306,12 @@ namespace InGameDefEditor
             def = null;
             return false;
         }
-
         private static void AddToDefDic<D>(IEnumerable<D> defs) where D : Def
         {
             foreach (Def d in defs)
+            {
                 defDic[d.defName] = d;
+            }
         }
     }
 }

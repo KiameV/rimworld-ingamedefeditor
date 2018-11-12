@@ -1,4 +1,5 @@
 ﻿using InGameDefEditor.Stats;
+using RimWorld;
 using System;
 using System.IO;
 using System.Reflection;
@@ -62,10 +63,6 @@ namespace InGameDefEditor
                         }
                         allStats.projectileStats.Clear();
                     }
-                    else
-                    {
-                        Log.Warning("No Projectiles");
-                    }
 
                     if (allStats.thingDefStats != null)
                     {
@@ -82,9 +79,21 @@ namespace InGameDefEditor
                         }
                         allStats.thingDefStats.Clear();
                     }
-                    else
+
+                    if (allStats.biomeStats != null)
                     {
-                        Log.Warning("No Apparel/Weapons");
+                        foreach (BiomeStats s in allStats.biomeStats)
+                        {
+                            if (s.Initialize())
+                            {
+                                s.ApplyStats(s.Def);
+                            }
+                            else
+                            {
+                                Log.Warning("Unable to apply settings to " + s.defName);
+                            }
+                        }
+                        allStats.thingDefStats.Clear();
                     }
                 }
                 catch
@@ -126,6 +135,15 @@ namespace InGameDefEditor
                 if (Backup.HasChanged(s))
                 {
                     allStats.projectileStats.Add(s);
+                }
+            }
+
+            foreach (BiomeDef d in Defs.BiomeDefs.Values)
+            {
+                BiomeStats s = new BiomeStats(d);
+                if (Backup.HasChanged(s))
+                {
+                    //allStats.biomeStats.Add(s);
                 }
             }
 

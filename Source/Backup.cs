@@ -1,4 +1,5 @@
 ﻿using InGameDefEditor.Stats;
+using RimWorld;
 using System.Collections.Generic;
 using Verse;
 
@@ -33,6 +34,9 @@ namespace InGameDefEditor
 
                 foreach (ThingDef d in Defs.ProjectileDefs.Values)
                     backup[d] = new ProjectileStats(d);
+
+                foreach (BiomeDef d in Defs.BiomeDefs.Values)
+                    backup[d] = new BiomeStats(d);
             }
         }
 

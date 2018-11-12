@@ -8,24 +8,38 @@ namespace InGameDefEditor
 {
     public static class WindowUtil
     {
-        public static string DrawInput(float x, ref float y, string label, ref float value, string valueBuffer)
+        public delegate void OnChange<T>(T t);
+        public static string DrawInput(float x, ref float y, string label, float value, OnChange<float> onChange, string valueBuffer)
         {
             string s = DrawLabeledInput(x, y, label, valueBuffer);
             if (float.TryParse(s, out float f))
-                value = f;
+                onChange(f);
             y += 40;
             return s;
         }
 
-        public static string DrawInput(float x, ref float y, string label, ref int value, string valueBuffer)
+        public static string DrawInput(float x, ref float y, string label, int value, OnChange<int> onChange, string valueBuffer)
         {
             string s = DrawLabeledInput(x, y, label, valueBuffer);
             if (Double.TryParse(s, out double d))
-                value = (int)d;
+                onChange((int)d);
             y += 40;
             return s;
         }
-        
+
+        public static bool DrawInput(float x, ref float y, string label, bool value, OnChange<bool> onChange)
+        {
+            DrawLabel(x, y, 240, label);
+            
+            if (Widgets.ButtonText(new Rect(x + 250, y, 60, 32), value.ToString()))
+            {
+                value = !value;
+                onChange(value);
+            }
+            y += 40;
+            return value;
+        }
+
         public static void DrawInput<T>(float x, ref float y, float width, string label, int labelWidth, string buttonText, DrawFloatOptionsArgs<T> floatingOptionArgs, bool isBolded = false)
         {
             DrawLabel(x, y, labelWidth, label, isBolded);

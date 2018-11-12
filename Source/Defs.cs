@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using RimWorld;
+using System.Collections.Generic;
 using Verse;
 
 namespace InGameDefEditor
@@ -8,6 +9,7 @@ namespace InGameDefEditor
         public static readonly SortedDictionary<string, ThingDef> ApparelDefs = new SortedDictionary<string, ThingDef>();
         public static readonly SortedDictionary<string, ThingDef> WeaponDefs = new SortedDictionary<string, ThingDef>();
         public static readonly SortedDictionary<string, ThingDef> ProjectileDefs = new SortedDictionary<string, ThingDef>();
+        public static readonly SortedDictionary<string, BiomeDef> BiomeDefs = new SortedDictionary<string, BiomeDef>();
 
         private static bool isInit = false;
         public static void Initialize()
@@ -15,7 +17,7 @@ namespace InGameDefEditor
             if (!isInit)
             {
                 int i = 0;
-                foreach (ThingDef d in DefDatabase<ThingDef>.AllDefs)
+                foreach (ThingDef d in DefDatabase<ThingDef>.AllDefsListForReading)
                 {
                     ++i;
                     if (d.IsApparel)
@@ -43,6 +45,11 @@ namespace InGameDefEditor
                     {
                         ProjectileDefs[d.label] = d;
                     }
+                }
+
+                foreach (BiomeDef d in DefDatabase<BiomeDef>.AllDefsListForReading)
+                {
+                    BiomeDefs[d.label] = d;
                 }
 
                 if (i > 0)

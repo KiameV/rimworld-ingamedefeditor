@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using System.Collections.Generic;
+using Verse;
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
@@ -6,14 +7,26 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
     {
         public readonly VerbProperties VerbProperties;
 
-        private string[] buffer = new string[6];
+        private readonly List<IInputWidget> inputWidgets;
+
         private ProjectileDefWidget projectileWidget = null;
 
         public VerbWidget(VerbProperties p)
         {
             this.VerbProperties = p;
-            if (p.defaultProjectile != null)
-                this.projectileWidget = new ProjectileDefWidget(p.defaultProjectile);
+
+            if (VerbProperties.defaultProjectile != null)
+                this.projectileWidget = new ProjectileDefWidget(VerbProperties.defaultProjectile);
+
+            this.inputWidgets = new List<IInputWidget>()
+            {
+                new FloatInputWidget<VerbProperties>(this.VerbProperties, "Warmup Time", (VerbProperties parent) => parent.warmupTime, (VerbProperties parent, float f) => parent.warmupTime = f),
+                new FloatInputWidget<VerbProperties>(this.VerbProperties, "Range", (VerbProperties parent) => parent.range, (VerbProperties parent, float f) => parent.range = f),
+                new IntInputWidget<VerbProperties>(this.VerbProperties, "Time Between Shots", (VerbProperties parent) => parent.ticksBetweenBurstShots, (VerbProperties parent, int i) => parent.ticksBetweenBurstShots = i),
+                new IntInputWidget<VerbProperties>(this.VerbProperties, "Burst Shot Count", (VerbProperties parent) => parent.burstShotCount, (VerbProperties parent, int i) => parent.burstShotCount = i),
+                new FloatInputWidget<VerbProperties>(this.VerbProperties, "Muzzle Flash Scale", (VerbProperties parent) => parent.muzzleFlashScale, (VerbProperties parent, float f) => parent.muzzleFlashScale = f),
+                new FloatInputWidget<VerbProperties>(this.VerbProperties, "(AI) Avoid Friendly Fire Radius", (VerbProperties parent) => parent.ai_AvoidFriendlyFireRadius, (VerbProperties parent, float f) => parent.ai_AvoidFriendlyFireRadius = f)
+            };
 
             this.ResetBuffers();
         }
@@ -26,13 +39,10 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
             y += 40;
 
             x += 10;
-            this.buffer[0] = WindowUtil.DrawInput(x, ref y, "Warnup Time", ref VerbProperties.warmupTime, this.buffer[0]);
-            this.buffer[1] = WindowUtil.DrawInput(x, ref y, "Range", ref VerbProperties.range, this.buffer[1]);
-            this.buffer[2] = WindowUtil.DrawInput(x, ref y, "Time Between Shots", ref VerbProperties.ticksBetweenBurstShots, this.buffer[2]);
-            this.buffer[3] = WindowUtil.DrawInput(x, ref y, "Burst Shot Count", ref VerbProperties.burstShotCount, this.buffer[3]);
-            this.buffer[4] = WindowUtil.DrawInput(x, ref y, "Muzzle Flash Scale", ref VerbProperties.muzzleFlashScale, this.buffer[4]);
-            this.buffer[5] = WindowUtil.DrawInput(x, ref y, "(AI) Avoid Friendly Fire Radius", ref VerbProperties.ai_AvoidFriendlyFireRadius, this.buffer[5]);
-            WindowUtil.DrawInput(x, ref y, width, "Sound Cast", 100, (VerbProperties.soundCast != null) ? VerbProperties.soundCast.defName : "<none>",
+            foreach (var w in this.inputWidgets)
+                w.Draw(x, ref y, width);
+
+            WindowUtil.DrawInput(x, ref y, width, "InGameDefEditor.SoundCast".Translate(), 100, (VerbProperties.soundCast != null) ? VerbProperties.soundCast.defName : "<none>",
                 new WindowUtil.DrawFloatOptionsArgs<SoundDef>()
                 {
                     items = DefLookupUtil.GetSortedDefs(DefDatabase<SoundDef>.AllDefsListForReading),
@@ -40,7 +50,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
                     onSelect = delegate (SoundDef d) { VerbProperties.soundCast = d; },
                     includeNullOption = true
                 });
-            WindowUtil.DrawInput(x, ref y, width, "Sound Cast Tail", 100, (VerbProperties.soundCastTail != null) ? VerbProperties.soundCastTail.defName : "<none>",
+            WindowUtil.DrawInput(x, ref y, width, "InGameDefEditor.SoundCastTail".Translate(), 100, (VerbProperties.soundCastTail != null) ? VerbProperties.soundCastTail.defName : "<none>",
                 new WindowUtil.DrawFloatOptionsArgs<SoundDef>()
                 {
                     items = DefLookupUtil.GetSortedDefs(DefDatabase<SoundDef>.AllDefsListForReading),
@@ -53,7 +63,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
             if (VerbProperties.defaultProjectile != null)
             {
-                WindowUtil.DrawInput(x, ref y, width, "Projectile", 100, this.VerbProperties.defaultProjectile.label, 
+                WindowUtil.DrawInput(x, ref y, width, "InGameDefEditor.Projectiles".Translate(), 100, this.VerbProperties.defaultProjectile.label, 
                     new WindowUtil.DrawFloatOptionsArgs<ThingDef>()
                     {
                         items = Defs.ProjectileDefs.Values,
@@ -73,14 +83,11 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
         public void ResetBuffers()
         {
-            this.buffer[0] = VerbProperties.warmupTime.ToString();
-            this.buffer[1] = VerbProperties.range.ToString();
-            this.buffer[2] = VerbProperties.ticksBetweenBurstShots.ToString();
-            this.buffer[3] = VerbProperties.burstShotCount.ToString();
-            this.buffer[4] = VerbProperties.muzzleFlashScale.ToString();
-            this.buffer[5] = VerbProperties.ai_AvoidFriendlyFireRadius.ToString();
+            foreach (var w in this.inputWidgets)
+                w.ResetBuffers();
 
-            this.projectileWidget.ResetBuffers();
+            if (this.projectileWidget != null)
+                this.projectileWidget.ResetBuffers();
         }
     }
 }

@@ -9,8 +9,7 @@ namespace InGameDefEditor.Stats.Misc
         [XmlIgnore]
         private D2 def2;
         
-        [XmlElement(IsNullable = false)]
-        public string defName2;
+        public string defName2 = null;
 
         public D2 Def2 => this.def2;
         public string DefName2 => this.defName2;
@@ -19,7 +18,10 @@ namespace InGameDefEditor.Stats.Misc
         public FloatValueDoubleDefStat(D1 d1, D2 d2) : base(d1)
         {
             this.def2 = d2;
-            this.defName2 = this.def2.defName;
+            if (this.def2 != null)
+            {
+                this.defName2 = this.def2.defName;
+            }
         }
         public FloatValueDoubleDefStat(FloatValueDoubleDefStat<D1, D2> s) : base(s)
         {
@@ -32,12 +34,13 @@ namespace InGameDefEditor.Stats.Misc
             if (!base.Initialize())
                 return false;
             
-            if (this.def2 == null)
+            if (this.def2 == null && !string.IsNullOrEmpty(this.defName2))
             {
                 if (!Util.TryGetDef(this.defName2, out this.def2))
                     Log.Error("Could not load def " + this.defName2);
+                return this.def2 != null;
             }
-            return this.def2 != null;
+            return true;
         }
 
         public override bool Equals(object obj)
@@ -54,7 +57,7 @@ namespace InGameDefEditor.Stats.Misc
 
         public override int GetHashCode()
         {
-            return base.Def.GetHashCode() + this.Def2.GetHashCode();
+            return base.Def.GetHashCode() + ((this.Def2 != null) ? this.Def2.GetHashCode() : "none".GetHashCode());
         }
 
         public override string ToString()
