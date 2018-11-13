@@ -313,5 +313,19 @@ namespace InGameDefEditor
                 defDic[d.defName] = d;
             }
         }
+
+        public delegate U Convert<T, U>(T t);
+        public static IEnumerable<U> ConvertItems<T, U> (IEnumerable<T> t, Convert<T, U> convert)
+        {
+            List<U> u = new List<U>();
+            foreach (var v in t)
+                u.Add(convert(v));
+            return u;
+        }
+
+        public static string IsNull<T> (string label, T t)
+        {
+            return label + " is " + ((t == null) ? "null" : "not null");
+        }
     }
 }

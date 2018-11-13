@@ -146,5 +146,47 @@ namespace InGameDefEditor
                     DrawFloatingOptions(removeFloatOptions);
                 });
         }
+
+        public delegate IEnumerable<D> BeingUsed<D>() where D : Def;
+        public class PlusMinusArgs<D> where D : Def
+        {
+            public IEnumerable<D> allItems;
+            public BeingUsed<D> beingUsed;
+            public OnSelect<D> onAdd;
+            public OnSelect<D> onRemove;
+            public GetDisplayName<D> getDisplayName = null;
+
+            internal DrawFloatOptionsArgs<D> addArgs = null;
+            internal DrawFloatOptionsArgs<D> removeArgs = null;
+        }
+        public static void PlusMinusLabel<D>(float x, ref float y, int labelWidth, string label, PlusMinusArgs<D> args) where D : Def
+        {
+            if (args.addArgs == null)
+            {
+                args.addArgs = new DrawFloatOptionsArgs<D>()
+                {
+                    getDisplayName = args.getDisplayName ?? ((D d) => d.label),
+                    updateItems = delegate()
+                    {
+                        HashSet<D> lookup = new HashSet<D>();
+                        foreach (var v in args.beingUsed())
+                            lookup.Add(v);
+                        List<D> items = new List<D>(args.allItems.Count());
+                        foreach (D d in args.allItems)
+                            if (!lookup.Contains(d))
+                                items.Add(d);
+                        return items;
+                    },
+                    onSelect = args.onAdd
+                };
+                args.removeArgs = new DrawFloatOptionsArgs<D>()
+                {
+                    getDisplayName = args.getDisplayName ?? ((D d) => d.label),
+                    updateItems = () => args.beingUsed(),
+                    onSelect = args.onRemove
+                };
+            }
+            PlusMinusLabel(x, ref y, labelWidth, label, args.addArgs, args.removeArgs);
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Harmony;
+using RimWorld;
 using System;
 using System.Reflection;
 using Verse;
@@ -14,32 +15,42 @@ namespace InGameDefEditor
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             Log.Message(
                 "InGameDefEditor Harmony Patches:" + Environment.NewLine +
+                "  Prefix:" + Environment.NewLine +
+                "    Page_SelectScenario.BeginScenarioConfiguration" + Environment.NewLine +
+                "    SavedGameLoaderNow.LoadGameFromSaveFileNow" + Environment.NewLine +
+                "    Root_Play.SetupForQuickTestPlay" + Environment.NewLine +
                 "  Postfix:" + Environment.NewLine +
-                "    UIRoot.UIRootOnGUI" + Environment.NewLine +
-                "    GameComponentUtility.StartedNewGame" + Environment.NewLine +
-                "    GameComponentUtility.LoadedGame");
+                "    UIRoot.UIRootOnGUI");
         }
     }
 
-    [HarmonyPatch(typeof(GameComponentUtility), "StartedNewGame")]
-    static class Patch_GameComponentUtility_StartedNewGame
+    [HarmonyPatch(typeof(Page_SelectScenario), "BeginScenarioConfiguration")]
+    static class Patch_Page_SelectScenario_BeginScenarioConfiguration
     {
-        [HarmonyPriority(Priority.Last)]
-        static void Postfix()
+        [HarmonyPriority(Priority.First)]
+        static void Prefix()
         {
             IOUtil.LoadData();
-            Log.Message("InGameDefEditor".Translate() + ": Settings Applied");
         }
     }
 
-    [HarmonyPatch(typeof(GameComponentUtility), "LoadedGame")]
-    static class Patch_GameComponentUtility_LoadedGame
+    [HarmonyPatch(typeof(SavedGameLoaderNow), "LoadGameFromSaveFileNow")]
+    static class Patch_SavedGameLoaderNow_LoadGameFromSaveFileNow
     {
-        [HarmonyPriority(Priority.Last)]
-        static void Postfix()
+        [HarmonyPriority(Priority.First)]
+        static void Prefix()
         {
             IOUtil.LoadData();
-            Log.Message("InGameDefEditor".Translate() + ": Settings Applied");
+        }
+    }
+
+    [HarmonyPatch(typeof(Root_Play), "SetupForQuickTestPlay")]
+    static class Patch_Root_Play_SetupForQuickTestPlay
+    {
+        [HarmonyPriority(Priority.First)]
+        static void Prefix()
+        {
+            IOUtil.LoadData();
         }
     }
 

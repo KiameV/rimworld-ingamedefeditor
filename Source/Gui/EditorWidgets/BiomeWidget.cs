@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using System;
+using static InGameDefEditor.WindowUtil;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
@@ -13,13 +14,21 @@ namespace InGameDefEditor.Gui.EditorWidgets
         private readonly List<IInputWidget> inputWidgets;
 
         private List<FloatInputWidget<WeatherCommonalityRecord>> weatherCommonalityRecords = new List<FloatInputWidget<WeatherCommonalityRecord>>();
-        //private List<FloatMinMaxInputWidget<TerrainDef>> terrainsByFertility = new List<FloatMinMaxInputWidget<TerrainDef>>();
+        private List<MinMaxInputWidget<TerrainThreshold>> terrainsByFertility = new List<MinMaxInputWidget<TerrainThreshold>>();
         private List<SoundDef> soundsAmbient = new List<SoundDef>();
-        //private List<TerrainPatchMakerWidget> terrainPatchMakers = new List<TerrainPatchMakerWidget>();
-        private List<FloatInputWidget<ThingDef>> wildPlants = new List<FloatInputWidget<ThingDef>>();
-        private List<FloatInputWidget<PawnKindDef>> wildAnimals = new List<FloatInputWidget<PawnKindDef>>();
-        private List<FloatInputWidget<IncidentDef>> diseases = new List<FloatInputWidget<IncidentDef>>();
-        private List<PawnKindDef> allowedPackAnimals = new List<PawnKindDef>();
+        private List<TerrainPatchMakerWidget> terrainPatchMakers = new List<TerrainPatchMakerWidget>();
+        private List<FloatInputWidget<BiomePlantRecord>> wildPlants = new List<FloatInputWidget<BiomePlantRecord>>();
+        private List<FloatInputWidget<BiomeAnimalRecord>> wildAnimals = new List<FloatInputWidget<BiomeAnimalRecord>>();
+        private List<FloatInputWidget<BiomeDiseaseRecord>> diseases = new List<FloatInputWidget<BiomeDiseaseRecord>>();
+        private List<ThingDef> allowedPackAnimals = new List<ThingDef>();
+
+        private PlusMinusArgs<WeatherDef> weatherPlusMinusArgs;
+        private PlusMinusArgs<SoundDef> ambientSoundPlusMinusArgs;
+        private PlusMinusArgs<TerrainDef> terrainFertilityPlusMinusArgs;
+        private PlusMinusArgs<IncidentDef> diseasesPlusMinusArgs;
+        private PlusMinusArgs<ThingDef> wildPlantPlusMinusArgs;
+        private PlusMinusArgs<PawnKindDef> wildAnimalPlusMinusArgs;
+        private PlusMinusArgs<ThingDef> allowedPackAnimalsPlusMinusArgs;
 
         public BiomeWidget(BiomeDef d, WidgetType type) : base(d, type)
         {
@@ -59,6 +68,124 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 new BoolInputWidget<BiomeDef>(base.Def, "Has Bedrock", (BiomeDef def) => def.hasBedrock, (BiomeDef def, bool b) => def.hasBedrock = b)
             };
 
+            this.weatherPlusMinusArgs = new PlusMinusArgs<WeatherDef>()
+            {
+                allItems = DefDatabase<WeatherDef>.AllDefsListForReading,
+                beingUsed = () => Util.ConvertItems(this.weatherCommonalityRecords, (FloatInputWidget<WeatherCommonalityRecord> w) => w.Parent.weather),
+                onAdd = delegate (WeatherDef wd)
+                {
+                    WeatherCommonalityRecord rec = new WeatherCommonalityRecord() { weather = wd };
+                    this.weatherCommonalityRecords.Add(this.CreateWeatherWidget(rec));
+                    base.Def.baseWeatherCommonalities.Add(rec);
+                },
+                onRemove = delegate (WeatherDef wd)
+                {
+                    this.weatherCommonalityRecords.RemoveAll((FloatInputWidget<WeatherCommonalityRecord> w) => w.Parent.weather == wd);
+                    base.Def.baseWeatherCommonalities.RemoveAll((WeatherCommonalityRecord rec) => rec.weather == wd);
+                }
+            };
+
+            this.terrainFertilityPlusMinusArgs = new PlusMinusArgs<TerrainDef>()
+            {
+                allItems = DefDatabase<TerrainDef>.AllDefsListForReading,
+                beingUsed = () => Util.ConvertItems(this.terrainsByFertility, (MinMaxInputWidget<TerrainThreshold> w) => w.Parent.terrain),
+                onAdd = delegate(TerrainDef td)
+                {
+                    TerrainThreshold tt = new TerrainThreshold() { terrain = td };
+                    this.terrainsByFertility.Add(this.CreateThresholdWidget(tt));
+                    this.Def.terrainsByFertility.Add(tt);
+                },
+                onRemove = delegate(TerrainDef td)
+                {
+                    this.terrainsByFertility.RemoveAll((MinMaxInputWidget<TerrainThreshold> w) => w.Parent.terrain == td);
+                    base.Def.terrainsByFertility.RemoveAll((TerrainThreshold tt) => tt.terrain == td);
+                }
+            };
+
+            this.ambientSoundPlusMinusArgs = new PlusMinusArgs<SoundDef>()
+            {
+                allItems = DefDatabase<SoundDef>.AllDefsListForReading,
+                beingUsed = () => this.soundsAmbient,
+                onAdd = delegate (SoundDef sd)
+                {
+                    this.soundsAmbient.Add(sd);
+                    this.Def.soundsAmbient.Add(sd);
+                },
+                onRemove = delegate (SoundDef sd)
+                {
+                    this.soundsAmbient.Remove(sd);
+                    this.Def.soundsAmbient.Remove(sd);
+                },
+                getDisplayName = (SoundDef sd) => sd.defName
+            };
+
+            this.diseasesPlusMinusArgs = new PlusMinusArgs<IncidentDef>()
+            {
+                allItems = DefDatabase<IncidentDef>.AllDefsListForReading.FindAll((IncidentDef id) => id.defName.StartsWith("Disease_")),
+                beingUsed = () => Util.ConvertItems(this.diseases, (FloatInputWidget<BiomeDiseaseRecord> w) => w.Parent.diseaseInc),
+                onAdd = delegate (IncidentDef id)
+                {
+                    BiomeDiseaseRecord r = new BiomeDiseaseRecord() { diseaseInc = id, commonality = 0 };
+                    this.diseases.Add(this.CreateDiseaseWidget(r));
+                    BiomeStats.GetDiseases(this.Def).Add(r);
+                },
+                onRemove = delegate (IncidentDef id)
+                {
+                    this.diseases.RemoveAll((FloatInputWidget<BiomeDiseaseRecord> w) => w.Parent.diseaseInc == id);
+                    BiomeStats.GetDiseases(this.Def).RemoveAll((BiomeDiseaseRecord rec) => rec.diseaseInc == id);
+                },
+            };
+
+            this.wildPlantPlusMinusArgs = new PlusMinusArgs<ThingDef>()
+            {
+                allItems = DefDatabase<ThingDef>.AllDefsListForReading.FindAll((ThingDef td) => td.plant != null),
+                beingUsed = () => Util.ConvertItems(this.wildPlants, (FloatInputWidget<BiomePlantRecord> w) => w.Parent.plant),
+                onAdd = delegate (ThingDef td)
+                {
+                    BiomePlantRecord r = new BiomePlantRecord() { plant = td, commonality = 0 };
+                    this.wildPlants.Add(this.CreateWildPlantWidget(r));
+                    BiomeStats.GetWildPlants(this.Def).Add(r);
+                },
+                onRemove = delegate (ThingDef td)
+                {
+                    this.wildPlants.RemoveAll((FloatInputWidget<BiomePlantRecord> w) => w.Parent.plant == td);
+                    BiomeStats.GetWildPlants(this.Def).RemoveAll((BiomePlantRecord rec) => rec.plant == td);
+                },
+            };
+
+            this.wildAnimalPlusMinusArgs = new PlusMinusArgs<PawnKindDef>()
+            {
+                allItems = DefDatabase<PawnKindDef>.AllDefsListForReading.FindAll((PawnKindDef pdk) => pdk.race.race.thinkTreeMain.defName.Equals("Animal")),
+                beingUsed = () => Util.ConvertItems(this.wildAnimals, (FloatInputWidget<BiomeAnimalRecord> w) => w.Parent.animal),
+                onAdd = delegate (PawnKindDef td)
+                {
+                    BiomeAnimalRecord r = new BiomeAnimalRecord() { animal = td, commonality = 0 };
+                    this.wildAnimals.Add(this.CreateWildAnimalWidget(r));
+                    BiomeStats.GetWildAnimals(this.Def).Add(r);
+                },
+                onRemove = delegate (PawnKindDef td)
+                {
+                    this.wildAnimals.RemoveAll((FloatInputWidget<BiomeAnimalRecord> w) => w.Parent.animal == td);
+                    BiomeStats.GetWildAnimals(this.Def).RemoveAll((BiomeAnimalRecord rec) => rec.animal == td);
+                },
+            };
+
+            this.allowedPackAnimalsPlusMinusArgs = new PlusMinusArgs<ThingDef>()
+            {
+                allItems = DefDatabase<ThingDef>.AllDefsListForReading.FindAll((ThingDef td) => td.race != null && td.race.herdAnimal),
+                beingUsed = () => this.allowedPackAnimals,
+                onAdd = delegate (ThingDef td)
+                {
+                    this.allowedPackAnimals.Add(td);
+                    BiomeStats.GetAllowedPackAnimals(base.Def).Add(td);
+                },
+                onRemove = delegate (ThingDef td)
+                {
+                    this.allowedPackAnimals.Remove(td);
+                    BiomeStats.GetAllowedPackAnimals(base.Def).Remove(td);
+                },
+            };
+
             this.Rebuild();
         }
 
@@ -75,6 +202,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
                     onSelect = delegate (ThingDef d) { this.Def.foragedFood = d; },
                     includeNullOption = true
                 });
+
+            this.DrawTerrainPatchMakers(x, ref y, width);
         }
 
         public override void DrawMiddle(float x, ref float y, float width)
@@ -82,25 +211,41 @@ namespace InGameDefEditor.Gui.EditorWidgets
             this.DrawWeatherCommonality(x, ref y, width);
             this.DrawTerrainsByFertility(x, ref y, width);
             this.DrawAmbientSounds(x, ref y, width);
+            this.DrawDiseases(x, ref y, width);
         }
 
         public override void DrawRight(float x, ref float y, float width)
         {
-
+            this.DrawWildPlants(x, ref y, width);
+            this.DrawWildAnimals(x, ref y, width);
+            this.DrawAllowedPackAnimals(x, ref y, width);
         }
 
         public override void Rebuild()
         {
             this.weatherCommonalityRecords.Clear();
-            if (base.Def.baseWeatherCommonalities != null)
-                base.Def.baseWeatherCommonalities.ForEach((WeatherCommonalityRecord r) => this.weatherCommonalityRecords.Add(
-                    new FloatInputWidget<WeatherCommonalityRecord>(r, r.weather.label, (WeatherCommonalityRecord w) => w.commonality, (WeatherCommonalityRecord w, float f) => w.commonality = f)));
+            base.Def.baseWeatherCommonalities.ForEach((WeatherCommonalityRecord r) => this.weatherCommonalityRecords.Add(this.CreateWeatherWidget(r)));
 
-            // TODO TerrainsByFertility
+            this.terrainsByFertility.Clear();
+            base.Def.terrainsByFertility.ForEach((TerrainThreshold tt) => this.terrainsByFertility.Add(this.CreateThresholdWidget(tt)));
+
+            this.terrainPatchMakers.Clear();
+            base.Def.terrainPatchMakers.ForEach((TerrainPatchMaker m) => this.terrainPatchMakers.Add(new TerrainPatchMakerWidget(m)));
 
             this.soundsAmbient.Clear();
-            if (base.Def.soundsAmbient != null)
-                base.Def.soundsAmbient.ForEach((SoundDef d) => this.soundsAmbient.Add(d));
+            base.Def.soundsAmbient.ForEach((SoundDef d) => this.soundsAmbient.Add(d));
+
+            this.diseases.Clear();
+            BiomeStats.GetDiseases(base.Def).ForEach((BiomeDiseaseRecord r) => this.diseases.Add(this.CreateDiseaseWidget(r)));
+
+            this.wildPlants.Clear();
+            BiomeStats.GetWildPlants(base.Def).ForEach((BiomePlantRecord r) => this.wildPlants.Add(this.CreateWildPlantWidget(r)));
+
+            this.wildAnimals.Clear();
+            BiomeStats.GetWildAnimals(base.Def).ForEach((BiomeAnimalRecord r) => this.wildAnimals.Add(this.CreateWildAnimalWidget(r)));
+
+            this.allowedPackAnimals.Clear();
+            BiomeStats.GetAllowedPackAnimals(base.Def).ForEach((ThingDef d) => this.allowedPackAnimals.Add(d));
 
             this.ResetBuffers();
         }
@@ -109,59 +254,83 @@ namespace InGameDefEditor.Gui.EditorWidgets
         {
             foreach (var w in this.inputWidgets)
                 w.ResetBuffers();
-
             foreach (var w in this.weatherCommonalityRecords)
                 w.ResetBuffers();
+            foreach (var w in this.terrainsByFertility)
+                w.ResetBuffers();
+            foreach (var w in this.terrainPatchMakers)
+                w.ResetBuffers();
+            foreach (var w in this.wildPlants)
+                w.ResetBuffers();
+            foreach (var w in this.wildAnimals)
+                w.ResetBuffers();
+            foreach (var w in this.diseases)
+                w.ResetBuffers();
+        }
+
+        private void DrawDiseases(float x, ref float y, float width)
+        {
+            PlusMinusLabel(x, ref y, 150, "Disease Commonality", this.diseasesPlusMinusArgs);
+
+            x += 10;
+            foreach (var v in this.diseases)
+                v.Draw(x, ref y, width);
+        }
+
+        private void DrawTerrainPatchMakers(float x, ref float y, float width)
+        {
+            WindowUtil.PlusMinusLabel(x, ref y, 100, "Patch Maker",
+                delegate
+                {
+                    Find.WindowStack.Add(new Dialog_Name(
+                        "Perlin Frequency",
+                        delegate (string name)
+                        {
+                            TerrainPatchMaker m = new TerrainPatchMaker() { perlinFrequency = float.Parse(name) };
+                            base.Def.terrainPatchMakers.Add(m);
+                            this.terrainPatchMakers.Add(new TerrainPatchMakerWidget(m));
+                        },
+                        delegate (string name)
+                        {
+                            if (!float.TryParse(name, out float freq))
+                                return "Must be a number";
+                            foreach (var v in base.Def.terrainPatchMakers)
+                                if (v.perlinFrequency == freq)
+                                    return "Perlin Frequency must be unique";
+                            return true;
+                        }));
+                },
+                delegate
+                {
+                    WindowUtil.DrawFloatingOptions(
+                        new WindowUtil.DrawFloatOptionsArgs<TerrainPatchMaker>()
+                        {
+                            items = base.Def.terrainPatchMakers,
+                            getDisplayName = (TerrainPatchMaker m) => m.perlinFrequency.ToString(),
+                            onSelect = delegate (TerrainPatchMaker m)
+                            {
+                                base.Def.terrainPatchMakers.RemoveAll((TerrainPatchMaker tpm) => tpm.perlinFrequency == m.perlinFrequency);
+                                this.terrainPatchMakers.RemoveAll((TerrainPatchMakerWidget w) => w.Parent.perlinFrequency == m.perlinFrequency);
+                            }
+                        });
+                });
+
+            x += 10;
+            foreach (var v in this.terrainPatchMakers)
+                v.Draw(x, ref y, width);
         }
 
         private void DrawTerrainsByFertility(float x, ref float y, float width)
         {
-            // TODO
+            PlusMinusLabel(x, ref y, 150, "Terrain Fertility", this.terrainFertilityPlusMinusArgs);
+            x += 10;
+            foreach (var v in this.terrainsByFertility)
+                v.Draw(x, ref y, width);
         }
 
         private void DrawAmbientSounds(float x, ref float y, float width)
         {
-            WindowUtil.PlusMinusLabel(
-                      x, ref y, 150, "Ambient Sounds",
-                      new WindowUtil.DrawFloatOptionsArgs<SoundDef>()
-                      {
-                       // Add
-                       getDisplayName = (SoundDef d) => d.defName,
-                          updateItems = delegate ()
-                          {
-                              HashSet<SoundDef> lookup = new HashSet<SoundDef>();
-                              base.Def.soundsAmbient.ForEach((SoundDef d) => lookup.Add(d));
-
-                              IEnumerable<SoundDef> defs = DefDatabase<SoundDef>.AllDefsListForReading;
-                              List<SoundDef> list = new List<SoundDef>(defs.Count());
-                              foreach (var d in defs)
-                                  if (!lookup.Contains(d))
-                                      list.Add(d);
-                              return list;
-                          },
-                          onSelect = delegate (SoundDef d)
-                          {
-                              base.Def.soundsAmbient.Add(d);
-                              this.soundsAmbient.Add(d);
-                          }
-                      },
-                      new WindowUtil.DrawFloatOptionsArgs<SoundDef>()
-                      {
-                       // Remove
-                       getDisplayName = (SoundDef d) => d.defName,
-                          updateItems = delegate ()
-                          {
-                              List<SoundDef> l = new List<SoundDef>();
-                              foreach (var v in base.Def.soundsAmbient)
-                                  l.Add(v);
-                              return l;
-                          },
-                          onSelect = delegate (SoundDef d)
-                          {
-                              base.Def.soundsAmbient.Remove(d);
-                              this.soundsAmbient.Remove(d);
-                          }
-                      });
+            WindowUtil.PlusMinusLabel(x, ref y, 150, "Ambient Sounds", this.ambientSoundPlusMinusArgs);
 
             x += 10;
             foreach (var w in this.soundsAmbient)
@@ -169,76 +338,77 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 WindowUtil.DrawLabel(x, y, width, "- " + w.defName);
                 y += 40;
             }
-
-            y += 40;
         }
 
         private void DrawWeatherCommonality(float x, ref float y, float width)
         {
-            WindowUtil.PlusMinusLabel(
-                   x, ref y, 150, "Weather Commonality",
-                   new WindowUtil.DrawFloatOptionsArgs<WeatherDef>()
-                   {
-                       // Add
-                       getDisplayName = (WeatherDef d) => d.label,
-                       updateItems = delegate ()
-                       {
-                           HashSet<WeatherDef> lookup = new HashSet<WeatherDef>();
-                           base.Def.baseWeatherCommonalities.ForEach((WeatherCommonalityRecord r) => lookup.Add(r.weather));
-
-                           IEnumerable<WeatherDef> defs = DefDatabase<WeatherDef>.AllDefsListForReading;
-                           List<WeatherDef> list = new List<WeatherDef>(defs.Count());
-                           foreach (var d in defs)
-                               if (!lookup.Contains(d))
-                                   list.Add(d);
-                           return list;
-                       },
-                       onSelect = delegate (WeatherDef d)
-                       {
-                           WeatherCommonalityRecord r = new WeatherCommonalityRecord()
-                           {
-                               weather = d,
-                               commonality = 0
-                           };
-                           base.Def.baseWeatherCommonalities.Add(r);
-                           this.weatherCommonalityRecords.Add(new FloatInputWidget<WeatherCommonalityRecord>(
-                               r, r.weather.label, (WeatherCommonalityRecord rec) => rec.commonality, (WeatherCommonalityRecord rec, float f) => rec.commonality = f));
-                       }
-                   },
-                   new WindowUtil.DrawFloatOptionsArgs<WeatherDef>()
-                   {
-                       // Remove
-                       getDisplayName = (WeatherDef d) => d.label,
-                       updateItems = delegate ()
-                       {
-                           List<WeatherDef> l = new List<WeatherDef>();
-                           foreach (var v in base.Def.baseWeatherCommonalities)
-                               l.Add(v.weather);
-                           return l;
-                       },
-                       onSelect = delegate (WeatherDef d)
-                       {
-                           for (int i = 0; i < base.Def.baseWeatherCommonalities.Count; ++i)
-                               if (base.Def.baseWeatherCommonalities[i].weather == d)
-                               {
-                                   base.Def.baseWeatherCommonalities.RemoveAt(i);
-                                   break;
-                               }
-
-                           for (int i = 0; i < this.weatherCommonalityRecords.Count; ++i)
-                               if (this.weatherCommonalityRecords[i].Parent.weather == d)
-                               {
-                                   this.weatherCommonalityRecords.RemoveAt(i);
-                                   break;
-                               }
-                       }
-                   });
+            WindowUtil.PlusMinusLabel(x, ref y, 150, "Weather Commonality", this.weatherPlusMinusArgs);
 
             x += 10;
             foreach (var w in this.weatherCommonalityRecords)
                 w.Draw(x, ref y, width);
+        }
 
-            y += 40;
+        private void DrawWildPlants(float x, ref float y, float width)
+        {
+            WindowUtil.PlusMinusLabel(x, ref y, 200, "Wild Plant Commonality", this.wildPlantPlusMinusArgs);
+
+            x += 10;
+            foreach (var w in this.wildPlants)
+                w.Draw(x, ref y, width);
+        }
+
+        private void DrawWildAnimals(float x, ref float y, float width)
+        {
+            WindowUtil.PlusMinusLabel(x, ref y, 200, "Wild Animal Commonality", this.wildAnimalPlusMinusArgs);
+
+            x += 10;
+            foreach (var w in this.wildAnimals)
+                w.Draw(x, ref y, width);
+        }
+
+        private void DrawAllowedPackAnimals(float x, ref float y, float width)
+        {
+            WindowUtil.PlusMinusLabel(x, ref y, 200, "Allowed Pack Animals", this.allowedPackAnimalsPlusMinusArgs);
+
+            x += 10;
+            foreach (var w in this.allowedPackAnimals)
+            {
+                WindowUtil.DrawLabel(x, y, width, "- " + w.defName);
+                y += 40;
+            }
+        }
+
+        private FloatInputWidget<BiomeDiseaseRecord> CreateDiseaseWidget(BiomeDiseaseRecord r)
+        {
+            return new FloatInputWidget<BiomeDiseaseRecord>(
+                r, r.diseaseInc.label, (BiomeDiseaseRecord w) => w.commonality, (BiomeDiseaseRecord w, float f) => w.commonality = f);
+        }
+
+        private MinMaxInputWidget<TerrainThreshold> CreateThresholdWidget(TerrainThreshold tt)
+        {
+            return new MinMaxInputWidget<TerrainThreshold>(
+                tt.terrain.label,
+                new FloatInputWidget<TerrainThreshold>(tt, "Min", (TerrainThreshold t) => t.min, (TerrainThreshold t, float f) => t.min = f),
+                new FloatInputWidget<TerrainThreshold>(tt, "Max", (TerrainThreshold t) => t.max, (TerrainThreshold t, float f) => t.max = f));
+        }
+
+        private FloatInputWidget<WeatherCommonalityRecord> CreateWeatherWidget(WeatherCommonalityRecord r)
+        {
+            return new FloatInputWidget<WeatherCommonalityRecord>(
+                r, r.weather.label, (WeatherCommonalityRecord w) => w.commonality, (WeatherCommonalityRecord w, float f) => w.commonality = f);
+        }
+
+        private FloatInputWidget<BiomePlantRecord> CreateWildPlantWidget(BiomePlantRecord r)
+        {
+            return new FloatInputWidget<BiomePlantRecord>(
+                r, r.plant.label, (BiomePlantRecord w) => w.commonality, (BiomePlantRecord w, float f) => w.commonality = f);
+        }
+
+        private FloatInputWidget<BiomeAnimalRecord> CreateWildAnimalWidget(BiomeAnimalRecord r)
+        {
+            return new FloatInputWidget<BiomeAnimalRecord>(
+                r, r.animal.label, (BiomeAnimalRecord w) => w.commonality, (BiomeAnimalRecord w, float f) => w.commonality = f);
         }
     }
 }

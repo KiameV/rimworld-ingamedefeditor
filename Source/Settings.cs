@@ -38,7 +38,7 @@ namespace InGameDefEditor
             {
                 sb.Append("{b}");
             }
-            sb.Append(" to open the Editor Window at any time");
+            sb.Append(" to open the Editor's window at any time");
 
             sb.Replace("{a}", a.ToString());
             sb.Replace("{b}", b.ToString());

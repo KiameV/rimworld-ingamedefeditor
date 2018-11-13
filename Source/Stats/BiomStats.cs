@@ -144,52 +144,43 @@ namespace InGameDefEditor.Stats
             if (this.weatherCommonalities != null)
                 foreach (var v in this.weatherCommonalities)
                     if (!v.Initialize())
-                    {
                         Log.Warning("Unable to load WeatherDef " + v.defName);
-                    }
 
             if (this.terrainsByFertility != null)
                 foreach (var v in this.terrainsByFertility)
                     if (!v.Initialize())
-                    {
                         Log.Warning("Unable to load TerrainDef " + v.defName);
-                    }
+
+            if (this.terrainPatchMakers != null)
+                foreach (var v in this.terrainPatchMakers)
+                    if (!v.Initialize())
+                        Log.Warning("Unable to initialize TerrainPatchMaker");
 
             if (this.soundsAmbient != null)
                 foreach (var v in this.soundsAmbient)
                     if (!v.Initialize())
-                    {
                         Log.Warning("Unable to load SoundDef " + v.defName);
-                    }
 
             if (this.wildPlants != null)
                 foreach (var v in this.wildPlants)
                     if (!v.Initialize())
-                    {
                         Log.Warning("Unable to load ThingDef " + v.defName);
-                    }
 
             if (this.wildAnimals != null)
                 foreach (var v in this.wildAnimals)
                     if (!v.Initialize())
-                    {
                         Log.Warning("Unable to load PawnKindDef " + v.defName);
-                    }
 
             if (this.diseases != null)
                 foreach (var v in this.diseases)
                     if (!v.Initialize())
-                    {
                         if (v.Def == null)
                             Log.Warning("Unable to load IncidentDef " + v.defName);
-                    }
 
             if (this.allowedPackAnimals != null)
                 foreach (var v in this.allowedPackAnimals)
                     if (!v.Initialize())
-                    {
                         Log.Warning("Unable to load PawnKindDef " + v.defName);
-                    }
 
             return true;
         }

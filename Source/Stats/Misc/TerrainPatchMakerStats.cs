@@ -24,7 +24,6 @@ namespace InGameDefEditor.Stats.Misc
             this.perlinPersistence = m.perlinPersistence;
             this.perlinOctaves = m.perlinOctaves;
             this.minFertility = m.minFertility;
-            this.minFertility = m.minFertility;
             this.maxFertility = m.maxFertility;
             this.minSize = m.minSize;
 

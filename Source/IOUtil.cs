@@ -104,6 +104,7 @@ namespace InGameDefEditor
                 {
                     hasLoaded = true;
                     Util.ClearDefDic();
+                    Log.Message("InGameDefEditor".Translate() + ": Settings Applied");
                 }
             }
         }
@@ -143,8 +144,7 @@ namespace InGameDefEditor
                 BiomeStats s = new BiomeStats(d);
                 if (Backup.HasChanged(s))
                 {
-                    // TODO
-                    // allStats.biomeStats.Add(s);
+                    allStats.biomeStats.Add(s);
                 }
             }
 

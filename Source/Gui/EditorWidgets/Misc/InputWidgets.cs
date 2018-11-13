@@ -40,6 +40,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
         public BoolInputWidget(P parent, string label, GetValue getValue, SetValue setValue) : base(parent, label, getValue, setValue)
         {
             this.value = base.getValue(base.Parent);
+            this.ResetBuffers();
         }
 
         public override void Draw(float x, ref float y, float width)
@@ -60,6 +61,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
         public IntInputWidget(P parent, string label, GetValue getValue, SetValue setValue) : base(parent, label, getValue, setValue)
         {
             this.value = base.getValue(base.Parent);
+            this.ResetBuffers();
         }
 
         public override void Draw(float x, ref float y, float width)
@@ -80,6 +82,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
         public FloatInputWidget(P parent, string label, GetValue getValue, SetValue setValue) : base(parent, label, getValue, setValue)
         {
             this.value = base.getValue(base.Parent);
+            this.ResetBuffers();
         }
 
         public override void Draw(float x, ref float y, float width)
@@ -90,6 +93,38 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
         public override void ResetBuffers()
         {
             this.buffer = base.getValue(base.Parent).ToString();
+        }
+    }
+
+    class MinMaxInputWidget<P> : IInputWidget
+    {
+        private readonly string label;
+        private readonly FloatInputWidget<P> min;
+        private readonly FloatInputWidget<P> max;
+
+        public P Parent { get { return min.Parent; } }
+
+        public MinMaxInputWidget(string label, FloatInputWidget<P> min, FloatInputWidget<P> max)
+        {
+            this.label = label;
+            this.min = min;
+            this.max = max;
+            this.ResetBuffers();
+        }
+
+        public void Draw(float x, ref float y, float width)
+        {
+            DrawLabel(x, y, width, label, true);
+            x += 10;
+            y += 40;
+            this.min.Draw(x, ref y, width);
+            this.max.Draw(x, ref y, width);
+        }
+
+        public void ResetBuffers()
+        {
+            this.min.ResetBuffers();
+            this.max.ResetBuffers();
         }
     }
 }

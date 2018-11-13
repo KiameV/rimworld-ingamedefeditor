@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-	<InGameDefEditor>Change Equipment Stats</InGameDefEditor>
+	<InGameDefEditor>In-Game Definition Editor</InGameDefEditor>
 	
 	<InGameDefEditor.Apply>Apply</InGameDefEditor.Apply>
 	<InGameDefEditor.ResetAll>Reset All</InGameDefEditor.ResetAll>
