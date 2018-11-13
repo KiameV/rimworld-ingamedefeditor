@@ -33,10 +33,13 @@ namespace InGameDefEditor
                     backup[d] = new ThingDefStats(d);
 
                 foreach (ThingDef d in Defs.ProjectileDefs.Values)
-                    backup[d] = new ProjectileStats(d);
+                    backup[d] = new ProjectileDefStats(d);
 
                 foreach (BiomeDef d in Defs.BiomeDefs.Values)
-                    backup[d] = new BiomeStats(d);
+                    backup[d] = new BiomeDefStats(d);
+
+                foreach (ThoughtDef d in Defs.ThoughtDefs.Values)
+                    backup[d] = new ThoughtDefStats(d);
             }
         }
 

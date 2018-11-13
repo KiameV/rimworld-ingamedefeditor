@@ -3,6 +3,7 @@ using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
+using System;
 
 namespace InGameDefEditor
 {
@@ -326,6 +327,42 @@ namespace InGameDefEditor
         public static string IsNull<T> (string label, T t)
         {
             return label + " is " + ((t == null) ? "null" : "not null");
+        }
+
+        public static bool TryAssignStatDef<D>(D def, out DefStat<D> stat) where D : Def
+        {
+            if (def == null)
+            {
+                stat = null;
+                return false;
+            }
+            stat = new DefStat<D>(def);
+            return true;
+        }
+
+        public static void TryAssignDef<D>(DefStat<D> from, out D def) where D : Def
+        {
+            if (from == null)
+                def = null;
+            else
+                def = from.Def;
+        }
+
+        public static void AssignStat<D>(DefStat<D> from, DefStat<D> to) where D : Def
+        {
+            if (from != null && to != null)
+                from.AssignStats(to);
+        }
+
+        public static bool InitializeDefStat<D>(DefStat<D> s) where D : Def
+        {
+            if (s != null)
+                if (!s.Initialize())
+                {
+                    Log.Warning("Failed to initialize DefStat " + s.defName);
+                    return false;
+                }
+            return true;
         }
     }
 }

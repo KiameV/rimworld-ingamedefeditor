@@ -7,15 +7,15 @@ using Verse;
 
 namespace InGameDefEditor.Stats
 {
-    public class ProjectileStats : DefStat<ThingDef>, IParentStat
+    public class ProjectileDefStats : DefStat<ThingDef>, IParentStat
     {
         public int damage;
         public float stoppingPower;
         public float armorPenetration;
         public float speed;
 
-        public ProjectileStats() { }
-        public ProjectileStats(ThingDef d) : base(d)
+        public ProjectileDefStats() { }
+        public ProjectileDefStats(ThingDef d) : base(d)
         {
             this.damage = GetDamage(d.projectile);
             this.stoppingPower = d.projectile.stoppingPower;
@@ -44,7 +44,7 @@ namespace InGameDefEditor.Stats
         public override bool Equals(object obj)
         {
             if (base.Equals(obj) &&
-                obj is ProjectileStats p)
+                obj is ProjectileDefStats p)
             {
                 return
                     string.Equals(this.DefName, p.DefName) &&

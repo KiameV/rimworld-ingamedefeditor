@@ -40,14 +40,14 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 base.Def.soundsAmbient = new List<SoundDef>();
             if (base.Def.terrainPatchMakers == null)
                 base.Def.terrainPatchMakers = new List<TerrainPatchMaker>();
-            if (BiomeStats.GetWildAnimals(base.Def) == null)
-                BiomeStats.SetWildAnimals(base.Def, new List<BiomeAnimalRecord>());
-            if (BiomeStats.GetWildPlants(base.Def) == null)
-                BiomeStats.SetWildPlants(base.Def, new List<BiomePlantRecord>());
-            if (BiomeStats.GetDiseases(base.Def) == null)
-                BiomeStats.SetDiseases(base.Def, new List<BiomeDiseaseRecord>());
-            if (BiomeStats.GetAllowedPackAnimals(base.Def) == null)
-                BiomeStats.SetAllowedPackAnimals(base.Def, new List<ThingDef>());
+            if (BiomeDefStats.GetWildAnimals(base.Def) == null)
+                BiomeDefStats.SetWildAnimals(base.Def, new List<BiomeAnimalRecord>());
+            if (BiomeDefStats.GetWildPlants(base.Def) == null)
+                BiomeDefStats.SetWildPlants(base.Def, new List<BiomePlantRecord>());
+            if (BiomeDefStats.GetDiseases(base.Def) == null)
+                BiomeDefStats.SetDiseases(base.Def, new List<BiomeDiseaseRecord>());
+            if (BiomeDefStats.GetAllowedPackAnimals(base.Def) == null)
+                BiomeDefStats.SetAllowedPackAnimals(base.Def, new List<ThingDef>());
 
             this.inputWidgets = new List<IInputWidget>()
             {
@@ -127,12 +127,12 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 {
                     BiomeDiseaseRecord r = new BiomeDiseaseRecord() { diseaseInc = id, commonality = 0 };
                     this.diseases.Add(this.CreateDiseaseWidget(r));
-                    BiomeStats.GetDiseases(this.Def).Add(r);
+                    BiomeDefStats.GetDiseases(this.Def).Add(r);
                 },
                 onRemove = delegate (IncidentDef id)
                 {
                     this.diseases.RemoveAll((FloatInputWidget<BiomeDiseaseRecord> w) => w.Parent.diseaseInc == id);
-                    BiomeStats.GetDiseases(this.Def).RemoveAll((BiomeDiseaseRecord rec) => rec.diseaseInc == id);
+                    BiomeDefStats.GetDiseases(this.Def).RemoveAll((BiomeDiseaseRecord rec) => rec.diseaseInc == id);
                 },
             };
 
@@ -144,12 +144,12 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 {
                     BiomePlantRecord r = new BiomePlantRecord() { plant = td, commonality = 0 };
                     this.wildPlants.Add(this.CreateWildPlantWidget(r));
-                    BiomeStats.GetWildPlants(this.Def).Add(r);
+                    BiomeDefStats.GetWildPlants(this.Def).Add(r);
                 },
                 onRemove = delegate (ThingDef td)
                 {
                     this.wildPlants.RemoveAll((FloatInputWidget<BiomePlantRecord> w) => w.Parent.plant == td);
-                    BiomeStats.GetWildPlants(this.Def).RemoveAll((BiomePlantRecord rec) => rec.plant == td);
+                    BiomeDefStats.GetWildPlants(this.Def).RemoveAll((BiomePlantRecord rec) => rec.plant == td);
                 },
             };
 
@@ -161,12 +161,12 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 {
                     BiomeAnimalRecord r = new BiomeAnimalRecord() { animal = td, commonality = 0 };
                     this.wildAnimals.Add(this.CreateWildAnimalWidget(r));
-                    BiomeStats.GetWildAnimals(this.Def).Add(r);
+                    BiomeDefStats.GetWildAnimals(this.Def).Add(r);
                 },
                 onRemove = delegate (PawnKindDef td)
                 {
                     this.wildAnimals.RemoveAll((FloatInputWidget<BiomeAnimalRecord> w) => w.Parent.animal == td);
-                    BiomeStats.GetWildAnimals(this.Def).RemoveAll((BiomeAnimalRecord rec) => rec.animal == td);
+                    BiomeDefStats.GetWildAnimals(this.Def).RemoveAll((BiomeAnimalRecord rec) => rec.animal == td);
                 },
             };
 
@@ -177,12 +177,12 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 onAdd = delegate (ThingDef td)
                 {
                     this.allowedPackAnimals.Add(td);
-                    BiomeStats.GetAllowedPackAnimals(base.Def).Add(td);
+                    BiomeDefStats.GetAllowedPackAnimals(base.Def).Add(td);
                 },
                 onRemove = delegate (ThingDef td)
                 {
                     this.allowedPackAnimals.Remove(td);
-                    BiomeStats.GetAllowedPackAnimals(base.Def).Remove(td);
+                    BiomeDefStats.GetAllowedPackAnimals(base.Def).Remove(td);
                 },
             };
 
@@ -236,16 +236,16 @@ namespace InGameDefEditor.Gui.EditorWidgets
             base.Def.soundsAmbient.ForEach((SoundDef d) => this.soundsAmbient.Add(d));
 
             this.diseases.Clear();
-            BiomeStats.GetDiseases(base.Def).ForEach((BiomeDiseaseRecord r) => this.diseases.Add(this.CreateDiseaseWidget(r)));
+            BiomeDefStats.GetDiseases(base.Def).ForEach((BiomeDiseaseRecord r) => this.diseases.Add(this.CreateDiseaseWidget(r)));
 
             this.wildPlants.Clear();
-            BiomeStats.GetWildPlants(base.Def).ForEach((BiomePlantRecord r) => this.wildPlants.Add(this.CreateWildPlantWidget(r)));
+            BiomeDefStats.GetWildPlants(base.Def).ForEach((BiomePlantRecord r) => this.wildPlants.Add(this.CreateWildPlantWidget(r)));
 
             this.wildAnimals.Clear();
-            BiomeStats.GetWildAnimals(base.Def).ForEach((BiomeAnimalRecord r) => this.wildAnimals.Add(this.CreateWildAnimalWidget(r)));
+            BiomeDefStats.GetWildAnimals(base.Def).ForEach((BiomeAnimalRecord r) => this.wildAnimals.Add(this.CreateWildAnimalWidget(r)));
 
             this.allowedPackAnimals.Clear();
-            BiomeStats.GetAllowedPackAnimals(base.Def).ForEach((ThingDef d) => this.allowedPackAnimals.Add(d));
+            BiomeDefStats.GetAllowedPackAnimals(base.Def).ForEach((ThingDef d) => this.allowedPackAnimals.Add(d));
 
             this.ResetBuffers();
         }

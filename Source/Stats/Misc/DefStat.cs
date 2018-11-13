@@ -54,6 +54,11 @@ namespace InGameDefEditor.Stats.Misc
             return this.Def.GetHashCode();
         }
 
+        public virtual void AssignStats(DefStat<D> to)
+        {
+            // Empty
+        }
+
         public override string ToString()
         {
             return

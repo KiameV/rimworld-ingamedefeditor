@@ -7,7 +7,7 @@ using Verse;
 
 namespace InGameDefEditor.Stats
 {
-    public class BiomeStats : DefStat<BiomeDef>, IParentStat
+    public class BiomeDefStats : DefStat<BiomeDef>, IParentStat
     {
         public bool canBuildBase;
         public bool canAutoChoose;
@@ -35,8 +35,8 @@ namespace InGameDefEditor.Stats
         public List<FloatValueDoubleDefStat<IncidentDef, BiomeDef>> diseases = null;
         public List<DefStat<PawnKindDef>> allowedPackAnimals = null;
 
-        public BiomeStats() { }
-        public BiomeStats(BiomeDef d) : base(d)
+        public BiomeDefStats() { }
+        public BiomeDefStats(BiomeDef d) : base(d)
         {
             this.canBuildBase = d.canBuildBase;
             this.canAutoChoose = d.canAutoChoose;
@@ -350,7 +350,7 @@ namespace InGameDefEditor.Stats
         public override bool Equals(object obj)
         {
             if (obj != null &&
-                obj is BiomeStats s)
+                obj is BiomeDefStats s)
             {
 #if DEBUG
                 Log.Error(this.ToString());

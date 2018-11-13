@@ -17,9 +17,9 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
             this.inputWidgets = new List<IInputWidget>()
             {
-                new IntInputWidget<ProjectileProperties>(this.ProjectileDef.projectile, "Base Damage", (ProjectileProperties p) => ProjectileStats.GetDamage(p), (ProjectileProperties p, int i) => ProjectileStats.SetDamage(p, i)),
+                new IntInputWidget<ProjectileProperties>(this.ProjectileDef.projectile, "Base Damage", (ProjectileProperties p) => ProjectileDefStats.GetDamage(p), (ProjectileProperties p, int i) => ProjectileDefStats.SetDamage(p, i)),
                 new FloatInputWidget<ProjectileProperties>(this.ProjectileDef.projectile, "Stopping Power", (ProjectileProperties p) => p.stoppingPower, (ProjectileProperties p, float f) => this.ProjectileDef.projectile.stoppingPower = f),
-                new FloatInputWidget<ProjectileProperties>(this.ProjectileDef.projectile, "Armor Penetration", (ProjectileProperties p) => ProjectileStats.GetArmorPenetration(p), (ProjectileProperties p, float f) => ProjectileStats.SetArmorPenetration(this.ProjectileDef.projectile, f)),
+                new FloatInputWidget<ProjectileProperties>(this.ProjectileDef.projectile, "Armor Penetration", (ProjectileProperties p) => ProjectileDefStats.GetArmorPenetration(p), (ProjectileProperties p, float f) => ProjectileDefStats.SetArmorPenetration(this.ProjectileDef.projectile, f)),
                 new FloatInputWidget<ProjectileProperties>(this.ProjectileDef.projectile, "Speed", (ProjectileProperties p) => p.speed, (ProjectileProperties p, float f) => p.speed = f)
             };
 

@@ -16,6 +16,16 @@ namespace InGameDefEditor.Stats.Misc
             this.Max = s.Max;
         }
 
+        public override void AssignStats(DefStat<D> to)
+        {
+            base.AssignStats(to);
+            if (to is MinMaxStat<D> s)
+            {
+                s.Min = this.Min;
+                s.Max = this.Max;
+            }
+        }
+
         public override bool Equals(object obj)
         {
             if (base.Equals(obj) && 

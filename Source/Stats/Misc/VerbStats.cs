@@ -32,7 +32,7 @@ namespace InGameDefEditor.Stats.Misc
             if (v.soundCastTail != null)
                 this.SoundCastTailDefStat = new DefStat<SoundDef>(v.soundCastTail);
             if (v.defaultProjectile != null)
-                this.ProjectileDefStat = new ProjectileStats(v.defaultProjectile);
+                this.ProjectileDefStat = new ProjectileDefStats(v.defaultProjectile);
         }
 
         public void ApplyStats(VerbProperties to)
@@ -58,7 +58,7 @@ namespace InGameDefEditor.Stats.Misc
             if (this.SoundCastTailDefStat != null)
                 to.soundCastTail = this.SoundCastTailDefStat.Def;
             if (this.ProjectileDefStat != null)
-                ((ProjectileStats)this.ProjectileDefStat).ApplyStats(to.defaultProjectile);
+                ((ProjectileDefStats)this.ProjectileDefStat).ApplyStats(to.defaultProjectile);
         }
 
         public bool Initialize()

@@ -50,7 +50,7 @@ namespace InGameDefEditor
 
                     if (allStats.projectileStats != null)
                     {
-                        foreach (ProjectileStats s in allStats.projectileStats)
+                        foreach (ProjectileDefStats s in allStats.projectileStats)
                         {
                             if (s.Initialize())
                             {
@@ -82,7 +82,7 @@ namespace InGameDefEditor
 
                     if (allStats.biomeStats != null)
                     {
-                        foreach (BiomeStats s in allStats.biomeStats)
+                        foreach (BiomeDefStats s in allStats.biomeStats)
                         {
                             if (s.Initialize())
                             {
@@ -132,7 +132,7 @@ namespace InGameDefEditor
 
             foreach (ThingDef d in Defs.ProjectileDefs.Values)
             {
-                ProjectileStats s = new ProjectileStats(d);
+                ProjectileDefStats s = new ProjectileDefStats(d);
                 if (Backup.HasChanged(s))
                 {
                     allStats.projectileStats.Add(s);
@@ -141,7 +141,7 @@ namespace InGameDefEditor
 
             foreach (BiomeDef d in Defs.BiomeDefs.Values)
             {
-                BiomeStats s = new BiomeStats(d);
+                BiomeDefStats s = new BiomeDefStats(d);
                 if (Backup.HasChanged(s))
                 {
                     allStats.biomeStats.Add(s);

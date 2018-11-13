@@ -10,6 +10,7 @@ namespace InGameDefEditor
         public static readonly SortedDictionary<string, ThingDef> WeaponDefs = new SortedDictionary<string, ThingDef>();
         public static readonly SortedDictionary<string, ThingDef> ProjectileDefs = new SortedDictionary<string, ThingDef>();
         public static readonly SortedDictionary<string, BiomeDef> BiomeDefs = new SortedDictionary<string, BiomeDef>();
+        public static readonly SortedDictionary<string, ThoughtDef> ThoughtDefs = new SortedDictionary<string, ThoughtDef>();
 
         private static bool isInit = false;
         public static void Initialize()
@@ -50,6 +51,11 @@ namespace InGameDefEditor
                 foreach (BiomeDef d in DefDatabase<BiomeDef>.AllDefsListForReading)
                 {
                     BiomeDefs[d.label] = d;
+                }
+
+                foreach (ThoughtDef d in DefDatabase<ThoughtDef>.AllDefsListForReading)
+                {
+                    ThoughtDefs[d.defName] = d;
                 }
 
                 if (i > 0)

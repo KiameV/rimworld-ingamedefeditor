@@ -8,7 +8,7 @@ namespace InGameDefEditor.Stats
     public class AllStats
     {
         public List<ThingDefStats> thingDefStats = new List<ThingDefStats>();
-        public List<ProjectileStats> projectileStats = new List<ProjectileStats>();
-        public List<BiomeStats> biomeStats = new List<BiomeStats>();
+        public List<ProjectileDefStats> projectileStats = new List<ProjectileDefStats>();
+        public List<BiomeDefStats> biomeStats = new List<BiomeDefStats>();
     }
 }
