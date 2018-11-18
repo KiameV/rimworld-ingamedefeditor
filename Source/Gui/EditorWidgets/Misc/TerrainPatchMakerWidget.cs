@@ -63,8 +63,9 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
                 {
                     this.Parent.thresholds.RemoveAll((TerrainThreshold tt) => tt.terrain == d);
                     this.thresholds.RemoveAll((MinMaxInputWidget<TerrainThreshold> mmw) => mmw.Parent.terrain == d);
-                }
-            };
+                },
+				getDisplayName = (TerrainDef def) => def.label
+			};
         }
 
         public void Draw(float x, ref float y, float width)

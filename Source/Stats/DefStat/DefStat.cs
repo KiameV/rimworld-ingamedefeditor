@@ -2,7 +2,7 @@
 using System.Xml.Serialization;
 using Verse;
 
-namespace InGameDefEditor.Stats.Misc
+namespace InGameDefEditor.Stats.DefStat
 {
     public class DefStat<D> : IDefStat where D : Def
     {
@@ -54,10 +54,10 @@ namespace InGameDefEditor.Stats.Misc
             return this.Def.GetHashCode();
         }
 
-        public virtual void AssignStats(DefStat<D> to)
+        /*public virtual void ApplyStats(DefStat<D> to)
         {
             // Empty
-        }
+        }*/
 
         public override string ToString()
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InGameDefEditor.Stats.DefStat;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Verse;

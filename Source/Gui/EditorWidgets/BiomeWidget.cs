@@ -2,9 +2,7 @@
 using InGameDefEditor.Stats;
 using RimWorld;
 using System.Collections.Generic;
-using System.Linq;
 using Verse;
-using System;
 using static InGameDefEditor.WindowUtil;
 
 namespace InGameDefEditor.Gui.EditorWidgets
@@ -70,7 +68,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
             this.weatherPlusMinusArgs = new PlusMinusArgs<WeatherDef>()
             {
-                allItems = DefDatabase<WeatherDef>.AllDefsListForReading,
+				allItems = DefDatabase<WeatherDef>.AllDefsListForReading,
                 beingUsed = () => Util.ConvertItems(this.weatherCommonalityRecords, (FloatInputWidget<WeatherCommonalityRecord> w) => w.Parent.weather),
                 onAdd = delegate (WeatherDef wd)
                 {
@@ -82,12 +80,13 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 {
                     this.weatherCommonalityRecords.RemoveAll((FloatInputWidget<WeatherCommonalityRecord> w) => w.Parent.weather == wd);
                     base.Def.baseWeatherCommonalities.RemoveAll((WeatherCommonalityRecord rec) => rec.weather == wd);
-                }
-            };
+				},
+				getDisplayName = (WeatherDef def) => def.label,
+			};
 
             this.terrainFertilityPlusMinusArgs = new PlusMinusArgs<TerrainDef>()
-            {
-                allItems = DefDatabase<TerrainDef>.AllDefsListForReading,
+			{
+				allItems = DefDatabase<TerrainDef>.AllDefsListForReading,
                 beingUsed = () => Util.ConvertItems(this.terrainsByFertility, (MinMaxInputWidget<TerrainThreshold> w) => w.Parent.terrain),
                 onAdd = delegate(TerrainDef td)
                 {
@@ -99,8 +98,9 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 {
                     this.terrainsByFertility.RemoveAll((MinMaxInputWidget<TerrainThreshold> w) => w.Parent.terrain == td);
                     base.Def.terrainsByFertility.RemoveAll((TerrainThreshold tt) => tt.terrain == td);
-                }
-            };
+				},
+				getDisplayName = (TerrainDef def) => def.label,
+			};
 
             this.ambientSoundPlusMinusArgs = new PlusMinusArgs<SoundDef>()
             {
@@ -134,7 +134,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
                     this.diseases.RemoveAll((FloatInputWidget<BiomeDiseaseRecord> w) => w.Parent.diseaseInc == id);
                     BiomeDefStats.GetDiseases(this.Def).RemoveAll((BiomeDiseaseRecord rec) => rec.diseaseInc == id);
                 },
-            };
+				getDisplayName = (IncidentDef def) => def.label,
+			};
 
             this.wildPlantPlusMinusArgs = new PlusMinusArgs<ThingDef>()
             {
@@ -151,6 +152,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                     this.wildPlants.RemoveAll((FloatInputWidget<BiomePlantRecord> w) => w.Parent.plant == td);
                     BiomeDefStats.GetWildPlants(this.Def).RemoveAll((BiomePlantRecord rec) => rec.plant == td);
                 },
+				getDisplayName = (ThingDef def) => def.label,
             };
 
             this.wildAnimalPlusMinusArgs = new PlusMinusArgs<PawnKindDef>()
@@ -168,6 +170,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                     this.wildAnimals.RemoveAll((FloatInputWidget<BiomeAnimalRecord> w) => w.Parent.animal == td);
                     BiomeDefStats.GetWildAnimals(this.Def).RemoveAll((BiomeAnimalRecord rec) => rec.animal == td);
                 },
+				getDisplayName = (PawnKindDef def) => def.label,
             };
 
             this.allowedPackAnimalsPlusMinusArgs = new PlusMinusArgs<ThingDef>()
@@ -184,6 +187,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                     this.allowedPackAnimals.Remove(td);
                     BiomeDefStats.GetAllowedPackAnimals(base.Def).Remove(td);
                 },
+				getDisplayName = (ThingDef def) => def.label,
             };
 
             this.Rebuild();
@@ -195,7 +199,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 w.Draw(x, ref y, width);
 
             WindowUtil.DrawInput(x, ref y, width, "Foraged Food", 100, (this.Def.foragedFood != null) ? this.Def.foragedFood.defName : "<none>",
-                new WindowUtil.DrawFloatOptionsArgs<ThingDef>()
+                new WindowUtil.FloatOptionsArgs<ThingDef>()
                 {
                     items = DefLookupUtil.GetSortedDefs(DefDatabase<ThingDef>.AllDefsListForReading),
                     getDisplayName = delegate (ThingDef d) { return d.defName; },
@@ -303,7 +307,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 delegate
                 {
                     WindowUtil.DrawFloatingOptions(
-                        new WindowUtil.DrawFloatOptionsArgs<TerrainPatchMaker>()
+                        new WindowUtil.FloatOptionsArgs<TerrainPatchMaker>()
                         {
                             items = base.Def.terrainPatchMakers,
                             getDisplayName = (TerrainPatchMaker m) => m.perlinFrequency.ToString(),

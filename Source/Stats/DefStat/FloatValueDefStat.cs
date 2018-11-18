@@ -1,7 +1,7 @@
 ﻿using System;
 using Verse;
 
-namespace InGameDefEditor.Stats.Misc
+namespace InGameDefEditor.Stats.DefStat
 {
     public class FloatValueStat<D> : DefStat<D> where D : Def
     {
@@ -14,12 +14,12 @@ namespace InGameDefEditor.Stats.Misc
             this.value = s.value;
         }
 
-        public override void AssignStats(DefStat<D> to)
+        /*public override void ApplyStats(DefStat<D> to)
         {
-            base.AssignStats(to);
+            base.ApplyStats(to);
             if (to is FloatValueStat<D> s)
                 s.value = this.value;
-        }
+        }*/
 
         public override bool Equals(object obj)
         {

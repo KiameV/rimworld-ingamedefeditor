@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using InGameDefEditor.Stats.DefStat;
+using RimWorld;
 using System.Collections.Generic;
 using System.Text;
 using Verse;
@@ -7,7 +8,7 @@ namespace InGameDefEditor.Stats.Misc
 {
     public class TerrainPatchMakerStats
     {
-        public List<MinMaxStat<TerrainDef>> thresholds = new List<MinMaxStat<TerrainDef>>();
+        public List<MinMaxDefStat<TerrainDef>> thresholds = new List<MinMaxDefStat<TerrainDef>>();
         public float perlinFrequency;
         public float perlinLacunarity;
         public float perlinPersistence;
@@ -29,10 +30,10 @@ namespace InGameDefEditor.Stats.Misc
 
             if (m.thresholds != null)
             {
-                this.thresholds = new List<MinMaxStat<TerrainDef>>(m.thresholds.Count);
+                this.thresholds = new List<MinMaxDefStat<TerrainDef>>(m.thresholds.Count);
                 foreach (TerrainThreshold t in m.thresholds)
                 {
-                    this.thresholds.Add(new MinMaxStat<TerrainDef>(t.terrain)
+                    this.thresholds.Add(new MinMaxDefStat<TerrainDef>(t.terrain)
                     {
                         Min = t.min,
                         Max = t.max

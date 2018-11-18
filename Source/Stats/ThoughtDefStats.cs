@@ -1,4 +1,4 @@
-﻿using InGameDefEditor.Stats.Misc;
+﻿using InGameDefEditor.Stats.DefStat;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -15,14 +15,14 @@ namespace InGameDefEditor.Stats
         public bool invert;
         public bool validWhileDespawned;
         public int requiredTraitsDegree;
-        // TODO public HediffDef hediff;
         public bool nullifiedIfNotColonist;
         public bool showBubble;
         public int stackLimitForSameOtherPawn = -1;
         public float lerpOpinionToZeroAfterDurationPct = 0.7f;
         public float maxCumulatedOpinionOffset = 3.40282347E+38f;
 
-        public DefStat<GameConditionDef> gameCondition;
+		public DefStat<HediffDef> hediff;
+		public DefStat<GameConditionDef> gameCondition;
         public DefStat<ThoughtDef> nextThought;
         public DefStat<StatDef> effectMultiplyingStat;
         public DefStat<ThoughtDef> thoughtToMake;
@@ -109,28 +109,26 @@ namespace InGameDefEditor.Stats
 
         public override bool Initialize()
         {
-            if (base.Initialize())
-            {
-                Util.InitializeDefStat(this.gameCondition);
-                Util.InitializeDefStat(this.nextThought);
-                Util.InitializeDefStat(this.effectMultiplyingStat);
-                Util.InitializeDefStat(this.thoughtToMake);
-                Util.InitializeDefStat(this.taleDef);
+            if (!base.Initialize())
+                return false;
+            Util.InitializeDefStat(this.gameCondition);
+            Util.InitializeDefStat(this.nextThought);
+            Util.InitializeDefStat(this.effectMultiplyingStat);
+            Util.InitializeDefStat(this.thoughtToMake);
+            Util.InitializeDefStat(this.taleDef);
 
-                foreach (var v in this.nullifyingTraits)
-                    if (!v.Initialize())
-                        Log.Warning("Failed to initialize DefStat " + v.defName);
+            foreach (var v in this.nullifyingTraits)
+                if (!v.Initialize())
+                    Log.Warning("Failed to initialize DefStat " + v.defName);
 
-                foreach (var v in this.nullifyingOwnTales)
-                    if (!v.Initialize())
-                        Log.Warning("Failed to initialize DefStat " + v.defName);
+            foreach (var v in this.nullifyingOwnTales)
+                if (!v.Initialize())
+                    Log.Warning("Failed to initialize DefStat " + v.defName);
 
-                foreach (var v in this.requiredTraits)
-                    if (!v.Initialize())
-                        Log.Warning("Failed to initialize DefStat " + v.defName);
-                return true;
-            }
-            return false;
+            foreach (var v in this.requiredTraits)
+                if (!v.Initialize())
+                    Log.Warning("Failed to initialize DefStat " + v.defName);
+            return true;
         }
 
         public override int GetHashCode()

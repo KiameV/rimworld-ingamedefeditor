@@ -33,7 +33,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         public void Draw(float x, ref float y, float width)
         {
-            WindowUtil.DrawLabel(x, y, 300, this.DisplayLabel);
+            WindowUtil.DrawLabel(x, y, 300, this.DisplayLabel, true);
             y += 40;
 
             foreach (IInputWidget w in this.inputWidgets)
@@ -42,7 +42,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
             x += 20;
             WindowUtil.PlusMinusLabel(
                 x, ref y, 100, "Capabilities",
-                new WindowUtil.DrawFloatOptionsArgs<ToolCapacityDef>()
+                new WindowUtil.FloatOptionsArgs<ToolCapacityDef>()
                 {
                     // Add
                     getDisplayName = delegate (ToolCapacityDef d) { return d.defName; },
@@ -61,7 +61,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                     },
                     onSelect = delegate (ToolCapacityDef d) { this.Tool.capacities.Add(d); }
                 },
-                new WindowUtil.DrawFloatOptionsArgs<ToolCapacityDef>()
+                new WindowUtil.FloatOptionsArgs<ToolCapacityDef>()
                 {
                     // Remove
                     items = this.Tool.capacities,

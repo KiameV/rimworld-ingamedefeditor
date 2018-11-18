@@ -1,4 +1,4 @@
-﻿using InGameDefEditor.Stats.Misc;
+﻿using InGameDefEditor.Stats.DefStat;
 using RimWorld;
 using System;
 using System.Reflection;
@@ -23,14 +23,14 @@ namespace InGameDefEditor.Stats
             this.speed = d.projectile.speed;
         }
 
-        public void ApplyStats(Def def)
+        public void ApplyStats(Def to)
         {
-            if (def is ThingDef to)
+            if (to is ThingDef t)
             {
-                SetDamage(to.projectile, this.damage);
-                to.projectile.stoppingPower = this.stoppingPower;
-                SetArmorPenetration(to.projectile, this.armorPenetration);
-                to.projectile.speed = this.speed;
+                SetDamage(t.projectile, this.damage);
+                t.projectile.stoppingPower = this.stoppingPower;
+                SetArmorPenetration(t.projectile, this.armorPenetration);
+                t.projectile.speed = this.speed;
             }
             else
                 Log.Error("ProjectileStats passed none ThingDef!");

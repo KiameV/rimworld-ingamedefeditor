@@ -2,7 +2,7 @@
 using System.Xml.Serialization;
 using Verse;
 
-namespace InGameDefEditor.Stats.Misc
+namespace InGameDefEditor.Stats.DefStat
 {
     public class FloatValueDoubleDefStat<D1, D2> : FloatValueStat<D1> where D1 : Def where D2 : Def
     {

@@ -1,35 +1,35 @@
 ﻿using System;
 using Verse;
 
-namespace InGameDefEditor.Stats.Misc
+namespace InGameDefEditor.Stats.DefStat
 {
-    public class MinMaxStat<D> : DefStat<D> where D : Def
+    public class MinMaxDefStat<D> : DefStat<D> where D : Def
     {
         public float Min;
         public float Max;
 
-        public MinMaxStat() { }
-        public MinMaxStat(D d) : base(d) { }
-        public MinMaxStat(MinMaxStat<D> s) : base(s.Def)
+        public MinMaxDefStat() { }
+        public MinMaxDefStat(D d) : base(d) { }
+        public MinMaxDefStat(MinMaxDefStat<D> s) : base(s.Def)
         {
             this.Min = s.Min;
             this.Max = s.Max;
         }
 
-        public override void AssignStats(DefStat<D> to)
+        /*public override void ApplyStats(DefStat<D> to)
         {
-            base.AssignStats(to);
+            base.ApplyStats(to);
             if (to is MinMaxStat<D> s)
             {
                 s.Min = this.Min;
                 s.Max = this.Max;
             }
-        }
+        }*/
 
         public override bool Equals(object obj)
         {
             if (base.Equals(obj) && 
-                obj is MinMaxStat<D> stat)
+                obj is MinMaxDefStat<D> stat)
             {
                 return
                     this.Min == stat.Min &&

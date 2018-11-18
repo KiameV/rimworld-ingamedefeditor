@@ -7,8 +7,9 @@ namespace InGameDefEditor.Gui.EditorWidgets
         Apparel,
         Biome,
         Weapon,
-        Projectile
-    };
+        Projectile,
+		Recipe,
+	};
 
     interface IStatWidget
     {

@@ -1,4 +1,5 @@
-﻿using InGameDefEditor.Stats.Misc;
+﻿using InGameDefEditor.Stats.DefStat;
+using InGameDefEditor.Stats.Misc;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace InGameDefEditor.Stats
         public bool hasBedrock;
 
         public List<FloatValueStat<WeatherDef>> weatherCommonalities = null;
-        public List<MinMaxStat<TerrainDef>> terrainsByFertility = null;
+        public List<MinMaxDefStat<TerrainDef>> terrainsByFertility = null;
         public List<DefStat<SoundDef>> soundsAmbient = null;
         public List<TerrainPatchMakerStats> terrainPatchMakers = null;
         public List<FloatValueStat<ThingDef>> wildPlants = null;
@@ -68,9 +69,9 @@ namespace InGameDefEditor.Stats
 
             if (d.terrainsByFertility != null)
             {
-                this.terrainsByFertility = new List<MinMaxStat<TerrainDef>>(d.terrainsByFertility.Count);
+                this.terrainsByFertility = new List<MinMaxDefStat<TerrainDef>>(d.terrainsByFertility.Count);
                 foreach (var v in d.terrainsByFertility)
-                    this.terrainsByFertility.Add(new MinMaxStat<TerrainDef>(v.terrain)
+                    this.terrainsByFertility.Add(new MinMaxDefStat<TerrainDef>(v.terrain)
                     {
                         Min = v.min,
                         Max = v.max
@@ -185,33 +186,33 @@ namespace InGameDefEditor.Stats
             return true;
         }
 
-        public void ApplyStats(Def def)
+        public void ApplyStats(Def to)
         {
-            if (def is BiomeDef to)
+            if (to is BiomeDef t)
             {
-                to.canBuildBase = this.canBuildBase;
-                to.canAutoChoose = this.canAutoChoose;
-                to.allowRoads = this.allowRoads;
-                to.allowRivers = this.allowRivers;
-                to.animalDensity = this.animalDensity;
-                to.plantDensity = this.plantDensity;
-                to.diseaseMtbDays = this.diseaseMtbDays;
-                to.settlementSelectionWeight = this.settlementSelectionWeight;
-                to.impassable = this.impassable;
-                to.hasVirtualPlants = this.hasVirtualPlants;
-                to.forageability = this.forageability;
+                t.canBuildBase = this.canBuildBase;
+                t.canAutoChoose = this.canAutoChoose;
+                t.allowRoads = this.allowRoads;
+                t.allowRivers = this.allowRivers;
+                t.animalDensity = this.animalDensity;
+                t.plantDensity = this.plantDensity;
+                t.diseaseMtbDays = this.diseaseMtbDays;
+                t.settlementSelectionWeight = this.settlementSelectionWeight;
+                t.impassable = this.impassable;
+                t.hasVirtualPlants = this.hasVirtualPlants;
+                t.forageability = this.forageability;
                 if (this.foragedFood == null)
-                    to.foragedFood = null;
+                    t.foragedFood = null;
                 else
-                    to.foragedFood = this.foragedFood.Def;
-                to.wildPlantsCareAboutLocalFertility = this.wildPlantsCareAboutLocalFertility;
-                to.wildPlantRegrowDays = this.wildPlantRegrowDays;
-                to.movementDifficulty = this.movementDifficulty;
-                to.hasBedrock = this.hasBedrock;
+                    t.foragedFood = this.foragedFood.Def;
+                t.wildPlantsCareAboutLocalFertility = this.wildPlantsCareAboutLocalFertility;
+                t.wildPlantRegrowDays = this.wildPlantRegrowDays;
+                t.movementDifficulty = this.movementDifficulty;
+                t.hasBedrock = this.hasBedrock;
                 
-                if (this.weatherCommonalities != null && to.baseWeatherCommonalities == null)
-                    to.baseWeatherCommonalities = new List<WeatherCommonalityRecord>(this.weatherCommonalities.Count);
-                Util.Populate(to.baseWeatherCommonalities, this.weatherCommonalities, delegate (FloatValueStat<WeatherDef> s)
+                if (this.weatherCommonalities != null && t.baseWeatherCommonalities == null)
+                    t.baseWeatherCommonalities = new List<WeatherCommonalityRecord>(this.weatherCommonalities.Count);
+                Util.Populate(t.baseWeatherCommonalities, this.weatherCommonalities, delegate (FloatValueStat<WeatherDef> s)
                 {
                     return new WeatherCommonalityRecord()
                     {
@@ -220,9 +221,9 @@ namespace InGameDefEditor.Stats
                     };
                 });
 
-                if (this.terrainsByFertility != null && to.terrainsByFertility == null)
-                    to.terrainsByFertility = new List<TerrainThreshold>(this.terrainsByFertility.Count);
-                Util.Populate(to.terrainsByFertility, this.terrainsByFertility, delegate (MinMaxStat<TerrainDef> s)
+                if (this.terrainsByFertility != null && t.terrainsByFertility == null)
+                    t.terrainsByFertility = new List<TerrainThreshold>(this.terrainsByFertility.Count);
+                Util.Populate(t.terrainsByFertility, this.terrainsByFertility, delegate (MinMaxDefStat<TerrainDef> s)
                 {
                     return new TerrainThreshold
                     {
@@ -232,16 +233,16 @@ namespace InGameDefEditor.Stats
                     };
                 });
 
-                if (this.soundsAmbient != null && to.soundsAmbient == null)
-                    to.soundsAmbient = new List<SoundDef>(this.soundsAmbient.Count);
-                Util.Populate(to.soundsAmbient, this.soundsAmbient, delegate (DefStat<SoundDef> s)
+                if (this.soundsAmbient != null && t.soundsAmbient == null)
+                    t.soundsAmbient = new List<SoundDef>(this.soundsAmbient.Count);
+                Util.Populate(t.soundsAmbient, this.soundsAmbient, delegate (DefStat<SoundDef> s)
                 {
                     return s.Def;
                 });
 
-                if (this.terrainPatchMakers != null && to.terrainPatchMakers == null)
-                    to.terrainPatchMakers = new List<TerrainPatchMaker>(this.terrainPatchMakers.Count);
-                Util.Populate(to.terrainPatchMakers, this.terrainPatchMakers, delegate (TerrainPatchMakerStats s)
+                if (this.terrainPatchMakers != null && t.terrainPatchMakers == null)
+                    t.terrainPatchMakers = new List<TerrainPatchMaker>(this.terrainPatchMakers.Count);
+                Util.Populate(t.terrainPatchMakers, this.terrainPatchMakers, delegate (TerrainPatchMakerStats s)
                 {
                     var v = new TerrainPatchMaker();
                     s.ApplyStats(v);

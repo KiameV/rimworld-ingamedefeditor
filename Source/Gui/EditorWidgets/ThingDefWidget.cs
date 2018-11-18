@@ -75,7 +75,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
         {
             WindowUtil.PlusMinusLabel(
                 x, ref y, 150, "Base Modifiers",
-                new WindowUtil.DrawFloatOptionsArgs<StatDef>()
+                new WindowUtil.FloatOptionsArgs<StatDef>()
                 {
                     items = this.GetPossibleStatModifiers(base.Def.statBases),
                     getDisplayName = delegate (StatDef d) { return d.label; },
@@ -91,7 +91,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                         this.StatModifiers.Add(CreateFloatInput(m));
                     }
                 },
-                new WindowUtil.DrawFloatOptionsArgs<StatModifier>()
+                new WindowUtil.FloatOptionsArgs<StatModifier>()
                 {
                     items = base.Def.statBases,
                     getDisplayName = delegate (StatModifier s) { return s.stat.defName; },
@@ -147,7 +147,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 delegate
                 {
                     WindowUtil.DrawFloatingOptions(
-                        new WindowUtil.DrawFloatOptionsArgs<Tool>()
+                        new WindowUtil.FloatOptionsArgs<Tool>()
                         {
                             items = base.Def.tools,
                             getDisplayName = delegate (Tool t) { return t.label; },
@@ -185,7 +185,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
         private void DrawEquipmentStatOffsets(float x, ref float y, float width)
         {
             WindowUtil.PlusMinusLabel(x, ref y, 200, "Equipped Stat Offsets",
-                new WindowUtil.DrawFloatOptionsArgs<StatDef>()
+                new WindowUtil.FloatOptionsArgs<StatDef>()
                 {
                     items = this.GetPossibleStatModifiers(base.Def.equippedStatOffsets),
                     getDisplayName = delegate (StatDef d) { return d.label; },
@@ -200,7 +200,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                         this.EquipmentModifiers.Add(this.CreateFloatInput(m));
                     }
                 },
-                new WindowUtil.DrawFloatOptionsArgs<StatModifier>()
+                new WindowUtil.FloatOptionsArgs<StatModifier>()
                 {
                     items = base.Def.equippedStatOffsets,
                     getDisplayName = delegate (StatModifier s) { return s.stat.defName; },

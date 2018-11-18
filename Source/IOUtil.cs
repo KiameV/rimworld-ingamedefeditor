@@ -95,6 +95,21 @@ namespace InGameDefEditor
                         }
                         allStats.thingDefStats.Clear();
                     }
+
+					if (allStats.recipeStats != null)
+					{
+						foreach (RecipeDefStats s in allStats.recipeStats)
+						{
+							if (s.Initialize())
+							{
+								s.ApplyStats(s.Def);
+							}
+							else
+							{
+								Log.Warning("Unable to apply settings to " + s.defName);
+							}
+						}
+					}
                 }
                 catch
                 {
@@ -116,8 +131,8 @@ namespace InGameDefEditor
             {
                 ThingDefStats s = new ThingDefStats(d);
                 if (Backup.HasChanged(s))
-                {
-                    allStats.thingDefStats.Add(s);
+				{
+					allStats.thingDefStats.Add(s);
                 }
             }
 
@@ -125,8 +140,8 @@ namespace InGameDefEditor
             {
                 ThingDefStats s = new ThingDefStats(d);
                 if (Backup.HasChanged(s))
-                {
-                    allStats.thingDefStats.Add(s);
+				{
+					allStats.thingDefStats.Add(s);
                 }
             }
 
@@ -134,8 +149,8 @@ namespace InGameDefEditor
             {
                 ProjectileDefStats s = new ProjectileDefStats(d);
                 if (Backup.HasChanged(s))
-                {
-                    allStats.projectileStats.Add(s);
+				{
+					allStats.projectileStats.Add(s);
                 }
             }
 
@@ -143,15 +158,25 @@ namespace InGameDefEditor
             {
                 BiomeDefStats s = new BiomeDefStats(d);
                 if (Backup.HasChanged(s))
-                {
-                    allStats.biomeStats.Add(s);
+				{
+					allStats.biomeStats.Add(s);
                 }
-            }
+			}
 
-            //Log.Error("ThingDefs: " + allStats.thingDefStats.Count);
-            //Log.Error("ProjectileDefs: " + allStats.projectileStats.Count);
+			foreach (RecipeDef d in Defs.RecipeDefs.Values)
+			{
+				RecipeDefStats s = new RecipeDefStats(d);
+				if (Backup.HasChanged(s))
+				{
+					s.PreSave(d);
+					allStats.recipeStats.Add(s);
+				}
+			}
 
-            XmlSerializer serializer = new XmlSerializer(typeof(AllStats));
+			//Log.Error("ThingDefs: " + allStats.thingDefStats.Count);
+			//Log.Error("ProjectileDefs: " + allStats.projectileStats.Count);
+
+			XmlSerializer serializer = new XmlSerializer(typeof(AllStats));
             FileStream fs = null;
             try
             {

@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using Verse;
+using System;
 
 namespace InGameDefEditor
 {
@@ -11,8 +12,9 @@ namespace InGameDefEditor
         public static readonly SortedDictionary<string, ThingDef> ProjectileDefs = new SortedDictionary<string, ThingDef>();
         public static readonly SortedDictionary<string, BiomeDef> BiomeDefs = new SortedDictionary<string, BiomeDef>();
         public static readonly SortedDictionary<string, ThoughtDef> ThoughtDefs = new SortedDictionary<string, ThoughtDef>();
+		public static readonly SortedDictionary<string, RecipeDef> RecipeDefs = new SortedDictionary<string, RecipeDef>();
 
-        private static bool isInit = false;
+		private static bool isInit = false;
         public static void Initialize()
         {
             if (!isInit)
@@ -58,6 +60,11 @@ namespace InGameDefEditor
                     ThoughtDefs[d.defName] = d;
                 }
 
+				foreach (RecipeDef d in DefDatabase<RecipeDef>.AllDefsListForReading)
+				{
+					RecipeDefs[d.label] = d;
+				}
+
                 if (i > 0)
                 {
                     Backup.Initialize();
@@ -65,5 +72,23 @@ namespace InGameDefEditor
                 }
             }
         }
-    }
+
+		public static void ResetAll()
+		{
+			foreach (ThingDef d in Defs.ApparelDefs.Values)
+				Backup.ApplyStats(d);
+
+			foreach (ThingDef d in Defs.WeaponDefs.Values)
+				Backup.ApplyStats(d);
+
+			foreach (ThingDef d in Defs.ProjectileDefs.Values)
+				Backup.ApplyStats(d);
+
+			foreach (BiomeDef d in Defs.BiomeDefs.Values)
+				Backup.ApplyStats(d);
+
+			foreach (RecipeDef d in Defs.RecipeDefs.Values)
+				Backup.ApplyStats(d);
+		}
+	}
 }

@@ -1,4 +1,5 @@
-﻿using InGameDefEditor.Stats.Misc;
+﻿using InGameDefEditor.Stats.DefStat;
+using InGameDefEditor.Stats.Misc;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -138,23 +139,23 @@ namespace InGameDefEditor.Stats
             }
         }
 
-        public void ApplyStats(Def def)
+        public void ApplyStats(Def to)
         {
 #if DEBUG
             Log.Warning("ApplyStats for " + def.label);
 #endif
-            if (def is ThingDef to)
+            if (to is ThingDef t)
             {
                 try
                 {
-                    this.ApplyStatModifiers(to);
-                    this.ApplyVerbStats(to);
-                    this.ApplyTools(to);
-                    this.ApplyEquipmentStatOffsets(to);
+                    this.ApplyStatModifiers(t);
+                    this.ApplyVerbStats(t);
+                    this.ApplyTools(t);
+                    this.ApplyEquipmentStatOffsets(t);
                 }
                 catch (Exception e)
                 {
-                    Log.Warning("Failed to apply stats [" + to.defName + "]\n" + e.Message);
+                    Log.Warning("Failed to apply stats [" + t.defName + "]\n" + e.Message);
                 }
 #if DEBUG
             Log.Warning("ApplyStats Done");

@@ -31,8 +31,9 @@ namespace InGameDefEditor
                 new ButtonWidget<ThingDef>("Apparel", WidgetType.Apparel, Defs.ApparelDefs.Values, this.CreateSelected),
                 new ButtonWidget<ThingDef>("Weapons", WidgetType.Weapon, Defs.WeaponDefs.Values, this.CreateSelected),
                 new ButtonWidget<ThingDef>("Projectiles", WidgetType.Projectile, Defs.ProjectileDefs.Values, this.CreateSelected),
-                new ButtonWidget<BiomeDef>("Biomes", WidgetType.Biome, Defs.BiomeDefs.Values, this.CreateSelected)
-            };
+                new ButtonWidget<BiomeDef>("Biomes", WidgetType.Biome, Defs.BiomeDefs.Values, this.CreateSelected),
+				new ButtonWidget<RecipeDef>("Recipes", WidgetType.Recipe, Defs.RecipeDefs.Values, this.CreateSelected),
+			};
         }
 
         public override void DoWindowContents(Rect rect)
@@ -110,29 +111,11 @@ namespace InGameDefEditor
                     "Reset everything to the original game's settings?",
                     delegate
                     {
-                        foreach (ThingDef d in Defs.ApparelDefs.Values)
-                        {
-                            Backup.ApplyStats(d);
-                        }
+						Defs.ResetAll();
 
-                        foreach (ThingDef d in Defs.WeaponDefs.Values)
-                        {
-                            Backup.ApplyStats(d);
-                        }
-
-                        foreach (ThingDef d in Defs.ProjectileDefs.Values)
-                        {
-                            Backup.ApplyStats(d);
-                        }
-
-                        foreach (BiomeDef d in Defs.BiomeDefs.Values)
-                        {
-                            Backup.ApplyStats(d);
-                        }
-
-                        if (this.selected != null)
-                            this.selected.Rebuild();
-                    }));
+						if (this.selected != null)
+							this.selected.Rebuild();
+					}));
             }
         }
 
@@ -165,6 +148,9 @@ namespace InGameDefEditor
                 case WidgetType.Biome:
                     this.selected = new BiomeWidget(d as BiomeDef, type);
                     break;
+				case WidgetType.Recipe:
+					this.selected = new RecipeWidget(d as RecipeDef, type);
+					break;
             }
             this.ResetScrolls();
         }
@@ -201,7 +187,7 @@ namespace InGameDefEditor
                 if (Widgets.ButtonText(new Rect(x, y, width, 30), label))
                 {
                     WindowUtil.DrawFloatingOptions(
-                        new WindowUtil.DrawFloatOptionsArgs<D>()
+                        new WindowUtil.FloatOptionsArgs<D>()
                         {
                             items = possibleDefs,
                             getDisplayName = delegate (D d) { return d.label; },

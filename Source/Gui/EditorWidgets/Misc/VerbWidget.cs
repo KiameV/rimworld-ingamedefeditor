@@ -43,7 +43,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
                 w.Draw(x, ref y, width);
 
             WindowUtil.DrawInput(x, ref y, width, "InGameDefEditor.SoundCast".Translate(), 100, (VerbProperties.soundCast != null) ? VerbProperties.soundCast.defName : "<none>",
-                new WindowUtil.DrawFloatOptionsArgs<SoundDef>()
+                new WindowUtil.FloatOptionsArgs<SoundDef>()
                 {
                     items = DefLookupUtil.GetSortedDefs(DefDatabase<SoundDef>.AllDefsListForReading),
                     getDisplayName = delegate (SoundDef d) { return d.defName; },
@@ -51,7 +51,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
                     includeNullOption = true
                 });
             WindowUtil.DrawInput(x, ref y, width, "InGameDefEditor.SoundCastTail".Translate(), 100, (VerbProperties.soundCastTail != null) ? VerbProperties.soundCastTail.defName : "<none>",
-                new WindowUtil.DrawFloatOptionsArgs<SoundDef>()
+                new WindowUtil.FloatOptionsArgs<SoundDef>()
                 {
                     items = DefLookupUtil.GetSortedDefs(DefDatabase<SoundDef>.AllDefsListForReading),
                     getDisplayName = delegate (SoundDef d) { return d.defName; },
@@ -64,7 +64,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
             if (VerbProperties.defaultProjectile != null)
             {
                 WindowUtil.DrawInput(x, ref y, width, "InGameDefEditor.Projectiles".Translate(), 100, this.VerbProperties.defaultProjectile.label, 
-                    new WindowUtil.DrawFloatOptionsArgs<ThingDef>()
+                    new WindowUtil.FloatOptionsArgs<ThingDef>()
                     {
                         items = Defs.ProjectileDefs.Values,
                         getDisplayName = delegate (ThingDef d) { return d.label; },

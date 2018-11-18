@@ -40,7 +40,7 @@ namespace InGameDefEditor
             return value;
         }
 
-        public static void DrawInput<T>(float x, ref float y, float width, string label, int labelWidth, string buttonText, DrawFloatOptionsArgs<T> floatingOptionArgs, bool isBolded = false)
+        public static void DrawInput<T>(float x, ref float y, float width, string label, int labelWidth, string buttonText, FloatOptionsArgs<T> floatingOptionArgs, bool isBolded = false)
         {
             DrawLabel(x, y, labelWidth, label, isBolded);
             x = x + labelWidth + 10;
@@ -75,15 +75,17 @@ namespace InGameDefEditor
         public delegate string GetDisplayName<T>(T t);
         public delegate void OnSelect<T>(T t);
         public delegate IEnumerable<T> UpdateItems<T>();
-        public class DrawFloatOptionsArgs<T>
+		public delegate void OnCustomOption();
+		public class FloatOptionsArgs<T>
         {
             public IEnumerable<T> items = null;
             public UpdateItems<T> updateItems = null;
             public GetDisplayName<T> getDisplayName = null;
             public OnSelect<T> onSelect = null;
-            public bool includeNullOption = false;
+			public OnCustomOption onCustomOption = null;
+			public bool includeNullOption = false;
         }
-        public static void DrawFloatingOptions<T>(DrawFloatOptionsArgs<T> args)
+        public static void DrawFloatingOptions<T>(FloatOptionsArgs<T> args)
         {
             if (args.items == null || args.items.Count() == 0)
                 return;
@@ -95,6 +97,12 @@ namespace InGameDefEditor
                     "<none>", delegate { args.onSelect(default(T)); },
                     MenuOptionPriority.High, null, null, 0f, null, null));
             }
+			if (args.onCustomOption != null)
+			{
+				options.Add(new FloatMenuOption(
+					"Custom...", () => args.onCustomOption(),
+					MenuOptionPriority.High, null, null, 0f, null, null));
+			}
             foreach (T t in args.items)
             {
                 options.Add(new FloatMenuOption(
@@ -103,16 +111,16 @@ namespace InGameDefEditor
             }
             Find.WindowStack.Add(new FloatMenu(options));
         }
-        
-        public static void PlusMinusLabel(
-            float x, ref float y, int labelWidth, string label, Action add, Action subtract)
+
+		public static void PlusMinusLabel(
+			float x, ref float y, int labelWidth, string label, Action add, Action subtract, bool isAddEnabled = true, bool isSubtractEnabled = true)
         {
             DrawLabel(x, y, labelWidth, label, true);
-            if (Widgets.ButtonText(new Rect(x + labelWidth + 10, y - 4, 30, 32), "+"))
+            if (Widgets.ButtonText(new Rect(x + labelWidth + 10, y - 4, 30, 32), "+", true, false, isAddEnabled))
             {
                 add();
             }
-            if (Widgets.ButtonText(new Rect(x + labelWidth + 52, y - 4, 30, 32), "-"))
+            if (Widgets.ButtonText(new Rect(x + labelWidth + 52, y - 4, 30, 32), "-", true, false, isSubtractEnabled))
             {
                 subtract();
             }
@@ -121,8 +129,8 @@ namespace InGameDefEditor
 
         public static void PlusMinusLabel<T, U>(
             float x, ref float y, int labelWidth, string label,
-            DrawFloatOptionsArgs<T> addFloatOptions, 
-            DrawFloatOptionsArgs<U> removeFloatOptions)
+            FloatOptionsArgs<T> addFloatOptions, 
+            FloatOptionsArgs<U> removeFloatOptions)
         {
             PlusMinusLabel(x, ref y, labelWidth, label,
                 delegate ()
@@ -133,7 +141,7 @@ namespace InGameDefEditor
                             addFloatOptions.items = new List<T>();
                         addFloatOptions.items = addFloatOptions.updateItems.Invoke();
                     }
-                    DrawFloatingOptions(addFloatOptions);
+					DrawFloatingOptions(addFloatOptions);
                 },
                 delegate ()
                 {
@@ -143,45 +151,60 @@ namespace InGameDefEditor
                             removeFloatOptions.items = new List<U>();
                         removeFloatOptions.items = removeFloatOptions.updateItems.Invoke();
                     }
-                    DrawFloatingOptions(removeFloatOptions);
-                });
+					DrawFloatingOptions(removeFloatOptions);
+                },
+				addFloatOptions.items?.Count() > 0,
+				removeFloatOptions.items?.Count() > 0);
         }
 
-        public delegate IEnumerable<D> BeingUsed<D>() where D : Def;
-        public class PlusMinusArgs<D> where D : Def
+		public delegate IEnumerable<T> BeingUsed<T>();
+		public delegate bool IsBeingUsed<T>(T t);
+		public class PlusMinusArgs<T>
         {
-            public IEnumerable<D> allItems;
-            public BeingUsed<D> beingUsed;
-            public OnSelect<D> onAdd;
-            public OnSelect<D> onRemove;
-            public GetDisplayName<D> getDisplayName = null;
+            public IEnumerable<T> allItems;
+            public BeingUsed<T> beingUsed;
+			public IsBeingUsed<T> isBeingUsed;
+            public OnSelect<T> onAdd;
+            public OnSelect<T> onRemove;
+            public GetDisplayName<T> getDisplayName = null;
+			public OnCustomOption onCustomOption = null;
 
-            internal DrawFloatOptionsArgs<D> addArgs = null;
-            internal DrawFloatOptionsArgs<D> removeArgs = null;
+            internal FloatOptionsArgs<T> addArgs = null;
+            internal FloatOptionsArgs<T> removeArgs = null;
         }
-        public static void PlusMinusLabel<D>(float x, ref float y, int labelWidth, string label, PlusMinusArgs<D> args) where D : Def
+        public static void PlusMinusLabel<T>(float x, ref float y, int labelWidth, string label, PlusMinusArgs<T> args)
         {
             if (args.addArgs == null)
             {
-                args.addArgs = new DrawFloatOptionsArgs<D>()
+                args.addArgs = new FloatOptionsArgs<T>()
                 {
-                    getDisplayName = args.getDisplayName ?? ((D d) => d.label),
+                    getDisplayName = args.getDisplayName,
+					onCustomOption = args.onCustomOption,
                     updateItems = delegate()
-                    {
-                        HashSet<D> lookup = new HashSet<D>();
-                        foreach (var v in args.beingUsed())
-                            lookup.Add(v);
-                        List<D> items = new List<D>(args.allItems.Count());
-                        foreach (D d in args.allItems)
-                            if (!lookup.Contains(d))
-                                items.Add(d);
+					{
+						List<T> items = new List<T>();
+						if (args.beingUsed != null)
+						{
+							HashSet<T> lookup = new HashSet<T>();
+							foreach (var v in args.beingUsed())
+								lookup.Add(v);
+							foreach (T d in args.allItems)
+								if (!lookup.Contains(d))
+									items.Add(d);
+						}
+						else if (args.isBeingUsed != null)
+						{
+							foreach (T d in args.allItems)
+								if (!args.isBeingUsed(d))
+									items.Add(d);
+						}
                         return items;
                     },
                     onSelect = args.onAdd
                 };
-                args.removeArgs = new DrawFloatOptionsArgs<D>()
+                args.removeArgs = new FloatOptionsArgs<T>()
                 {
-                    getDisplayName = args.getDisplayName ?? ((D d) => d.label),
+                    getDisplayName = args.getDisplayName,
                     updateItems = () => args.beingUsed(),
                     onSelect = args.onRemove
                 };
