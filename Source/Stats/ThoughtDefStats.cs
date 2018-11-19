@@ -49,7 +49,8 @@ namespace InGameDefEditor.Stats
             this.lerpOpinionToZeroAfterDurationPct = d.lerpOpinionToZeroAfterDurationPct;
             this.maxCumulatedOpinionOffset = d.maxCumulatedOpinionOffset;
 
-            Util.TryAssignStatDef(d.gameCondition, out this.gameCondition);
+			Util.TryAssignStatDef(d.hediff, out this.hediff);
+			Util.TryAssignStatDef(d.gameCondition, out this.gameCondition);
             Util.TryAssignStatDef(d.nextThought, out this.nextThought);
             Util.TryAssignStatDef(d.effectMultiplyingStat, out this.effectMultiplyingStat);
             Util.TryAssignStatDef(d.thoughtToMake, out this.thoughtToMake);
@@ -88,7 +89,8 @@ namespace InGameDefEditor.Stats
                 to.lerpOpinionToZeroAfterDurationPct = this.lerpOpinionToZeroAfterDurationPct;
                 to.maxCumulatedOpinionOffset = this.maxCumulatedOpinionOffset;
 
-                Util.TryAssignDef(this.gameCondition, out to.gameCondition);
+				Util.TryAssignDef(this.hediff, out to.hediff);
+				Util.TryAssignDef(this.gameCondition, out to.gameCondition);
                 Util.TryAssignDef(this.nextThought, out to.nextThought);
                 Util.TryAssignDef(this.effectMultiplyingStat, out to.effectMultiplyingStat);
                 Util.TryAssignDef(this.thoughtToMake, out to.thoughtToMake);
@@ -111,7 +113,8 @@ namespace InGameDefEditor.Stats
         {
             if (!base.Initialize())
                 return false;
-            Util.InitializeDefStat(this.gameCondition);
+			Util.InitializeDefStat(this.hediff);
+			Util.InitializeDefStat(this.gameCondition);
             Util.InitializeDefStat(this.nextThought);
             Util.InitializeDefStat(this.effectMultiplyingStat);
             Util.InitializeDefStat(this.thoughtToMake);
@@ -158,7 +161,8 @@ namespace InGameDefEditor.Stats
                     this.stackLimitForSameOtherPawn == s.stackLimitForSameOtherPawn &&
                     this.lerpOpinionToZeroAfterDurationPct == s.lerpOpinionToZeroAfterDurationPct &&
                     this.maxCumulatedOpinionOffset == s.maxCumulatedOpinionOffset &&
-                    Util.AreEqual(this.gameCondition, s.gameCondition) &&
+					Util.AreEqual(this.hediff, s.hediff) &&
+					Util.AreEqual(this.gameCondition, s.gameCondition) &&
                     Util.AreEqual(this.nextThought, s.nextThought) &&
                     Util.AreEqual(this.effectMultiplyingStat, s.effectMultiplyingStat) &&
                     Util.AreEqual(this.thoughtToMake, s.thoughtToMake) &&

@@ -8,15 +8,16 @@ namespace InGameDefEditor.Stats.Misc
 {
 	public class ThingFilterStats : IStat<ThingFilter>
 	{
-		private FloatRange allowedHitPointsPercents = FloatRange.ZeroToOne;
+		/*private FloatRange allowedHitPointsPercents = FloatRange.ZeroToOne;
 		public bool allowedHitPointsConfigurable;
 		public bool allowedQualitiesConfigurable;
 		private FoodPreferability disallowWorsePreferability;
 		private bool disallowInedibleByHuman;
-		private float disallowCheaperThan;
+		private float disallowCheaperThan;*/
 
+		//private HashSet<DefStat<ThingDef>> allowedDefs;
 		private List<DefStat<ThingDef>> disallowedThingDefs;
-		private List<DefStat<ThingDef>> thingDefs;
+		private HashSet<DefStat<ThingDef>> thingDefs;
 		private List<string> categories;
 		private List<string> disallowedCategories;
 		private List<string> specialFiltersToAllow;
@@ -24,7 +25,6 @@ namespace InGameDefEditor.Stats.Misc
 
 		/*
 		private QualityRangeStats allowedQualities;
-		private HashSet<DefStat<ThingDef>> allowedDefs;
 		private List<DefStat<ThingDef>> allowAllWhoCanMake;
 		private List<DefStat<StuffCategoryDef>> stuffCategoriesToAllow;
 		private List<DefStat<SpecialThingFilterDef>> disallowedSpecialFilters;
@@ -36,32 +36,28 @@ namespace InGameDefEditor.Stats.Misc
 		//private Type allowWithComp;
 		//private Type disallowWithComp;
 
+		public ThingFilterStats() { }
 		public ThingFilterStats(ThingFilter f)
 		{
-			this.allowedHitPointsPercents = f.AllowedHitPointsPercents;
+			/*this.allowedHitPointsPercents = f.AllowedHitPointsPercents;
 			this.allowedHitPointsConfigurable = f.allowedHitPointsConfigurable;
 			this.allowedQualitiesConfigurable = f.allowedQualitiesConfigurable;
 			this.disallowWorsePreferability = GetDisallowWorsePreferability(f);
 			this.disallowInedibleByHuman = GetDisallowInedibleByHuman(f);
 			this.disallowCheaperThan = GetDisallowCheaperThan(f);
+			this.allowedDefs = Util.CreateDefStatHashSet(GetAllowedDefs(f));*/
 
 			/*if (GetAllowedQualities(f) != null)
-				this.allowedQualities = new QualityRangeStats(GetAllowedQualities(f));
+				this.allowedQualities = new QualityRangeStats(GetAllowedQualities(f));*/
 
-			this.allowedDefs = Util.CreateDefStatHashSet(GetAllowedDefs(f));*/
 			this.disallowedThingDefs = Util.CreateDefStatList(GetDisallowedThingDefs(f));
 			/*this.allowAllWhoCanMake = Util.CreateDefStatList(GetAllowAllWhoCanMake(f));
 			this.stuffCategoriesToAllow = Util.CreateDefStatList(GetStuffCategoriesToAllow(f));
 			this.disallowedSpecialFilters = Util.CreateDefStatList(GetDisallowedSpecialFilters(f));*/
-			this.thingDefs = Util.CreateDefStatList(GetThingDefs(f));
-			List<string> l = GetCategories(f);
-			Log.Error(Util.IsNull("", l));
-			if (l != null)
-			{
-				Log.Error("Count: " + l.Count);
-				foreach (var v in l)
-					Log.Error("    " + v);
-			}
+			this.thingDefs = Util.CreateDefStatHashSet(GetThingDefs(f));
+			if (GetAllowedDefs(f) != null)
+				foreach (var v in GetAllowedDefs(f))
+					this.thingDefs.Add(new DefStat<ThingDef>(v));
 			this.categories = Util.CreateList(GetCategories(f));
 			/*this.tradeTagsToAllow = Util.CreateList(GetTradeTagsToAllow(f));
 			this.tradeTagsToDisallow = Util.CreateList(GetTradeTagsToDisallow(f));
@@ -74,7 +70,7 @@ namespace InGameDefEditor.Stats.Misc
 
 		public bool Initialize()
 		{
-			/*Util.InitializeDefStat(this.allowedDefs);*/
+			//Util.InitializeDefStat(this.allowedDefs);
 			Util.InitializeDefStat(this.disallowedThingDefs);
 			/*Util.InitializeDefStat(this.allowAllWhoCanMake);
 			Util.InitializeDefStat(this.stuffCategoriesToAllow);
@@ -85,22 +81,22 @@ namespace InGameDefEditor.Stats.Misc
 
 		public void ApplyStats(ThingFilter to)
 		{
-			to.AllowedHitPointsPercents = this.allowedHitPointsPercents;
+			/*to.AllowedHitPointsPercents = this.allowedHitPointsPercents;
 			to.allowedHitPointsConfigurable = this.allowedHitPointsConfigurable;
 			to.allowedQualitiesConfigurable = this.allowedQualitiesConfigurable;
 			SetDisallowWorsePreferability(to, this.disallowWorsePreferability);
 			SetDisallowInedibleByHuman(to, this.disallowInedibleByHuman);
 			SetDisallowCheaperThan(to, this.disallowCheaperThan);
+			SetAllowedDefs(to, Util.ConvertDefStats(this.allowedDefs));*/
 
 			/*if (this.allowedQualities != null)
 				to.AllowedQualityLevels = new QualityRange(this.allowedQualities.Min, this.allowedQualities.Max);
-			
-			SetAllowedDefs(to, Util.ConvertDefStats(this.allowedDefs));*/
+			*/
 			SetDisallowedThingDefs(to, Util.ConvertDefStats(this.disallowedThingDefs));
 			/*SetAllowAllWhoCanMake(to, Util.ConvertDefStats(this.allowAllWhoCanMake));
 			SetStuffCategoriesToAllow(to, Util.ConvertDefStats(this.stuffCategoriesToAllow));
 			SetDisallowedSpecialFilters(to, Util.ConvertDefStats(this.disallowedSpecialFilters));*/
-			SetThingDefs(to, Util.ConvertDefStats(this.thingDefs));
+			SetThingDefs(to, new List<ThingDef>(Util.ConvertDefStats(this.thingDefs)));
 
 			SetCategories(to, Util.CreateList(this.categories));
 			/*SetTradeTagsToAllow(to, Util.CreateList(this.tradeTagsToAllow));
@@ -125,12 +121,12 @@ namespace InGameDefEditor.Stats.Misc
 				obj is ThingFilterStats f)
 			{
 				return 
-					this.allowedHitPointsPercents == f.allowedHitPointsPercents && 
+					/*this.allowedHitPointsPercents == f.allowedHitPointsPercents && 
 					this.allowedHitPointsConfigurable == f.allowedHitPointsConfigurable &&
 					this.allowedQualitiesConfigurable == f.allowedQualitiesConfigurable &&
 					this.disallowWorsePreferability == f.disallowWorsePreferability  &&
 					this.disallowInedibleByHuman == f.disallowInedibleByHuman &&
-					this.disallowCheaperThan == f.disallowCheaperThan &&
+					this.disallowCheaperThan == f.disallowCheaperThan &&*/
 					//object.Equals(this.allowedQualities, f.allowedQualities) &&
 					//Util.AreEqual(this.allowedDefs, f.allowedDefs) &&
 					Util.AreEqual(this.disallowedThingDefs, f.disallowedThingDefs) &&

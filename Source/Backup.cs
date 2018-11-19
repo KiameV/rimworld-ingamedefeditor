@@ -40,7 +40,10 @@ namespace InGameDefEditor
 
                 foreach (ThoughtDef d in Defs.ThoughtDefs.Values)
                     backup[d] = new ThoughtDefStats(d);
-            }
+
+				foreach (RecipeDef d in Defs.RecipeDefs.Values)
+					backup[d] = new RecipeDefStats(d);
+			}
         }
 
         public static void ApplyStats(Def def)

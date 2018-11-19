@@ -11,7 +11,8 @@ namespace InGameDefEditor.Stats.DefStat
 		// TODO
 		// public List<SubEffecterStat> children;
 
-        public EffecterDefStat(EffecterDef d) : base(d)
+		public EffecterDefStat() { }
+		public EffecterDefStat(EffecterDef d) : base(d)
         {
             this.positionRadius = d.positionRadius;
             this.offsetTowardsTarget = d.offsetTowardsTarget;

@@ -27,8 +27,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
 		private readonly FloatOptionsArgs<StatDef> efficiencyStat;
 		private readonly FloatOptionsArgs<StatDef> workTableEfficiencyStat;
 		private readonly FloatOptionsArgs<StatDef> workTableSpeedStat;
-		private readonly FloatOptionsArgs<HediffDef> addsHediff;
-		private readonly FloatOptionsArgs<HediffDef> removesHediff;
+		//private readonly FloatOptionsArgs<HediffDef> addsHediff;
+		//private readonly FloatOptionsArgs<HediffDef> removesHediff;
 		private readonly FloatOptionsArgs<SkillDef> workSkill;
 
 		private readonly PlusMinusArgs<SpecialProductType> specialProducts;
@@ -120,7 +120,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				items = DefDatabase<StatDef>.AllDefsListForReading,
 				onSelect = (def) => base.Def.workTableSpeedStat = def,
 			};
-			this.addsHediff = new FloatOptionsArgs<HediffDef>()
+			/*this.addsHediff = new FloatOptionsArgs<HediffDef>()
 			{
 				getDisplayName = (def) => def.label,
 				includeNullOption = true,
@@ -133,7 +133,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				includeNullOption = true,
 				items = DefDatabase<HediffDef>.AllDefsListForReading,
 				onSelect = (def) => base.Def.removesHediff = def,
-			};
+			};*/
 			this.workSkill = new FloatOptionsArgs<SkillDef>()
 			{
 				getDisplayName = (def) => def.label,
@@ -227,7 +227,10 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				getDisplayName = (en) => en.ToString()
 			};
 
+			if (base.Def.ingredients == null)
+				base.Def.ingredients = new List<IngredientCount>();
 			foreach (var v in base.Def.ingredients)
+				this.ingredients.Add(new IngredientCountWidget(v));
 			
             this.Rebuild();
         }
@@ -242,8 +245,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			WindowUtil.DrawInput(x, ref y, width, "Unfinished Thing Def", 150, Util.GetDisplayLabel(this.Def.unfinishedThingDef?.defName), this.unfinishedThingDef);
 			WindowUtil.DrawInput(x, ref y, width, "Sound Working", 150, Util.GetDisplayLabel(this.Def.soundWorking?.defName), this.soundWorking);
 			WindowUtil.DrawInput(x, ref y, width, "Efficiency Stat", 150, Util.GetDisplayLabel(this.Def.efficiencyStat?.label), this.efficiencyStat);
-			WindowUtil.DrawInput(x, ref y, width, "Adds Hediff", 150, Util.GetDisplayLabel(this.Def.addsHediff?.defName), this.addsHediff);
-			WindowUtil.DrawInput(x, ref y, width, "Removes Hediff", 150, Util.GetDisplayLabel(this.Def.removesHediff?.defName), this.removesHediff);
+			//WindowUtil.DrawInput(x, ref y, width, "Adds Hediff", 150, Util.GetDisplayLabel(this.Def.addsHediff?.defName), this.addsHediff);
+			//WindowUtil.DrawInput(x, ref y, width, "Removes Hediff", 150, Util.GetDisplayLabel(this.Def.removesHediff?.defName), this.removesHediff);
 			WindowUtil.DrawInput(x, ref y, width, "Work Speed Stat", 150, Util.GetDisplayLabel(this.Def.workSpeedStat?.label), this.workSpeedStat);
 			WindowUtil.DrawInput(x, ref y, width, "Work Table Efficiency Stat", 150, Util.GetDisplayLabel(this.Def.workTableEfficiencyStat?.label), this.workTableEfficiencyStat);
 			WindowUtil.DrawInput(x, ref y, width, "Work Table SpeedStat", 150, Util.GetDisplayLabel(this.Def.workTableSpeedStat?.label), this.workTableSpeedStat);
@@ -251,7 +254,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 			if (this.effectWorking != null)
 			{ 
-				effectWorking?.Draw(x, ref y, width);
+				effectWorking.Draw(x, ref y, width);
 			}
 		}
 
@@ -260,13 +263,13 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			WindowUtil.PlusMinusLabel(x, ref y, 150, "Products", this.productsPlusMinusArgs);
 			foreach (var v in this.products)
 			{
-				v.Draw(x, ref y, width);
+				v.Draw(x + 10, ref y, width);
 			}
 
 			WindowUtil.PlusMinusLabel(x, ref y, 150, "Skill Requirements", this.skillRequirementsPlusMinusArgs);
 			foreach (var v in this.skillRequirements)
 			{
-				v.Draw(x, ref y, width);
+				v.Draw(x + 10, ref y, width);
 			}
 
 			WindowUtil.PlusMinusLabel(x, ref y, 150, "Ingredients",
@@ -289,34 +292,37 @@ namespace InGameDefEditor.Gui.EditorWidgets
 						onSelect = (s) => this.ingredients.RemoveAll((i) => i.DisplayLabel.Equals(s)),
 					});
 				});
-			
 			foreach (var v in this.ingredients)
 			{
-				WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v.DisplayLabel);
-				y += 40;
+				WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v.DisplayLabel, true);
+				y += 32;
 				v.Draw(x + 20, ref y, width - 20);
 			}
+			y += 8;
 
 			WindowUtil.PlusMinusLabel(x, ref y, 150, "Special Products", this.specialProducts);
 			foreach (var v in base.Def.specialProducts)
 			{
 				WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
-				y += 40;
+				y += 32;
 			}
-			
+			y += 8;
+
 			WindowUtil.PlusMinusLabel(x, ref y, 150, "Force Hidden Special Filters", this.forceHiddenSpecialFilters);
 			foreach (var v in base.Def.forceHiddenSpecialFilters)
 			{
 				WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
-				y += 40;
+				y += 32;
 			}
+			y += 8;
 
 			WindowUtil.PlusMinusLabel(x, ref y, 150, "Applied On Fixed Body Parts", this.appliedOnFixedBodyParts);
 			foreach (var v in base.Def.appliedOnFixedBodyParts)
 			{
 				WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
-				y += 40;
+				y += 32;
 			}
+			y += 8;
 
 			/*WindowUtil.PlusMinusLabel(x, ref y, 150, "Recipe Users", this.recipeUsers);
 			foreach (var v in base.Def.recipeUsers)
@@ -328,17 +334,27 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         public override void DrawRight(float x, ref float y, float width)
         {
-			fixedIngredientFilter.Draw(x, ref y, width);
-			defaultIngredientFilter.Draw(x, ref y, width);
+			WindowUtil.DrawLabel(x, y, width, "Fixed Ingredient Filter", true);
+			y += 40;
+			fixedIngredientFilter.Draw(x + 10, ref y, width - 10);
+
+
+			WindowUtil.DrawLabel(x, y, width, "Default Ingredient Filter", true);
+			y += 40;
+			defaultIngredientFilter.Draw(x + 10, ref y, width - 10);
 		}
 
 		public override void Rebuild()
 		{
+			foreach (var v in this.inputWidgets)
+				v.ResetBuffers();
+
+			this.effectWorking = null;
 			if (base.Def.effectWorking != null)
 				this.effectWorking = new EffecterDefWidget(base.Def.effectWorking);
 
-			this.fixedIngredientFilter = new ThingFilterWidget(base.Def.fixedIngredientFilter, DrawOptionsEnum.Category | DrawOptionsEnum.SpecialFilters | DrawOptionsEnum.ThingDefs);
-			this.defaultIngredientFilter = new ThingFilterWidget(base.Def.defaultIngredientFilter, DrawOptionsEnum.Category | DrawOptionsEnum.SpecialFilters | DrawOptionsEnum.ThingDefs);
+			this.fixedIngredientFilter = new ThingFilterWidget(base.Def.fixedIngredientFilter);
+			this.defaultIngredientFilter = new ThingFilterWidget(base.Def.defaultIngredientFilter);
 
 			if (base.Def.specialProducts == null)
 				base.Def.specialProducts = new List<SpecialProductType>(0);

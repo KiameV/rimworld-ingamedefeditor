@@ -10,7 +10,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 		public MinMaxInputWidget<EffecterDef> offsetTowardsTarget = null;
 		// TODO public List<SubEffecterDef> children;
 
-		public string DisplayLabel => this.EffecterDef.defName;
+		public string DisplayLabel => this.EffecterDef.label ?? this.EffecterDef.defName;
 
 		public EffecterDefWidget(EffecterDef def)
 		{

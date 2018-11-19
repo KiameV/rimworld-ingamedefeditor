@@ -23,6 +23,7 @@ namespace InGameDefEditor.Stats.DefStat
 		public DefStat<SoundDef> soundDef;
 		public DefStat<ThingDef> moteDef;
 
+		public SubEffecterStat() { }
 		public SubEffecterStat(SubEffecterDef d)
 		{
 			this.ticksBeforeSustainerStart = d.ticksBeforeSustainerStart;

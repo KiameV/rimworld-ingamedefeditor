@@ -8,6 +8,7 @@ namespace InGameDefEditor.Stats.Misc
 		public QualityCategory Min;
 		public QualityCategory Max;
 
+		public QualityRangeStats() { }
 		public QualityRangeStats(QualityRange qr)
 		{
 			this.Min = qr.min;

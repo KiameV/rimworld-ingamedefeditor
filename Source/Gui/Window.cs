@@ -3,6 +3,7 @@ using Verse;
 using InGameDefEditor.Gui.EditorWidgets;
 using RimWorld;
 using System.Collections.Generic;
+using InGameDefEditor.Gui.EditorWidgets.Misc;
 
 namespace InGameDefEditor
 {
@@ -153,6 +154,7 @@ namespace InGameDefEditor
 					break;
             }
             this.ResetScrolls();
+			IngredientCountWidget.ResetUniqueId();
         }
 
         #region ButonWidget

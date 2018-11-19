@@ -9,6 +9,7 @@ namespace InGameDefEditor.Stats.Misc
 		public readonly ThingFilterStats ThingFilterStats;
 		public float Count = 0;
 
+		public IngredientCountStats() { }
 		public IngredientCountStats(IngredientCount i)
 		{
 			this.ThingFilterStats = new ThingFilterStats(i.filter);

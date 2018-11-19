@@ -16,11 +16,11 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 		public string DisplayLabel => "Thing Filter";
 
-		private readonly List<IInputWidget> inputWidgets;
+		//private readonly List<IInputWidget> inputWidgets;
 		
 		private FloatOptionsArgs<FoodPreferability> disallowWorsePreferabilityArgs;
 		
-		private PlusMinusArgs<ThingDef> thingDefs;
+		private PlusMinusArgs<ThingDef> thingDefsPlusMinusArgs;
 		private PlusMinusArgs<ThingDef> disallowedThingDefsPlusMinusArgs;
 
 		private PlusMinusArgs<string> categories;
@@ -45,17 +45,16 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 		public enum DrawOptionsEnum
 		{
 			All = 1,
-			ThingDefs = 2,
-			Category = 4,
-			SpecialFilters = 8,
+			Category = 2,
+			SpecialFilters = 4,
 		}
 
-		public ThingFilterWidget(ThingFilter thingFilter, DrawOptionsEnum drawOptions)
+		public ThingFilterWidget(ThingFilter thingFilter, DrawOptionsEnum drawOptions = DrawOptionsEnum.All)
 		{
 			this.ThingFilter = thingFilter;
 			this.DrawOptions = drawOptions;
 
-			inputWidgets = new List<IInputWidget>()
+			/*inputWidgets = new List<IInputWidget>()
 			{
 				new BoolInputWidget<ThingFilter>(this.ThingFilter, "Allowed Hit Points Configurable", (tf) => tf.allowedHitPointsConfigurable, (tf, b) => tf.allowedHitPointsConfigurable = b),
 				new MinMaxInputWidget<ThingFilter>("Allowed Hit Points Percents",  
@@ -63,8 +62,8 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 					new FloatInputWidget<ThingFilter>(this.ThingFilter, "Max", (tf) => tf.AllowedHitPointsPercents.max, (tf, f) => tf.AllowedHitPointsPercents = new FloatRange(tf.AllowedHitPointsPercents.min, f))),
 				new BoolInputWidget<ThingFilter>(this.ThingFilter, "Allowed Qualities Configurable", (tf) => tf.allowedQualitiesConfigurable, (tf, b) => tf.allowedQualitiesConfigurable = b),
 				new BoolInputWidget<ThingFilter>(this.ThingFilter, "Disallow Inedible By Human", (tf) => ThingFilterStats.GetDisallowInedibleByHuman(tf), (tf, b) => ThingFilterStats.SetDisallowInedibleByHuman(tf, b)),
-				new FloatInputWidget<ThingFilter>(this.ThingFilter, "Disallow Cheaper Than", (tf) => ThingFilterStats.GetDisallowCheaperThan(tf), (tf, f) => ThingFilterStats.SetDisallowCheaperThan(tf, f)),
-			};
+				//new FloatInputWidget<ThingFilter>(this.ThingFilter, "Disallow Cheaper Than", (tf) => ThingFilterStats.GetDisallowCheaperThan(tf), (tf, f) => ThingFilterStats.SetDisallowCheaperThan(tf, f)),
+			};*/
 
 			this.disallowWorsePreferabilityArgs = new FloatOptionsArgs<FoodPreferability>()
 			{
@@ -73,49 +72,60 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				includeNullOption = true,
 				onSelect = (fp) => ThingFilterStats.SetDisallowWorsePreferability(this.ThingFilter, fp),
 			};
-			
-			IEnumerable<ThingDef> tds = DefDatabase<ThingDef>.AllDefsListForReading;
-			if (ThingFilterStats.GetThingDefs(this.ThingFilter) == null)
-				ThingFilterStats.SetThingDefs(this.ThingFilter, new List<ThingDef>());
-			this.thingDefs = new PlusMinusArgs<ThingDef>()
+
+			IEnumerable<ThingDef> tds = this.GetThingDefsSorted();
+
+			this.thingDefsPlusMinusArgs = new PlusMinusArgs<ThingDef>()
 			{
 				allItems = tds,
-				beingUsed = () => ThingFilterStats.GetThingDefs(this.ThingFilter),
+				beingUsed = () => ThingFilterStats.GetAllowedDefs(this.ThingFilter),
 				getDisplayName = (td) => td.label,
-				onAdd = (td) => ThingFilterStats.GetThingDefs(this.ThingFilter).Add(td),
-				onRemove = (td) => ThingFilterStats.GetThingDefs(this.ThingFilter).Remove(td),
+				onAdd = delegate (ThingDef td)
+				{
+					ThingFilterStats.GetThingDefs(this.ThingFilter).Add(td);
+					this.ThingFilter.ResolveReferences();
+				},
+				onRemove = delegate (ThingDef td)
+				{
+					ThingFilterStats.GetAllowedDefs(this.ThingFilter).Remove(td);
+					ThingFilterStats.GetThingDefs(this.ThingFilter).Remove(td);
+					this.ThingFilter.ResolveReferences();
+				},
 			};
 
-			if (ThingFilterStats.GetDisallowedThingDefs(this.ThingFilter) == null)
-				ThingFilterStats.SetDisallowedThingDefs(this.ThingFilter, new List<ThingDef>());
 			this.disallowedThingDefsPlusMinusArgs = new PlusMinusArgs<ThingDef>()
 			{
 				allItems = tds,
 				beingUsed = () => ThingFilterStats.GetDisallowedThingDefs(this.ThingFilter),
 				getDisplayName = (td) => td.label,
-				onAdd = (td) => ThingFilterStats.GetDisallowedThingDefs(this.ThingFilter).Add(td),
-				onRemove = (td) => ThingFilterStats.GetDisallowedThingDefs(this.ThingFilter).Remove(td),
+				onAdd = delegate (ThingDef td)
+				{
+					ThingFilterStats.GetDisallowedThingDefs(this.ThingFilter).Add(td);
+					this.ThingFilter.ResolveReferences();
+				},
+				onRemove = delegate (ThingDef td)
+				{
+					ThingFilterStats.GetDisallowedThingDefs(this.ThingFilter).Remove(td);
+					this.ThingFilter.ResolveReferences();
+				},
 			};
 
 
 			SortedDictionary<string, object> categoryByDefName = new SortedDictionary<string, object>();
 			foreach (var v in DefDatabase<ThingCategoryDef>.AllDefsListForReading)
 				categoryByDefName.Add(v.defName, null);
-			//this.categoryByDefName.Add("root", null);
-
-			if (ThingFilterStats.GetCategories(this.ThingFilter) == null)
-				ThingFilterStats.SetCategories(this.ThingFilter, new List<string>());
+			
 			this.categories = new PlusMinusArgs<string>()
 			{
 				allItems = categoryByDefName.Keys,
 				isBeingUsed = (s) => ThingFilterStats.GetCategories(this.ThingFilter).Contains(s),
 				getDisplayName = (s) => s,
 				onCustomOption = () => Find.WindowStack.Add(new Dialog_Name(
-					"Custom Category", delegate (string s)
+					"Allowed Custom Category", delegate (string s)
 					{
 						ThingFilterStats.GetCategories(this.ThingFilter).Add(s);
 						ThingFilterStats.GetDisallowedCategories(this.ThingFilter).Remove(s);
-
+						this.ThingFilter.ResolveReferences();
 					},
 					delegate (string name)
 					{
@@ -127,24 +137,27 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				{
 					ThingFilterStats.GetCategories(this.ThingFilter).Add(s);
 					ThingFilterStats.GetDisallowedCategories(this.ThingFilter).Remove(s);
+					this.ThingFilter.ResolveReferences();
 
 				},
-				onRemove = (s) => ThingFilterStats.GetCategories(this.ThingFilter).Remove(s),
+				onRemove = delegate (string s)
+				{
+					ThingFilterStats.GetCategories(this.ThingFilter).Remove(s);
+					this.ThingFilter.ResolveReferences();
+				}
 			};
 
-			if (ThingFilterStats.GetDisallowedCategories(this.ThingFilter) == null)
-				ThingFilterStats.SetDisallowedCategories(this.ThingFilter, new List<string>());
 			this.disallowedCategories = new PlusMinusArgs<string>()
 			{
 				allItems = categoryByDefName.Keys,
 				isBeingUsed = (s) => ThingFilterStats.GetDisallowedCategories(this.ThingFilter).Contains(s),
 				getDisplayName = (s) => s,
 				onCustomOption = () => Find.WindowStack.Add(new Dialog_Name(
-					"Custom Category to Disallow", delegate (string s)
+					"Disallowed Custom Category", delegate (string s)
 					{
 						ThingFilterStats.GetDisallowedCategories(this.ThingFilter).Add(s);
 						ThingFilterStats.GetCategories(this.ThingFilter).Remove(s);
-
+						this.ThingFilter.ResolveReferences();
 					},
 					delegate (string name)
 					{
@@ -156,24 +169,28 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				{
 					ThingFilterStats.GetDisallowedCategories(this.ThingFilter).Add(s);
 					ThingFilterStats.GetCategories(this.ThingFilter).Remove(s);
+					this.ThingFilter.ResolveReferences();
 
 				},
-				onRemove = (s) => ThingFilterStats.GetDisallowedCategories(this.ThingFilter).Remove(s),
+				onRemove = delegate (string s)
+				{
+					ThingFilterStats.GetDisallowedCategories(this.ThingFilter).Remove(s);
+					this.ThingFilter.ResolveReferences();
+				}
 			};
 
 			List<String> specialFilters = new List<string>() { "AllowCorpsesColonist", "AllowCorpsesStranger" };
-			if (ThingFilterStats.GetSpecialFiltersToAllow(this.ThingFilter) == null)
-				ThingFilterStats.SetSpecialFiltersToAllow(this.ThingFilter, new List<string>());
 			this.specialFiltersToAllow = new PlusMinusArgs<string>()
 			{
 				allItems = specialFilters,
 				beingUsed = () => ThingFilterStats.GetSpecialFiltersToAllow(this.ThingFilter),
 				getDisplayName = (s) => s,
 				onCustomOption = () => Find.WindowStack.Add(new Dialog_Name(
-					"Custom Special Filter", delegate (string s)
+					"Allowed Custom Filter", delegate (string s)
 					{
 						ThingFilterStats.GetSpecialFiltersToAllow(this.ThingFilter).Add(s);
 						ThingFilterStats.GetSpecialFiltersToDisallow(this.ThingFilter).Remove(s);
+						this.ThingFilter.ResolveReferences();
 
 					},
 					delegate (string name)
@@ -186,23 +203,27 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				{
 					ThingFilterStats.GetSpecialFiltersToAllow(this.ThingFilter).Add(s);
 					ThingFilterStats.GetSpecialFiltersToDisallow(this.ThingFilter).Remove(s);
+					this.ThingFilter.ResolveReferences();
 
 				},
-				onRemove = (s) => ThingFilterStats.GetSpecialFiltersToAllow(this.ThingFilter).Remove(s),
+				onRemove = delegate (string s)
+				{
+					ThingFilterStats.GetSpecialFiltersToAllow(this.ThingFilter).Remove(s);
+					this.ThingFilter.ResolveReferences();
+				}
 			};
 
-			if (ThingFilterStats.GetSpecialFiltersToDisallow(this.ThingFilter) == null)
-				ThingFilterStats.SetSpecialFiltersToDisallow(this.ThingFilter, new List<string>());
 			this.specialFiltersToDisallow = new PlusMinusArgs<string>()
 			{
 				allItems = specialFilters,
 				beingUsed = () => ThingFilterStats.GetSpecialFiltersToDisallow(this.ThingFilter),
 				getDisplayName = (s) => s,
 				onCustomOption = () => Find.WindowStack.Add(new Dialog_Name(
-					"Custom Special Filter", delegate (string s)
+					"Disallow Custom Filter", delegate (string s)
 					{
 						ThingFilterStats.GetSpecialFiltersToDisallow(this.ThingFilter).Add(s);
 						ThingFilterStats.GetSpecialFiltersToAllow(this.ThingFilter).Remove(s);
+						this.ThingFilter.ResolveReferences();
 
 					},
 					delegate (string name)
@@ -215,9 +236,14 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				{
 					ThingFilterStats.GetSpecialFiltersToDisallow(this.ThingFilter).Add(s);
 					ThingFilterStats.GetSpecialFiltersToAllow(this.ThingFilter).Remove(s);
+					this.ThingFilter.ResolveReferences();
 
 				},
-				onRemove = (s) => ThingFilterStats.GetSpecialFiltersToDisallow(this.ThingFilter).Remove(s),
+				onRemove = delegate (string s)
+				{
+					ThingFilterStats.GetSpecialFiltersToDisallow(this.ThingFilter).Remove(s);
+					this.ThingFilter.ResolveReferences();
+				}
 			};
 
 			this.ResetBuffers();
@@ -225,73 +251,119 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 		public void Draw(float x, ref float y, float width)
 		{
-			if (this.ShouldDrawPart(DrawOptionsEnum.All))
+			/*if (this.ShouldDrawPart(DrawOptionsEnum.All))
 			{
 				for (int i = 0; i < this.inputWidgets.Count; ++i)
 					if (i != 1 || this.ThingFilter.allowedHitPointsConfigurable)
 						this.inputWidgets[i].Draw(x, ref y, width);
+			}*/
+
+			WindowUtil.PlusMinusLabel(x, ref y, 150, "Allowed Defs", this.thingDefsPlusMinusArgs);
+			foreach (var v in ThingFilterStats.GetAllowedDefs(this.ThingFilter))
+			{
+				WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v.label);
+				y += 32;
 			}
+			y += 8;
+
+			/*WindowUtil.DrawLabel(x, y, 100, "Thing Defs", true);
+			y += 32;
+			foreach (var v in ThingFilterStats.GetThingDefs(this.ThingFilter))
+			{
+				WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v.label);
+				y += 32;
+			}
+			y += 8;*/
 
 			if (this.ShouldDrawPart(DrawOptionsEnum.All) ||
 				this.ShouldDrawPart(DrawOptionsEnum.Category))
 			{
-				WindowUtil.PlusMinusLabel(x, ref y, 100, "Categories", this.categories);
+				WindowUtil.PlusMinusLabel(x, ref y, 150, "Allowed Categories", this.categories);
 				foreach (var v in ThingFilterStats.GetCategories(this.ThingFilter))
 				{
 					WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
-					y += 40;
+					y += 32;
 				}
+				y += 8;
 
 				WindowUtil.PlusMinusLabel(x, ref y, 150, "Disallow Categories", this.disallowedCategories);
 				foreach (var v in ThingFilterStats.GetDisallowedCategories(this.ThingFilter))
 				{
 					WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
-					y += 40;
+					y += 32;
 				}
+				y += 8;
 			}
 
 			if (this.ShouldDrawPart(DrawOptionsEnum.All) ||
 				this.ShouldDrawPart(DrawOptionsEnum.SpecialFilters))
 			{
-				WindowUtil.PlusMinusLabel(x, ref y, 100, "Thing Defs", this.thingDefs);
-				foreach (var v in ThingFilterStats.GetThingDefs(this.ThingFilter))
-				{
-					WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v.label);
-					y += 40;
-				}
-
-				WindowUtil.PlusMinusLabel(x, ref y, 150, "Disallow Thing Defs", this.disallowedThingDefsPlusMinusArgs);
+				WindowUtil.PlusMinusLabel(x, ref y, 150, "Disallowed Defs", this.disallowedThingDefsPlusMinusArgs);
 				foreach (var v in ThingFilterStats.GetDisallowedThingDefs(this.ThingFilter))
 				{
 					WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v.label);
-					y += 40;
+					y += 32;
 				}
+				y += 8;
 
-				WindowUtil.PlusMinusLabel(x, ref y, 150, "Special Filters Allowed", this.specialFiltersToAllow);
+				WindowUtil.PlusMinusLabel(x, ref y, 150, "Allowed Custom Filters", this.specialFiltersToAllow);
 				foreach (var v in ThingFilterStats.GetSpecialFiltersToAllow(this.ThingFilter))
 				{
 					WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
-					y += 40;
+					y += 32;
 				}
+				y += 8;
 
-				WindowUtil.PlusMinusLabel(x, ref y, 150, "Special Filters Disallowed", this.specialFiltersToDisallow);
+				WindowUtil.PlusMinusLabel(x, ref y, 150, "Disallowed Custom Filters", this.specialFiltersToDisallow);
 				foreach (var v in ThingFilterStats.GetSpecialFiltersToDisallow(this.ThingFilter))
 				{
 					WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
-					y += 40;
+					y += 32;
 				}
+				y += 8;
 			}
 		}
 
 		public void ResetBuffers()
 		{
-			foreach (var v in inputWidgets)
-				v.ResetBuffers();
+			//foreach (var v in inputWidgets)
+			//	v.ResetBuffers();
+
+			if (ThingFilterStats.GetAllowedDefs(this.ThingFilter) == null)
+				ThingFilterStats.SetAllowedDefs(this.ThingFilter, new HashSet<ThingDef>());
+			if (ThingFilterStats.GetThingDefs(this.ThingFilter) == null)
+				ThingFilterStats.SetThingDefs(this.ThingFilter, new List<ThingDef>());
+			this.AddRange(ThingFilterStats.GetAllowedDefs(this.ThingFilter), ThingFilterStats.GetThingDefs(this.ThingFilter));
+			if (ThingFilterStats.GetDisallowedThingDefs(this.ThingFilter) == null)
+				ThingFilterStats.SetDisallowedThingDefs(this.ThingFilter, new List<ThingDef>());
+			if (ThingFilterStats.GetCategories(this.ThingFilter) == null)
+				ThingFilterStats.SetCategories(this.ThingFilter, new List<string>());
+			if (ThingFilterStats.GetDisallowedCategories(this.ThingFilter) == null)
+				ThingFilterStats.SetDisallowedCategories(this.ThingFilter, new List<string>());
+			if (ThingFilterStats.GetSpecialFiltersToAllow(this.ThingFilter) == null)
+				ThingFilterStats.SetSpecialFiltersToAllow(this.ThingFilter, new List<string>());
+			if (ThingFilterStats.GetSpecialFiltersToDisallow(this.ThingFilter) == null)
+				ThingFilterStats.SetSpecialFiltersToDisallow(this.ThingFilter, new List<string>());
+		}
+
+		private void AddRange(IEnumerable<ThingDef> from, List<ThingDef> to)
+		{
+			foreach (var v in from)
+				if (!to.Contains(v))
+					to.Add(v);
 		}
 
 		private bool ShouldDrawPart(DrawOptionsEnum d)
 		{
 			return (this.DrawOptions & d) == d;
+		}
+
+		private IEnumerable<ThingDef> GetThingDefsSorted()
+		{
+			SortedDictionary<string, ThingDef> d = new SortedDictionary<string, ThingDef>();
+			foreach (var v in DefDatabase<ThingDef>.AllDefsListForReading)
+				d[v.label] = v;
+			return d.Values;
 		}
 	}
 }

@@ -64,6 +64,7 @@ namespace InGameDefEditor.Stats
 		//public string successfullyRemovedHediffMessage;
 		//private Type ingredientValueGetterClass = typeof(IngredientValueGetter_Volume);
 
+		public RecipeDefStats() : base() { }
 		public RecipeDefStats(RecipeDef def) : base(def)
 		{
 			this.workAmount = def.workAmount;
@@ -80,7 +81,8 @@ namespace InGameDefEditor.Stats
 			this.anesthetize = def.anesthetize;
 			this.dontShowIfAnyIngredientMissing = def.dontShowIfAnyIngredientMissing;
 
-			this.effectWorking = new EffecterDefStat(def.effectWorking);
+			if (def.effectWorking != null)
+				this.effectWorking = new EffecterDefStat(def.effectWorking);
 
 			this.fixedIngredientFilter = new ThingFilterStats(def.fixedIngredientFilter);
 			this.defaultIngredientFilter = new ThingFilterStats(def.defaultIngredientFilter);
@@ -155,8 +157,11 @@ namespace InGameDefEditor.Stats
 				d.anesthetize = this.anesthetize;
 				d.dontShowIfAnyIngredientMissing = this.dontShowIfAnyIngredientMissing;
 
-				d.effectWorking = new EffecterDef();
-				this.effectWorking.ApplyStats(d.effectWorking);
+				if (this.effectWorking != null)
+				{
+					d.effectWorking = new EffecterDef();
+					this.effectWorking.ApplyStats(d.effectWorking);
+				}
 
 				d.fixedIngredientFilter = new ThingFilter();
 				this.fixedIngredientFilter.ApplyStats(d.fixedIngredientFilter);
@@ -200,6 +205,8 @@ namespace InGameDefEditor.Stats
 
 				d.appliedOnFixedBodyParts = Util.ConvertDefStats(this.appliedOnFixedBodyParts);
 
+				if (d.products == null)
+					d.products = new List<ThingDefCountClass>();
 				d.products.Clear();
 				foreach (var v in this.products)
 					d.products.Add(new ThingDefCountClass()
@@ -208,6 +215,8 @@ namespace InGameDefEditor.Stats
 						count = v.value
 					});
 
+				if (d.skillRequirements == null)
+					d.skillRequirements = new List<SkillRequirement>();
 				d.skillRequirements.Clear();
 				foreach (var v in this.skillRequirements)
 					d.skillRequirements.Add(new SkillRequirement()
@@ -216,6 +225,8 @@ namespace InGameDefEditor.Stats
 						minLevel = v.value
 					});
 
+				if (d.ingredients == null)
+					d.ingredients = new List<IngredientCount>();
 				d.ingredients.Clear();
 				foreach (var v in this.ingredients)
 				{
@@ -291,7 +302,12 @@ namespace InGameDefEditor.Stats
 					Util.AreEqual(this.addsHediff, s.addsHediff) &&
 					Util.AreEqual(this.removesHediff, s.removesHediff) &&
 					Util.AreEqual(this.workSkill, s.workSkill) &&
-					Util.AreEqual(this.specialProducts, s.specialProducts);
+					Util.AreEqual(this.specialProducts, s.specialProducts) &&
+					Util.AreEqual(this.forceHiddenSpecialFilters, s.forceHiddenSpecialFilters) &&
+					Util.AreEqual(this.appliedOnFixedBodyParts, s.appliedOnFixedBodyParts) &&
+					Util.AreEqual(this.products, s.products) &&
+					Util.AreEqual(this.skillRequirements, s.skillRequirements) &&
+					Util.AreEqual(this.ingredients, s.ingredients);
 			}
 			return false;
 		}

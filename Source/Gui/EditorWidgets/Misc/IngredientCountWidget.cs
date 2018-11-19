@@ -5,7 +5,8 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
 	class IngredientCountWidget : IDefEditorWidget
 	{
-		private static long uniqueCount = 0;
+		private static int uniqueCount = 1;
+		public static void  ResetUniqueId() { uniqueCount = 1; }
 		private long uniqueId;
 
 		public readonly IngredientCount IngredientCount;
@@ -20,7 +21,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 			this.IngredientCount = ingredientCount;
 
-			this.filter = new ThingFilterWidget(this.IngredientCount.filter, ThingFilterWidget.DrawOptionsEnum.Category | ThingFilterWidget.DrawOptionsEnum.ThingDefs);
+			this.filter = new ThingFilterWidget(this.IngredientCount.filter);
 
 			this.count = new FloatInputWidget<IngredientCount>(
 				this.IngredientCount, "Ingredient Count", (ic) => IngredientCountStats.GetIngredientCount(ic), (ic, f) => IngredientCountStats.SetIngredientCount(ic, f));

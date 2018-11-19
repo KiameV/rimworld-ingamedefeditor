@@ -6,7 +6,7 @@
 	<url></url>
 	<targetVersion>1.0.0</targetVersion>
 	<description>
-In-Game Definition Editor.
+In-Game Definition Editor. Press F10 (default) to open the window.
 	</description>
 
 </ModMetaData>

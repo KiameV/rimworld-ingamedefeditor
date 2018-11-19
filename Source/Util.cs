@@ -318,6 +318,10 @@ namespace InGameDefEditor
 				AddToDefDic(DefDatabase<BiomeDef>.AllDefsListForReading);
 				AddToDefDic(DefDatabase<ToolCapacityDef>.AllDefsListForReading);
 				AddToDefDic(DefDatabase<IncidentDef>.AllDefsListForReading);
+				AddToDefDic(DefDatabase<RecipeDef>.AllDefsListForReading);
+				AddToDefDic(DefDatabase<ThoughtDef>.AllDefsListForReading);
+				AddToDefDic(DefDatabase<TraitDef>.AllDefsListForReading);
+				AddToDefDic(DefDatabase<SkillDef>.AllDefsListForReading);
 			}
 			if (defDic.TryGetValue(defName, out Def d))
 			{

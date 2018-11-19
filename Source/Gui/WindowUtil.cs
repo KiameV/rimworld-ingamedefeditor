@@ -57,8 +57,8 @@ namespace InGameDefEditor
 
         public static void DrawLabel(float x, float y, float width, string label, bool bolded = false)
         {
-            // 0.15 is about the size of each character
-            if (label.Length > width * 0.15)
+            // 0.14 is about the size of each character
+            if (label.Length > width * 0.14)
             {
                 Text.Font = GameFont.Tiny;
             }
@@ -109,18 +109,19 @@ namespace InGameDefEditor
                     args.getDisplayName(t), delegate { args.onSelect(t); }, 
                     MenuOptionPriority.Default, null, null, 0f, null, null));
             }
-            Find.WindowStack.Add(new FloatMenu(options));
+			if (options == null || options.Count > 0)
+				Find.WindowStack.Add(new FloatMenu(options));
         }
-
-		public static void PlusMinusLabel(
-			float x, ref float y, int labelWidth, string label, Action add, Action subtract, bool isAddEnabled = true, bool isSubtractEnabled = true)
+        
+        public static void PlusMinusLabel(
+            float x, ref float y, int labelWidth, string label, Action add, Action subtract)
         {
             DrawLabel(x, y, labelWidth, label, true);
-            if (Widgets.ButtonText(new Rect(x + labelWidth + 10, y - 4, 30, 32), "+", true, false, isAddEnabled))
+            if (Widgets.ButtonText(new Rect(x + labelWidth + 10, y - 4, 30, 32), "+"))
             {
                 add();
             }
-            if (Widgets.ButtonText(new Rect(x + labelWidth + 52, y - 4, 30, 32), "-", true, false, isSubtractEnabled))
+            if (Widgets.ButtonText(new Rect(x + labelWidth + 52, y - 4, 30, 32), "-"))
             {
                 subtract();
             }
@@ -152,9 +153,7 @@ namespace InGameDefEditor
                         removeFloatOptions.items = removeFloatOptions.updateItems.Invoke();
                     }
 					DrawFloatingOptions(removeFloatOptions);
-                },
-				addFloatOptions.items?.Count() > 0,
-				removeFloatOptions.items?.Count() > 0);
+                });
         }
 
 		public delegate IEnumerable<T> BeingUsed<T>();
@@ -205,7 +204,17 @@ namespace InGameDefEditor
                 args.removeArgs = new FloatOptionsArgs<T>()
                 {
                     getDisplayName = args.getDisplayName,
-                    updateItems = () => args.beingUsed(),
+                    updateItems = delegate ()
+					{
+						if (args.beingUsed != null)
+							return args.beingUsed();
+
+						List<T> l = new List<T>();
+						foreach (var v in args.allItems)
+							if (args.isBeingUsed(v))
+								l.Add(v);
+						return l;
+					},
                     onSelect = args.onRemove
                 };
             }
