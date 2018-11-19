@@ -22,47 +22,72 @@ namespace InGameDefEditor
                 int i = 0;
                 foreach (ThingDef d in DefDatabase<ThingDef>.AllDefsListForReading)
                 {
+					if (d == null)
+					{
+						Log.Warning("Null definition found. Skipping.");
+						continue;
+					}
+
                     ++i;
                     if (d.IsApparel)
                     {
-                        ApparelDefs[d.label] = d;
+						if (d.label == null)
+							Log.Warning("ApparelDef [" + d.defName + "] has a null label.");
+						else
+							ApparelDefs[d.label] = d;
                     }
                     if (d.IsWeapon)
-                    {
-                        WeaponDefs[d.label] = d;
-
-                        if (d.IsWeaponUsingProjectiles && d.Verbs != null)
-                        {
-                            foreach (VerbProperties v in d.Verbs)
-                            {
-                                if (v.defaultProjectile != null)
-                                {
-                                    ProjectileDefs[v.defaultProjectile.label] = v.defaultProjectile;
-                                }
-                            }
-                        }
+					{
+						if (d.label == null)
+							Log.Warning("WeaponDef [" + d.defName + "] has a null label.");
+						else
+						{
+							WeaponDefs[d.label] = d;
+							if (d.IsWeaponUsingProjectiles && d.Verbs != null)
+							{
+								foreach (VerbProperties v in d.Verbs)
+								{
+									if (v.defaultProjectile != null)
+									{
+										if (d.label == null)
+											Log.Warning("ProjectileDef [" + v.defaultProjectile.defName + "] has a null label.");
+										else
+											ProjectileDefs[v.defaultProjectile.label] = v.defaultProjectile;
+									}
+								}
+							}
+						}
                     }
                     if (d.defName.StartsWith("Arrow_") || 
                         d.defName.StartsWith("Bullet_") || 
                         d.defName.StartsWith("Proj_"))
-                    {
-                        ProjectileDefs[d.label] = d;
+					{
+						if (d.label == null)
+							Log.Warning("Projectile [" + d.defName + "] has a null label.");
+						else
+							ProjectileDefs[d.label] = d;
                     }
                 }
 
                 foreach (BiomeDef d in DefDatabase<BiomeDef>.AllDefsListForReading)
-                {
-                    BiomeDefs[d.label] = d;
+				{
+					if (d.label == null)
+						Log.Warning("BiomeDef [" + d.defName + "] has a null label.");
+					else
+						BiomeDefs[d.label] = d;
                 }
 
                 foreach (ThoughtDef d in DefDatabase<ThoughtDef>.AllDefsListForReading)
-                {
-                    ThoughtDefs[d.defName] = d;
+				{
+					ThoughtDefs[d.defName] = d;
                 }
 
 				foreach (RecipeDef d in DefDatabase<RecipeDef>.AllDefsListForReading)
 				{
-					RecipeDefs[d.label] = d;
+					if (d.label == null)
+						Log.Warning("RecipeDef [" + d.defName + "] has a null label.");
+					else
+						RecipeDefs[d.label] = d;
 				}
 
                 if (i > 0)
