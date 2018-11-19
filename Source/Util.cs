@@ -353,18 +353,15 @@ namespace InGameDefEditor
 			return label + " is " + ((t == null) ? "null" : "not null");
 		}
 
-		public static bool TryAssignStatDef<D>(D def, out DefStat<D> stat) where D : Def
+		public static void AssignDefStat<D>(D def, out DefStat<D> stat) where D : Def
 		{
 			if (def == null)
-			{
 				stat = null;
-				return false;
-			}
-			stat = new DefStat<D>(def);
-			return true;
+			else
+				stat = new DefStat<D>(def);
 		}
 
-		public static void TryAssignDef<D>(DefStat<D> from, out D def) where D : Def
+		public static void AssignDef<D>(DefStat<D> from, out D def) where D : Def
 		{
 			if (from == null)
 				def = null;

@@ -104,7 +104,18 @@ namespace InGameDefEditor.Stats
                 this.VerbStats = new List<VerbStats>(verbs.Count);
                 foreach (VerbProperties v in verbs)
                 {
-                    this.VerbStats.Add(new VerbStats(v));
+					try
+					{
+						if (v != null)
+						{
+							VerbStats verb = new VerbStats(v);
+							this.VerbStats.Add(verb);
+						}
+					}
+					catch(Exception e)
+					{
+						Log.Warning("Poorly formatted VerbProperties in " + this.Def.defName + Environment.NewLine + e.Message);
+					}
                 }
             }
         }

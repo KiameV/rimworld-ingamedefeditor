@@ -42,8 +42,8 @@ namespace InGameDefEditor.Stats.DefStat
 			this.ticksBetweenMotes = d.ticksBetweenMotes;
 			this.burstCount = d.burstCount;
 
-			Util.TryAssignStatDef(d.soundDef, out this.soundDef);
-			Util.TryAssignStatDef(d.moteDef, out this.moteDef);
+			Util.AssignDefStat(d.soundDef, out this.soundDef);
+			Util.AssignDefStat(d.moteDef, out this.moteDef);
 		}
 
 		public void ApplyStats(SubEffecterDef to)
@@ -64,8 +64,8 @@ namespace InGameDefEditor.Stats.DefStat
 			to.ticksBetweenMotes = this.ticksBetweenMotes;
 			to.burstCount = this.burstCount;
 
-			Util.TryAssignDef(this.soundDef, out to.soundDef);
-			Util.TryAssignDef(this.moteDef, out to.moteDef);
+			Util.AssignDef(this.soundDef, out to.soundDef);
+			Util.AssignDef(this.moteDef, out to.moteDef);
 		}
 
 		/*public void ApplyStats(SubEffecterStat to)

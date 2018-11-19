@@ -49,12 +49,12 @@ namespace InGameDefEditor.Stats
             this.lerpOpinionToZeroAfterDurationPct = d.lerpOpinionToZeroAfterDurationPct;
             this.maxCumulatedOpinionOffset = d.maxCumulatedOpinionOffset;
 
-			Util.TryAssignStatDef(d.hediff, out this.hediff);
-			Util.TryAssignStatDef(d.gameCondition, out this.gameCondition);
-            Util.TryAssignStatDef(d.nextThought, out this.nextThought);
-            Util.TryAssignStatDef(d.effectMultiplyingStat, out this.effectMultiplyingStat);
-            Util.TryAssignStatDef(d.thoughtToMake, out this.thoughtToMake);
-            Util.TryAssignStatDef(d.taleDef, out this.taleDef);
+			Util.AssignDefStat(d.hediff, out this.hediff);
+			Util.AssignDefStat(d.gameCondition, out this.gameCondition);
+            Util.AssignDefStat(d.nextThought, out this.nextThought);
+            Util.AssignDefStat(d.effectMultiplyingStat, out this.effectMultiplyingStat);
+            Util.AssignDefStat(d.thoughtToMake, out this.thoughtToMake);
+            Util.AssignDefStat(d.taleDef, out this.taleDef);
 
             if (d.nullifyingTraits == null)
                 d.nullifyingTraits = new List<TraitDef>();
@@ -89,12 +89,12 @@ namespace InGameDefEditor.Stats
                 to.lerpOpinionToZeroAfterDurationPct = this.lerpOpinionToZeroAfterDurationPct;
                 to.maxCumulatedOpinionOffset = this.maxCumulatedOpinionOffset;
 
-				Util.TryAssignDef(this.hediff, out to.hediff);
-				Util.TryAssignDef(this.gameCondition, out to.gameCondition);
-                Util.TryAssignDef(this.nextThought, out to.nextThought);
-                Util.TryAssignDef(this.effectMultiplyingStat, out to.effectMultiplyingStat);
-                Util.TryAssignDef(this.thoughtToMake, out to.thoughtToMake);
-                Util.TryAssignDef(this.taleDef, out to.taleDef);
+				Util.AssignDef(this.hediff, out to.hediff);
+				Util.AssignDef(this.gameCondition, out to.gameCondition);
+                Util.AssignDef(this.nextThought, out to.nextThought);
+                Util.AssignDef(this.effectMultiplyingStat, out to.effectMultiplyingStat);
+                Util.AssignDef(this.thoughtToMake, out to.thoughtToMake);
+                Util.AssignDef(this.taleDef, out to.taleDef);
 
                 to.nullifyingTraits.Clear();
                 this.nullifyingTraits.ForEach((DefStat<TraitDef> s) => to.nullifyingTraits.Add(s.Def));

@@ -87,17 +87,17 @@ namespace InGameDefEditor.Stats
 			this.fixedIngredientFilter = new ThingFilterStats(def.fixedIngredientFilter);
 			this.defaultIngredientFilter = new ThingFilterStats(def.defaultIngredientFilter);
 
-			Util.TryAssignStatDef(def.researchPrerequisite, out this.researchPrerequisite);
-			Util.TryAssignStatDef(def.requiredGiverWorkType, out this.requiredGiverWorkType);
-			Util.TryAssignStatDef(def.unfinishedThingDef, out this.unfinishedThingDef);
-			Util.TryAssignStatDef(def.soundWorking, out this.soundWorking);
-			Util.TryAssignStatDef(def.workSpeedStat, out this.workSpeedStat);
-			Util.TryAssignStatDef(def.efficiencyStat, out this.efficiencyStat);
-			Util.TryAssignStatDef(def.workTableEfficiencyStat, out this.workTableEfficiencyStat);
-			Util.TryAssignStatDef(def.workTableSpeedStat, out this.workTableSpeedStat);
-			Util.TryAssignStatDef(def.addsHediff, out this.addsHediff);
-			Util.TryAssignStatDef(def.removesHediff, out this.removesHediff);
-			Util.TryAssignStatDef(def.workSkill, out this.workSkill);
+			Util.AssignDefStat(def.researchPrerequisite, out this.researchPrerequisite);
+			Util.AssignDefStat(def.requiredGiverWorkType, out this.requiredGiverWorkType);
+			Util.AssignDefStat(def.unfinishedThingDef, out this.unfinishedThingDef);
+			Util.AssignDefStat(def.soundWorking, out this.soundWorking);
+			Util.AssignDefStat(def.workSpeedStat, out this.workSpeedStat);
+			Util.AssignDefStat(def.efficiencyStat, out this.efficiencyStat);
+			Util.AssignDefStat(def.workTableEfficiencyStat, out this.workTableEfficiencyStat);
+			Util.AssignDefStat(def.workTableSpeedStat, out this.workTableSpeedStat);
+			Util.AssignDefStat(def.addsHediff, out this.addsHediff);
+			Util.AssignDefStat(def.removesHediff, out this.removesHediff);
+			Util.AssignDefStat(def.workSkill, out this.workSkill);
 
 			if (def.specialProducts == null)
 				def.specialProducts = new List<SpecialProductType>(0);
@@ -169,17 +169,17 @@ namespace InGameDefEditor.Stats
 				d.defaultIngredientFilter = new ThingFilter();
 				this.defaultIngredientFilter.ApplyStats(d.defaultIngredientFilter);
 
-				Util.TryAssignDef(this.researchPrerequisite, out d.researchPrerequisite);
-				Util.TryAssignDef(this.requiredGiverWorkType, out d.requiredGiverWorkType);
-				Util.TryAssignDef(this.unfinishedThingDef, out d.unfinishedThingDef);
-				Util.TryAssignDef(this.soundWorking, out d.soundWorking);
-				Util.TryAssignDef(this.workSpeedStat, out d.workSpeedStat);
-				Util.TryAssignDef(this.efficiencyStat, out d.efficiencyStat);
-				Util.TryAssignDef(this.workTableEfficiencyStat, out d.workTableEfficiencyStat);
-				Util.TryAssignDef(this.workTableSpeedStat, out d.workTableSpeedStat);
-				Util.TryAssignDef(this.addsHediff, out d.addsHediff);
-				Util.TryAssignDef(this.removesHediff, out d.removesHediff);
-				Util.TryAssignDef(this.workSkill, out d.workSkill);
+				Util.AssignDef(this.researchPrerequisite, out d.researchPrerequisite);
+				Util.AssignDef(this.requiredGiverWorkType, out d.requiredGiverWorkType);
+				Util.AssignDef(this.unfinishedThingDef, out d.unfinishedThingDef);
+				Util.AssignDef(this.soundWorking, out d.soundWorking);
+				Util.AssignDef(this.workSpeedStat, out d.workSpeedStat);
+				Util.AssignDef(this.efficiencyStat, out d.efficiencyStat);
+				Util.AssignDef(this.workTableEfficiencyStat, out d.workTableEfficiencyStat);
+				Util.AssignDef(this.workTableSpeedStat, out d.workTableSpeedStat);
+				Util.AssignDef(this.addsHediff, out d.addsHediff);
+				Util.AssignDef(this.removesHediff, out d.removesHediff);
+				Util.AssignDef(this.workSkill, out d.workSkill);
 
 				d.specialProducts = Util.CreateList(this.specialProducts);
 

@@ -28,10 +28,8 @@ namespace InGameDefEditor.Stats.Misc
             this.burstShotCount = v.burstShotCount;
             this.muzzleFlashScale = v.muzzleFlashScale;
             this.aiAvoidFriendlyRadius = v.ai_AvoidFriendlyFireRadius;
-            if (v.soundCast != null)
-                this.SoundCastDefStat = new DefStat<SoundDef>(v.soundCast);
-            if (v.soundCastTail != null)
-                this.SoundCastTailDefStat = new DefStat<SoundDef>(v.soundCastTail);
+			Util.AssignDefStat(v.soundCast, out this.SoundCastDefStat);
+			Util.AssignDefStat(v.soundCastTail, out this.SoundCastTailDefStat);
             if (v.defaultProjectile != null)
                 this.ProjectileDefStat = new ProjectileDefStats(v.defaultProjectile);
         }
