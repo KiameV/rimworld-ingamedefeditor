@@ -31,7 +31,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
 		//private readonly FloatOptionsArgs<HediffDef> removesHediff;
 		private readonly FloatOptionsArgs<SkillDef> workSkill;
 
-		private readonly PlusMinusArgs<SpecialProductType> specialProducts;
+        // TODO Needs to be null when empty
+        // private readonly PlusMinusArgs<SpecialProductType> specialProducts;
 
 		private readonly PlusMinusArgs<SpecialThingFilterDef> forceHiddenSpecialFilters;
 		//private readonly PlusMinusArgs<ThingDef> recipeUsers;
@@ -143,14 +144,14 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			};
 
 			// Plus Minus
-			this.specialProducts = new PlusMinusArgs<SpecialProductType>()
+			/*this.specialProducts = new PlusMinusArgs<SpecialProductType>()
 			{
 				allItems = Enum.GetValues(typeof(SpecialProductType)).OfType<SpecialProductType>().ToList(),
 				beingUsed = () => base.Def.specialProducts,
 				onAdd = (spt) => base.Def.specialProducts.Add(spt),
 				onRemove = (spt) => base.Def.specialProducts.Remove(spt),
 				getDisplayName = (spt) => spt.ToString()
-			};
+			};*/
 
 			this.forceHiddenSpecialFilters = new PlusMinusArgs<SpecialThingFilterDef>()
 			{
@@ -300,13 +301,16 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			}
 			y += 8;
 
-			WindowUtil.PlusMinusLabel(x, ref y, 150, "Special Products", this.specialProducts);
-			foreach (var v in base.Def.specialProducts)
-			{
-				WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
-				y += 32;
-			}
-			y += 8;
+			/*WindowUtil.PlusMinusLabel(x, ref y, 150, "Special Products", this.specialProducts);
+            if (base.Def.specialProducts != null)
+            {
+                foreach (var v in base.Def.specialProducts)
+                {
+                    WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
+                    y += 32;
+                }
+                y += 8;
+            }*/
 
 			WindowUtil.PlusMinusLabel(x, ref y, 150, "Force Hidden Special Filters", this.forceHiddenSpecialFilters);
 			foreach (var v in base.Def.forceHiddenSpecialFilters)
@@ -356,8 +360,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			this.fixedIngredientFilter = new ThingFilterWidget(base.Def.fixedIngredientFilter);
 			this.defaultIngredientFilter = new ThingFilterWidget(base.Def.defaultIngredientFilter);
 
-			if (base.Def.specialProducts == null)
-				base.Def.specialProducts = new List<SpecialProductType>(0);
+			//if (base.Def.specialProducts == null)
+			//	base.Def.specialProducts = new List<SpecialProductType>(0);
 
 			if (base.Def.forceHiddenSpecialFilters == null)
 				base.Def.forceHiddenSpecialFilters = new List<SpecialThingFilterDef>(0);

@@ -47,7 +47,8 @@ namespace InGameDefEditor.Stats
 		public DefStat<HediffDef> removesHediff;
 		public DefStat<SkillDef> workSkill;
 
-		public List<SpecialProductType> specialProducts;
+        // TODO Needs to be null when empty
+        //public List<SpecialProductType> specialProducts;
 
 		public List<DefStat<SpecialThingFilterDef>> forceHiddenSpecialFilters;
 		//public List<DefStat<ThingDef>> recipeUsers;
@@ -99,9 +100,9 @@ namespace InGameDefEditor.Stats
 			Util.AssignDefStat(def.removesHediff, out this.removesHediff);
 			Util.AssignDefStat(def.workSkill, out this.workSkill);
 
-			if (def.specialProducts == null)
+			/*if (def.specialProducts == null)
 				def.specialProducts = new List<SpecialProductType>(0);
-			this.specialProducts = Util.CreateList(def.specialProducts);
+			this.specialProducts = Util.CreateList(def.specialProducts);*/
 
 			if (def.forceHiddenSpecialFilters == null)
 				def.forceHiddenSpecialFilters = new List<SpecialThingFilterDef>(0);
@@ -181,7 +182,7 @@ namespace InGameDefEditor.Stats
 				Util.AssignDef(this.removesHediff, out d.removesHediff);
 				Util.AssignDef(this.workSkill, out d.workSkill);
 
-				d.specialProducts = Util.CreateList(this.specialProducts);
+				//d.specialProducts = Util.CreateList(this.specialProducts);
 
 				/* TODO
 				 * if (d.forceHiddenSpecialFilters == null)
@@ -302,7 +303,7 @@ namespace InGameDefEditor.Stats
 					Util.AreEqual(this.addsHediff, s.addsHediff) &&
 					Util.AreEqual(this.removesHediff, s.removesHediff) &&
 					Util.AreEqual(this.workSkill, s.workSkill) &&
-					Util.AreEqual(this.specialProducts, s.specialProducts) &&
+					//Util.AreEqual(this.specialProducts, s.specialProducts) &&
 					Util.AreEqual(this.forceHiddenSpecialFilters, s.forceHiddenSpecialFilters) &&
 					Util.AreEqual(this.appliedOnFixedBodyParts, s.appliedOnFixedBodyParts) &&
 					Util.AreEqual(this.products, s.products) &&
