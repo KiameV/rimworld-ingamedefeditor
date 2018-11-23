@@ -52,13 +52,20 @@ namespace InGameDefEditor
                     {
                         foreach (ProjectileDefStats s in allStats.projectileStats)
                         {
-                            if (s.Initialize())
+                            try
                             {
-                                s.ApplyStats(s.Def);
+                                if (s.Initialize())
+                                {
+                                    s.ApplyStats(s.Def);
+                                }
+                                else
+                                {
+                                    Log.Warning("Unable to apply settings to " + s.defName);
+                                }
                             }
-                            else
+                            catch (Exception e)
                             {
-                                Log.Warning("Unable to apply settings to " + s.defName);
+                                Log.Error("Failed to load " + s.defName + " due to " + e.Message);
                             }
                         }
                         allStats.projectileStats.Clear();
@@ -68,13 +75,20 @@ namespace InGameDefEditor
                     {
                         foreach (ThingDefStats s in allStats.thingDefStats)
                         {
-                            if (s.Initialize())
+                            try
                             {
-                                s.ApplyStats(s.Def);
+                                if (s.Initialize())
+                                {
+                                    s.ApplyStats(s.Def);
+                                }
+                                else
+                                {
+                                    Log.Warning("Unable to apply settings to " + s.defName);
+                                }
                             }
-                            else
+                            catch (Exception e)
                             {
-                                Log.Warning("Unable to apply settings to " + s.defName);
+                                Log.Error("Failed to load " + s.defName + " due to " + e.Message);
                             }
                         }
                         allStats.thingDefStats.Clear();
@@ -84,32 +98,47 @@ namespace InGameDefEditor
                     {
                         foreach (BiomeDefStats s in allStats.biomeStats)
                         {
-                            if (s.Initialize())
+                            try
                             {
-                                s.ApplyStats(s.Def);
+                                if (s.Initialize())
+                                {
+                                    s.ApplyStats(s.Def);
+                                }
+                                else
+                                {
+                                    Log.Warning("Unable to apply settings to " + s.defName);
+                                }
                             }
-                            else
+                            catch (Exception e)
                             {
-                                Log.Warning("Unable to apply settings to " + s.defName);
+                                Log.Error("Failed to load " + s.defName + " due to " + e.Message);
                             }
                         }
                         allStats.thingDefStats.Clear();
                     }
 
-					if (allStats.recipeStats != null)
-					{
-						foreach (RecipeDefStats s in allStats.recipeStats)
-						{
-							if (s.Initialize())
-							{
-								s.ApplyStats(s.Def);
-							}
-							else
-							{
-								Log.Warning("Unable to apply settings to " + s.defName);
-							}
-						}
-					}
+                    if (allStats.recipeStats != null)
+                    {
+                        foreach (RecipeDefStats s in allStats.recipeStats)
+                        {
+                            try
+                            {
+                                if (s.Initialize())
+                                {
+                                    s.ApplyStats(s.Def);
+                                }
+                                else
+                                {
+                                    Log.Warning("Unable to apply settings to " + s.defName);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Log.Error("Failed to load " + s.defName + " due to " + e.Message);
+                            }
+                        }
+                        allStats.recipeStats.Clear();
+                    }
                 }
                 catch
                 {

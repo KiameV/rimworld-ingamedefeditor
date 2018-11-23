@@ -353,7 +353,7 @@ namespace InGameDefEditor.Stats
             if (obj != null &&
                 obj is BiomeDefStats s)
             {
-#if DEBUG
+#if DEBUG_BIOME
                 Log.Error(this.ToString());
                 Log.Error(s.ToString());
 #endif

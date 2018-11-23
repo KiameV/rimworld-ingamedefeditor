@@ -320,8 +320,8 @@ namespace InGameDefEditor
 				AddToDefDic(DefDatabase<IncidentDef>.AllDefsListForReading);
 				AddToDefDic(DefDatabase<RecipeDef>.AllDefsListForReading);
 				AddToDefDic(DefDatabase<ThoughtDef>.AllDefsListForReading);
-				AddToDefDic(DefDatabase<TraitDef>.AllDefsListForReading);
-				AddToDefDic(DefDatabase<SkillDef>.AllDefsListForReading);
+                // TODO Will conflist Beuty AddToDefDic(DefDatabase<TraitDef>.AllDefsListForReading);
+                AddToDefDic(DefDatabase<SkillDef>.AllDefsListForReading);
 			}
 			if (defDic.TryGetValue(defName, out Def d))
 			{

@@ -33,32 +33,54 @@ namespace InGameDefEditor.Stats
                 return false;
 
             if (this.StatModifiers != null)
+            {
                 foreach (var s in this.StatModifiers)
+                {
+                    //Log.Error(s.defName);
                     if (!s.Initialize())
                     {
                         Log.Error("Failed to initialize Stat Modifier " + s.DefName + " for " + this.defName);
                     }
+                    //Log.Error("    Found");
+                }
+            }
 
             if (this.VerbStats != null)
+            {
                 foreach (VerbStats vs in this.VerbStats)
+                {
+                    //Log.Error(vs.name);
                     if (!vs.Initialize())
                     {
                         Log.Error("Failed to initialize Verb " + vs.name + " for " + this.defName);
                     }
+                }
+            }
 
             if (this.Tools != null)
+            {
                 foreach (ToolStats ts in this.Tools)
+                {
+                    //Log.Error(ts.label);
                     if (!ts.Initialize())
                     {
                         Log.Error("Failed to initialize Tool " + ts.label + " for " + this.defName);
                     }
+                }
+            }
 
             if (this.EquippedStatOffsets != null)
+            {
                 foreach (var s in this.EquippedStatOffsets)
+                {
+                    //Log.Error(s.defName);
                     if (!s.Initialize())
                     {
                         Log.Error("Failed to initialize Equipped Stat Offsets " + s.DefName + " for " + this.defName);
                     }
+                }
+            }
+
 
             return true;
         }
@@ -152,8 +174,8 @@ namespace InGameDefEditor.Stats
 
         public void ApplyStats(Def to)
         {
-#if DEBUG
-            Log.Warning("ApplyStats for " + def.label);
+#if DEBUG_THINGDEF
+            Log.Warning("ApplyStats for " + this.defName);
 #endif
             if (to is ThingDef t)
             {
@@ -168,7 +190,7 @@ namespace InGameDefEditor.Stats
                 {
                     Log.Warning("Failed to apply stats [" + t.defName + "]\n" + e.Message);
                 }
-#if DEBUG
+#if DEBUG_THINGDEF
             Log.Warning("ApplyStats Done");
 #endif
             }

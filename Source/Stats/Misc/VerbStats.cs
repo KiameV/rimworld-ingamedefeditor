@@ -36,7 +36,7 @@ namespace InGameDefEditor.Stats.Misc
 
         public void ApplyStats(VerbProperties to)
         {
-#if DEBUG
+#if DEBUG_VERB
             Log.Message("warmupTime = " + this.warmupTime);
             Log.Message("range = " + this.range);
             Log.Message("timeBetweenShots = " + this.timeBetweenShots);
@@ -73,7 +73,7 @@ namespace InGameDefEditor.Stats.Misc
 
         public override bool Equals(object obj)
         {
-#if DEBUG
+#if DEBUG_VERB
             Log.Warning("Equals:");
             Log.Warning(this.ToString());
             Log.Warning(obj.ToString());

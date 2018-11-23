@@ -26,9 +26,15 @@ namespace InGameDefEditor.Stats.Misc
 					object.Equals(this.ThingFilterStats, s.ThingFilterStats);
 			}
 			return false;
-		}
+        }
 
-		public override int GetHashCode()
+        public bool Initialize()
+        {
+            return this.ThingFilterStats.Initialize();
+        }
+
+
+        public override int GetHashCode()
 		{
 			return this.ToString().GetHashCode();
 		}

@@ -260,6 +260,9 @@ namespace InGameDefEditor.Stats
 			Util.InitializeDefStat(removesHediff);
 			Util.InitializeDefStat(workSkill);
 
+            foreach (var v in this.ingredients)
+                v.Initialize();
+
 			Util.InitializeDefStat(forceHiddenSpecialFilters);
 			//Util.InitializeDefStat(recipeUsers);
 			Util.InitializeDefStat(appliedOnFixedBodyParts);

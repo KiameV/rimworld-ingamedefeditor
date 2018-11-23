@@ -53,7 +53,7 @@ namespace InGameDefEditor.Stats.Misc
 
         public override bool Equals(object obj)
         {
-#if DEBUG
+#if DEBUG_TOOLS
             Log.Warning("Equals:");
             Log.Warning(this.ToString());
             Log.Warning(obj.ToString());
