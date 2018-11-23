@@ -147,7 +147,7 @@ namespace InGameDefEditor
                 finally
                 {
                     hasLoaded = true;
-                    Util.ClearDefDic();
+                    DefLookupUtil.ClearDefDic();
                     Log.Message("InGameDefEditor".Translate() + ": Settings Applied");
                 }
             }

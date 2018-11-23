@@ -295,50 +295,6 @@ namespace InGameDefEditor
 			}
 		}
 
-		private static Dictionary<string, Def> defDic = null;
-		public static void ClearDefDic()
-		{
-			if (defDic != null)
-			{
-				defDic.Clear();
-				defDic = null;
-			}
-		}
-		public static bool TryGetDef<D>(string defName, out D def) where D : Def
-		{
-			if (defDic == null || defDic.Count == 0)
-			{
-				defDic = new Dictionary<string, Def>();
-				AddToDefDic(DefDatabase<ThingDef>.AllDefsListForReading);
-				AddToDefDic(DefDatabase<StatDef>.AllDefsListForReading);
-				AddToDefDic(DefDatabase<SoundDef>.AllDefsListForReading);
-				AddToDefDic(DefDatabase<WeatherDef>.AllDefsListForReading);
-				AddToDefDic(DefDatabase<TerrainDef>.AllDefsListForReading);
-				AddToDefDic(DefDatabase<PawnKindDef>.AllDefsListForReading);
-				AddToDefDic(DefDatabase<BiomeDef>.AllDefsListForReading);
-				AddToDefDic(DefDatabase<ToolCapacityDef>.AllDefsListForReading);
-				AddToDefDic(DefDatabase<IncidentDef>.AllDefsListForReading);
-				AddToDefDic(DefDatabase<RecipeDef>.AllDefsListForReading);
-				AddToDefDic(DefDatabase<ThoughtDef>.AllDefsListForReading);
-                // TODO Will conflist Beuty AddToDefDic(DefDatabase<TraitDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<SkillDef>.AllDefsListForReading);
-			}
-			if (defDic.TryGetValue(defName, out Def d))
-			{
-				def = d as D;
-				return true;
-			}
-			def = null;
-			return false;
-		}
-		private static void AddToDefDic<D>(IEnumerable<D> defs) where D : Def
-		{
-			foreach (Def d in defs)
-			{
-				defDic[d.defName] = d;
-			}
-		}
-
 		public delegate U Convert<T, U>(T t);
 		public static IEnumerable<U> ConvertItems<T, U>(IEnumerable<T> t, Convert<T, U> convert)
 		{

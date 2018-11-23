@@ -36,7 +36,7 @@ namespace InGameDefEditor.Stats.DefStat
             
             if (this.def2 == null && !string.IsNullOrEmpty(this.defName2))
             {
-                if (!Util.TryGetDef(this.defName2, out this.def2))
+                if (!DefLookupUtil.TryGetDef(this.defName2, out this.def2))
                     Log.Error("Could not load def " + this.defName2);
                 return this.def2 != null;
             }
