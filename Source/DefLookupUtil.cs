@@ -38,6 +38,8 @@ namespace InGameDefEditor
                 AddToDefDic(DefDatabase<TraitDef>.AllDefsListForReading);
                 AddToDefDic(DefDatabase<SkillDef>.AllDefsListForReading);
                 AddToDefDic(DefDatabase<ThingSetMakerDef>.AllDefsListForReading);
+                AddToDefDic(DefDatabase<DamageDef>.AllDefsListForReading);
+                AddToDefDic(DefDatabase<BuildableDef>.AllDefsListForReading);
             }
 
             string name = typeof(D).Name;
