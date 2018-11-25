@@ -10,21 +10,53 @@ namespace InGameDefEditor.Stats
 {
     public class ThingDefStats : DefStat<ThingDef>, IParentStat
     {
+        public const int VERSION = 2;
+
+        public int version = 1;
+
         public List<FloatValueStat<StatDef>> StatModifiers = null;
         public List<VerbStats> VerbStats = null;
         public List<ToolStats> Tools = null;
         public List<FloatValueStat<StatDef>> EquippedStatOffsets = null;
-        
+
+        // Version 2
+        public List<DefStat<ThingSetMakerDef>> thingSetMakers = null;
+        public List<string> comps = null;
+        public List<DefStat<StuffCategoryDef>> stuffCategories = null;
+        public ApparelPropertiesStats apparelStats = null;
+
+
         public bool IsApparel => base.Def.IsApparel;
         public bool IsWeapon => base.Def.IsWeapon;
 
         public ThingDefStats() { }
         public ThingDefStats(ThingDef d) : base(d)
         {
+            this.version = VERSION;
+
             this.SetStatModifiers(d.statBases);
             this.SetVerbs(d.Verbs);
             this.SetTools(d.tools);
             this.SetEquippedStatOffsets(d.equippedStatOffsets);
+
+            // Version 2
+            this.thingSetMakers = new List<DefStat<ThingSetMakerDef>>();
+            if (d.thingSetMakerTags != null)
+                foreach (var v in d.thingSetMakerTags)
+                    this.thingSetMakers.Add(new DefStat<ThingSetMakerDef>(v));
+
+            this.comps = new List<string>();
+            if (d.comps != null)
+                foreach (var v in d.comps)
+                    this.comps.Add(v.compClass.FullName);
+
+            this.stuffCategories = new List<DefStat<StuffCategoryDef>>();
+            if (d.stuffCategories != null)
+                foreach (var v in d.stuffCategories)
+                    this.stuffCategories.Add(new DefStat<StuffCategoryDef>(v));
+
+            if (d.apparel != null)
+                this.apparelStats = new ApparelPropertiesStats(d.apparel);
         }
 
         public override bool Initialize()
@@ -81,6 +113,13 @@ namespace InGameDefEditor.Stats
                 }
             }
 
+            foreach (var v in this.thingSetMakers)
+                v.Initialize();
+
+            foreach (var v in this.stuffCategories)
+                v.Initialize();
+
+            this.apparelStats?.Initialize();
 
             return true;
         }
@@ -95,81 +134,24 @@ namespace InGameDefEditor.Stats
             if (base.Equals(obj) &&
                 obj is ThingDefStats stats)
             {
-                if (!Util.AreEqual(this.StatModifiers, stats.StatModifiers) ||
-                    !Util.AreEqual(this.EquippedStatOffsets, stats.EquippedStatOffsets) || 
-                    !Util.AreEqual(this.VerbStats, stats.VerbStats, null) || 
-                    !Util.AreEqual(this.Tools, stats.Tools, null))
+                if (Util.AreEqual(this.StatModifiers, stats.StatModifiers) &&
+                    Util.AreEqual(this.EquippedStatOffsets, stats.EquippedStatOffsets) &&
+                    Util.AreEqual(this.VerbStats, stats.VerbStats, null) &&
+                    Util.AreEqual(this.Tools, stats.Tools, null))
                 {
-                    return false;
+                    if (this.version >= 2 && stats.version >= 2)
+                    {
+                        if (!Util.Equals(this.thingSetMakers, stats.thingSetMakers) || 
+                            !Util.Equals(this.stuffCategories, stats.stuffCategories) || 
+                            !object.Equals(this.apparelStats, stats.apparelStats))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
                 }
-                return true;
             }
             return false;
-        }
-
-        public void SetTools(List<Tool> tools)
-        {
-            if (tools != null)
-            {
-                this.Tools = new List<ToolStats>(tools.Count);
-                foreach (Tool t in tools)
-                {
-                    this.Tools.Add(new ToolStats(t));
-                }
-            }
-        }
-
-        public void SetVerbs(List<VerbProperties> verbs)
-        {
-            if (verbs != null)
-            {
-                this.VerbStats = new List<VerbStats>(verbs.Count);
-                foreach (VerbProperties v in verbs)
-                {
-					try
-					{
-						if (v != null)
-						{
-							VerbStats verb = new VerbStats(v);
-							this.VerbStats.Add(verb);
-						}
-					}
-					catch(Exception e)
-					{
-						Log.Warning("Poorly formatted VerbProperties in " + this.Def.defName + Environment.NewLine + e.Message);
-					}
-                }
-            }
-        }
-
-        public void SetEquippedStatOffsets(List<StatModifier> offsets)
-        {
-            if (offsets != null)
-            {
-                this.EquippedStatOffsets = new List<FloatValueStat<StatDef>>(offsets.Count);
-                foreach (StatModifier m in offsets)
-                {
-                    this.EquippedStatOffsets.Add(new FloatValueStat<StatDef>(m.stat)
-                    {
-                        value = m.value
-                    });
-                }
-            }
-        }
-
-        public void SetStatModifiers(List<StatModifier> modifiers)
-        {
-            if (modifiers != null)
-            {
-                this.StatModifiers = new List<FloatValueStat<StatDef>>(modifiers.Count);
-                foreach (StatModifier m in modifiers)
-                {
-                    this.StatModifiers.Add(new FloatValueStat<StatDef>(m.stat)
-                    {
-                        value = m.value
-                    });
-                }
-            }
         }
 
         public void ApplyStats(Def to)
@@ -185,6 +167,30 @@ namespace InGameDefEditor.Stats
                     this.ApplyVerbStats(t);
                     this.ApplyTools(t);
                     this.ApplyEquipmentStatOffsets(t);
+
+                    if (this.version >= 2)
+                    {
+                        if (t.thingSetMakerTags == null && !Util.IsNullEmpty(this.thingSetMakers))
+                            t.thingSetMakerTags = new List<string>();
+                        if (t.thingSetMakerTags != null)
+                        {
+                            t.thingSetMakerTags.Clear();
+                            Util.Populate(t.thingSetMakerTags, this.thingSetMakers, (d) => d.defName);
+                        }
+
+                        if (t.stuffCategories == null && !Util.IsNullEmpty(this.stuffCategories))
+                            t.stuffCategories = new List<StuffCategoryDef>();
+                        if (t.stuffCategories != null)
+                        {
+                            t.stuffCategories.Clear();
+                            Util.Populate(t.stuffCategories, this.stuffCategories, (d) => d.Def);
+                        }
+
+                        if (this.apparelStats != null)
+                        {
+                            this.apparelStats.ApplyStats(t.apparel);
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
@@ -355,7 +361,78 @@ namespace InGameDefEditor.Stats
                 foreach (var s in this.EquippedStatOffsets)
                     sb.AppendLine(s.ToString());
             }
+            sb.AppendLine(Util.IsNull("    ThingSetMakerTags", this.thingSetMakers == null));
+            if (this.thingSetMakers != null)
+            {
+                foreach (var s in this.thingSetMakers)
+                    sb.AppendLine("        " + s.DefName);
+            }
             return sb.ToString();
+        }
+
+        public void SetTools(List<Tool> tools)
+        {
+            if (tools != null)
+            {
+                this.Tools = new List<ToolStats>(tools.Count);
+                foreach (Tool t in tools)
+                {
+                    this.Tools.Add(new ToolStats(t));
+                }
+            }
+        }
+
+        public void SetVerbs(List<VerbProperties> verbs)
+        {
+            if (verbs != null)
+            {
+                this.VerbStats = new List<VerbStats>(verbs.Count);
+                foreach (VerbProperties v in verbs)
+                {
+                    try
+                    {
+                        if (v != null)
+                        {
+                            VerbStats verb = new VerbStats(v);
+                            this.VerbStats.Add(verb);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Warning("Poorly formatted VerbProperties in " + this.Def.defName + Environment.NewLine + e.Message);
+                    }
+                }
+            }
+        }
+
+        public void SetEquippedStatOffsets(List<StatModifier> offsets)
+        {
+            if (offsets != null)
+            {
+                this.EquippedStatOffsets = new List<FloatValueStat<StatDef>>(offsets.Count);
+                foreach (StatModifier m in offsets)
+                {
+                    this.EquippedStatOffsets.Add(new FloatValueStat<StatDef>(m.stat)
+                    {
+                        value = m.value
+                    });
+                }
+            }
+        }
+
+        public void SetStatModifiers(List<StatModifier> modifiers)
+        {
+            if (modifiers != null)
+            {
+                this.StatModifiers = new List<FloatValueStat<StatDef>>(modifiers.Count);
+                foreach (StatModifier m in modifiers)
+                {
+                    this.StatModifiers.Add(new FloatValueStat<StatDef>(m.stat)
+                    {
+                        value = m.value
+                    });
+                }
+            }
         }
     }
 }

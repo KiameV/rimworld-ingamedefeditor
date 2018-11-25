@@ -284,18 +284,28 @@ namespace InGameDefEditor
 
 		public delegate T CreateItem<T, U>(U u);
 		public static void Populate<T, U>(List<T> to, List<U> from, CreateItem<T, U> createItem)
-		{
-			if (to != null)
-				to.Clear();
+        {
+            to.Clear();
 
-			if (!IsNullEmpty(from))
+            if (!IsNullEmpty(from))
 			{
 				foreach (U u in from)
 					to.Add(createItem(u));
 			}
-		}
+        }
 
-		public delegate U Convert<T, U>(T t);
+        public static void Populate<T>(List<T> to, List<T> from)
+        {
+            to.Clear();
+
+            if (!IsNullEmpty(from))
+            {
+                foreach (T t in from)
+                    to.Add(t);
+            }
+        }
+
+        public delegate U Convert<T, U>(T t);
 		public static IEnumerable<U> ConvertItems<T, U>(IEnumerable<T> t, Convert<T, U> convert)
 		{
 			List<U> u = new List<U>();
