@@ -1,9 +1,11 @@
 ﻿using RimWorld;
+using System;
 using UnityEngine;
 using Verse;
 
 namespace InGameDefEditor.Stats.DefStat
 {
+	[Serializable]
 	class HediffDefStats : DefStat<HediffDef>
 	{
 		// TODO

@@ -39,14 +39,14 @@ namespace InGameDefEditor.Gui.EditorWidgets
 		private readonly PlusMinusArgs<BodyPartDef> appliedOnFixedBodyParts;
 
 		private readonly List<IntInputWidget<ThingDefCountClass>> products = new List<IntInputWidget<ThingDefCountClass>>();
-		private readonly PlusMinusArgs<ThingDef> productsPlusMinusArgs;
+		//private readonly PlusMinusArgs<ThingDef> productsPlusMinusArgs;
 
 		private readonly List<IntInputWidget<SkillRequirement>> skillRequirements = new List<IntInputWidget<SkillRequirement>>();
 		private readonly PlusMinusArgs<SkillDef> skillRequirementsPlusMinusArgs;
 
-		private readonly List<IngredientCountWidget> ingredients = new List<IngredientCountWidget>();
+		// TODO Readd private readonly List<IngredientCountWidget> ingredients = new List<IngredientCountWidget>();
 
-		public RecipeWidget(RecipeDef d, WidgetType type) : base(d, type)
+		public RecipeWidget(RecipeDef d, DefType type) : base(d, type)
 		{
 			this.inputWidgets = new List<IInputWidget>()
 			{
@@ -157,8 +157,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			{
 				allItems = DefDatabase<SpecialThingFilterDef>.AllDefsListForReading,
 				beingUsed = () => base.Def.forceHiddenSpecialFilters,
-				onAdd = (def) => base.Def.forceHiddenSpecialFilters.Add(def),
-				onRemove = (def) => base.Def.forceHiddenSpecialFilters.Remove(def),
+				onAdd = (def) => base.Def.forceHiddenSpecialFilters = Util.AddTo(base.Def.forceHiddenSpecialFilters, def),
+				onRemove = (def) => base.Def.forceHiddenSpecialFilters = Util.RemoveFrom(base.Def.forceHiddenSpecialFilters, def, false),
 				getDisplayName = (def) => def.label
 			};
 
@@ -175,12 +175,12 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			{
 				allItems = DefDatabase<BodyPartDef>.AllDefsListForReading,
 				beingUsed = () => base.Def.appliedOnFixedBodyParts,
-				onAdd = (def) => base.Def.appliedOnFixedBodyParts.Add(def),
-				onRemove = (def) => base.Def.appliedOnFixedBodyParts.Remove(def),
+				onAdd = (def) => base.Def.appliedOnFixedBodyParts = Util.AddTo(base.Def.appliedOnFixedBodyParts, def),
+				onRemove = (def) => base.Def.appliedOnFixedBodyParts = Util.RemoveFrom(base.Def.appliedOnFixedBodyParts, def, false),
 				getDisplayName = (def) => def.label
 			};
 
-			this.productsPlusMinusArgs = new PlusMinusArgs<ThingDef>()
+			/*this.productsPlusMinusArgs = new PlusMinusArgs<ThingDef>()
 			{
 				allItems = DefDatabase<ThingDef>.AllDefsListForReading,
 				isBeingUsed = delegate (ThingDef td)
@@ -193,16 +193,17 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				onAdd = delegate (ThingDef td)
 				{
 					ThingDefCountClass tdc = new ThingDefCountClass(td, 0);
-					base.Def.products.Add(tdc);
+					base.Def.products = Util.AddAndCreateIfNeeded(base.Def.products, tdc);
 					this.products.Add(this.CreateThingDefCountClass(tdc));
 				},
 				onRemove = delegate (ThingDef def)
 				{
 					base.Def.products.RemoveAll((tdc) => tdc.thingDef == def);
+					base.Def.products = Util.NullIfNeeded(base.Def.products);
 					this.products.RemoveAll((input) => input.Parent.thingDef == def);
 				},
 				getDisplayName = (en) => en.ToString()
-			};
+			};*/
 
 			this.skillRequirementsPlusMinusArgs = new PlusMinusArgs<SkillDef>()
 			{
@@ -217,7 +218,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				onAdd = delegate (SkillDef sd)
 				{
 					SkillRequirement sr = new SkillRequirement() { skill = sd, minLevel = 0 };
-					base.Def.skillRequirements.Add(sr);
+					base.Def.skillRequirements = Util.AddTo(base.Def.skillRequirements, sr);
 					this.skillRequirements.Add(this.CreateSkillRequirements(sr));
 				},
 				onRemove = delegate (SkillDef sd)
@@ -228,10 +229,10 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				getDisplayName = (en) => en.ToString()
 			};
 
-			if (base.Def.ingredients == null)
+			/*if (base.Def.ingredients == null)
 				base.Def.ingredients = new List<IngredientCount>();
 			foreach (var v in base.Def.ingredients)
-				this.ingredients.Add(new IngredientCountWidget(v));
+				this.ingredients.Add(new IngredientCountWidget(v));*/
 			
             this.Rebuild();
         }
@@ -261,7 +262,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         public override void DrawMiddle(float x, ref float y, float width)
 		{
-			WindowUtil.PlusMinusLabel(x, ref y, 150, "Products", this.productsPlusMinusArgs);
+			WindowUtil.DrawLabel(x, y, 150, "Products", true);
+			y += 32;
 			foreach (var v in this.products)
 			{
 				v.Draw(x + 10, ref y, width);
@@ -273,7 +275,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				v.Draw(x + 10, ref y, width);
 			}
 
-			WindowUtil.PlusMinusLabel(x, ref y, 150, "Ingredients",
+			/*WindowUtil.PlusMinusLabel(x, ref y, 150, "Ingredients",
 				delegate ()
 				{
 					IngredientCount c = new IngredientCount() { filter = new ThingFilter() };
@@ -299,7 +301,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				y += 32;
 				v.Draw(x + 20, ref y, width - 20);
 			}
-			y += 8;
+			y += 8;*/
 
 			/*WindowUtil.PlusMinusLabel(x, ref y, 150, "Special Products", this.specialProducts);
             if (base.Def.specialProducts != null)
@@ -313,19 +315,21 @@ namespace InGameDefEditor.Gui.EditorWidgets
             }*/
 
 			WindowUtil.PlusMinusLabel(x, ref y, 150, "Force Hidden Special Filters", this.forceHiddenSpecialFilters);
-			foreach (var v in base.Def.forceHiddenSpecialFilters)
-			{
-				WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
-				y += 32;
-			}
+			if (base.Def.forceHiddenSpecialFilters != null)
+				foreach (var v in base.Def.forceHiddenSpecialFilters)
+				{
+					WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
+					y += 32;
+				}
 			y += 8;
 
 			WindowUtil.PlusMinusLabel(x, ref y, 150, "Applied On Fixed Body Parts", this.appliedOnFixedBodyParts);
-			foreach (var v in base.Def.appliedOnFixedBodyParts)
-			{
-				WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
-				y += 32;
-			}
+			if (base.Def.appliedOnFixedBodyParts != null)
+				foreach (var v in base.Def.appliedOnFixedBodyParts)
+				{
+					WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
+					y += 32;
+				}
 			y += 8;
 
 			/*WindowUtil.PlusMinusLabel(x, ref y, 150, "Recipe Users", this.recipeUsers);
@@ -360,38 +364,26 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			this.fixedIngredientFilter = new ThingFilterWidget(base.Def.fixedIngredientFilter);
 			this.defaultIngredientFilter = new ThingFilterWidget(base.Def.defaultIngredientFilter);
 
-			//if (base.Def.specialProducts == null)
-			//	base.Def.specialProducts = new List<SpecialProductType>(0);
+			/*if (base.Def.ingredients == null)
+				base.Def.ingredients = new List<IngredientCount>();*/
 
-			if (base.Def.forceHiddenSpecialFilters == null)
-				base.Def.forceHiddenSpecialFilters = new List<SpecialThingFilterDef>(0);
+			if (base.Def.products != null)
+			{
+				this.products.Clear();
+				foreach (var v in base.Def.products)
+					this.products.Add(this.CreateThingDefCountClass(v));
+			}
 
-			if (base.Def.recipeUsers == null)
-				base.Def.recipeUsers = new List<ThingDef>(0);
-
-			if (base.Def.appliedOnFixedBodyParts == null)
-				base.Def.appliedOnFixedBodyParts = new List<BodyPartDef>(0);
-
-			if (base.Def.products == null)
-				base.Def.products = new List<ThingDefCountClass>();
-
-			if (base.Def.skillRequirements == null)
-				base.Def.skillRequirements = new List<SkillRequirement>(0);
-
-			if (base.Def.ingredients == null)
-				base.Def.ingredients = new List<IngredientCount>();
-
-			this.products.Clear();
-			foreach (var v in base.Def.products)
-				this.products.Add(this.CreateThingDefCountClass(v));
-
-			this.ingredients.Clear();
+			/*this.ingredients.Clear();
 			foreach (var v in base.Def.ingredients)
-				this.ingredients.Add(new IngredientCountWidget(v));
+				this.ingredients.Add(new IngredientCountWidget(v));*/
 
-			this.skillRequirements.Clear();
-			foreach (var v in base.Def.skillRequirements)
-				this.skillRequirements.Add(this.CreateSkillRequirements(v));
+			if (base.Def.skillRequirements != null)
+			{
+				this.skillRequirements.Clear();
+				foreach (var v in base.Def.skillRequirements)
+					this.skillRequirements.Add(this.CreateSkillRequirements(v));
+			}
 		}
 
 		public override void ResetBuffers()

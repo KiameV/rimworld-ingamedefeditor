@@ -4,12 +4,13 @@ using InGameDefEditor.Gui.EditorWidgets;
 using RimWorld;
 using System.Collections.Generic;
 using InGameDefEditor.Gui.EditorWidgets.Misc;
+using System;
 
 namespace InGameDefEditor
 {
     class InGameDefEditorWindow : Window
-    {
-        private IParentStatWidget selected = null;
+	{
+		private IParentStatWidget selected = null;
 
         private Vector2 leftScroll = Vector2.zero,
                         middleScroll = Vector2.zero,
@@ -29,12 +30,14 @@ namespace InGameDefEditor
 
             buttons = new List<IButtonWidget>()
             {
-                new ButtonWidget<ThingDef>("Apparel", WidgetType.Apparel, Defs.ApparelDefs.Values, this.CreateSelected),
-                new ButtonWidget<ThingDef>("Weapons", WidgetType.Weapon, Defs.WeaponDefs.Values, this.CreateSelected),
-                new ButtonWidget<ThingDef>("Projectiles", WidgetType.Projectile, Defs.ProjectileDefs.Values, this.CreateSelected),
-                new ButtonWidget<BiomeDef>("Biomes", WidgetType.Biome, Defs.BiomeDefs.Values, this.CreateSelected),
-				new ButtonWidget<RecipeDef>("Recipes", WidgetType.Recipe, Defs.RecipeDefs.Values, this.CreateSelected),
+                new ButtonWidget<ThingDef>("Apparel", DefType.Apparel, Defs.ApparelDefs.Values, this.CreateSelected),
+                new ButtonWidget<ThingDef>("Weapons", DefType.Weapon, Defs.WeaponDefs.Values, this.CreateSelected),
+                new ButtonWidget<ThingDef>("Projectiles", DefType.Projectile, Defs.ProjectileDefs.Values, this.CreateSelected),
+                new ButtonWidget<BiomeDef>("Biomes", DefType.Biome, Defs.BiomeDefs.Values, this.CreateSelected),
 			};
+
+			if (Controller.EnableRecipes)
+				buttons.Add(new ButtonWidget<RecipeDef>("Recipes", DefType.Recipe, Defs.RecipeDefs.Values, this.CreateSelected));
         }
 
         public override void DoWindowContents(Rect rect)
@@ -95,7 +98,7 @@ namespace InGameDefEditor
 
                 Widgets.EndScrollView();
 
-                if (Widgets.ButtonText(new Rect(30, rect.yMax - 100, 100, 32), "Reset".Translate()))
+                if (Widgets.ButtonText(new Rect(rect.xMax - 340, rect.yMax - 32, 100, 32), "Reset".Translate()))
                 {
                     Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("Reset " + this.selected.DisplayLabel + "?", delegate { this.ResetSelected(); }));
                 }
@@ -106,27 +109,50 @@ namespace InGameDefEditor
                 Find.WindowStack.TryRemove(typeof(InGameDefEditorWindow), true);
             }
 
+			if (this.selected != null &&
+				Widgets.ButtonText(new Rect(rect.xMax - 230, rect.yMax - 32, 120, 32), "Reset".Translate() + " " + this.selected.Type))
+			{
+				Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("Reset".Translate() + " " + this.selected.Type + "?", delegate { this.ResetDefType(this.selected.Type); }));
+			}
+
             if (Widgets.ButtonText(new Rect(rect.xMax - 100, rect.yMax - 32, 100, 32), "InGameDefEditor.ResetAll".Translate()))
             {
                 Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
                     "Reset everything to the original game's settings?",
                     delegate
                     {
-						Defs.ResetAll();
-
+						foreach (var v in this.buttons)
+							v.ResetTypeDefs();
 						if (this.selected != null)
 							this.selected.Rebuild();
 					}));
             }
         }
 
-        private void ResetSelected()
-        {
-            Backup.ApplyStats(this.selected.BaseDef);
-            this.selected.Rebuild();
-        }
+		private void ResetSelected()
+		{
+			if (this.selected != null)
+			{
+				Backup.ApplyStats(this.selected.BaseDef);
+				this.selected.Rebuild();
+			}
+		}
 
-        public void ResetScrolls()
+		private void ResetDefType(DefType type)
+		{
+			foreach (var v in this.buttons)
+			{
+				if (v.Type == type)
+				{
+					v.ResetTypeDefs();
+					if (this.selected != null)
+						this.selected.Rebuild();
+					break;
+				}
+			}
+		}
+
+		public void ResetScrolls()
         {
             this.leftScroll = this.middleScroll = this.rightScroll = Vector2.zero;
         }
@@ -137,19 +163,21 @@ namespace InGameDefEditor
             IOUtil.SaveData();
         }
 
-        private void CreateSelected(Def d, WidgetType type)
+        private void CreateSelected(Def d, DefType type)
         {
             switch (type)
             {
-                case WidgetType.Apparel:
-                case WidgetType.Projectile:
-                case WidgetType.Weapon:
+                case DefType.Apparel:
+                case DefType.Weapon:
                     this.selected = new ThingDefWidget(d as ThingDef, type);
                     break;
-                case WidgetType.Biome:
+				case DefType.Projectile:
+					this.selected = new ProjectileDefWidget(d as ThingDef, type);
+					break;
+				case DefType.Biome:
                     this.selected = new BiomeWidget(d as BiomeDef, type);
                     break;
-				case WidgetType.Recipe:
+				case DefType.Recipe:
 					this.selected = new RecipeWidget(d as RecipeDef, type);
 					break;
             }
@@ -160,25 +188,29 @@ namespace InGameDefEditor
         #region ButonWidget
         private interface IButtonWidget
         {
+			DefType Type { get; }
             void Draw(float x, float y, float width, IParentStatWidget selected);
+			void ResetTypeDefs();
         }
 
-        private class ButtonWidget<D> : IButtonWidget where D : Def
+        private class ButtonWidget<D> : IButtonWidget where D : Def, new()
         {
-            public delegate void OnSelect(Def d, WidgetType type);
-
-            private readonly string label;
-            private readonly WidgetType type;
+            public delegate void OnSelect(Def d, DefType type);
+			
+			private readonly string label;
+            private readonly DefType type;
             private readonly IEnumerable<D> possibleDefs;
             private readonly OnSelect onSelect;
 
-            public ButtonWidget(string label, WidgetType type, IEnumerable<D> possibleDefs, OnSelect onSelect)
+			public DefType Type { get => this.type; }
+
+			public ButtonWidget(string label, DefType type, IEnumerable<D> possibleDefs, OnSelect onSelect)
             {
                 this.label = label;
                 this.type = type;
                 this.possibleDefs = possibleDefs;
                 this.onSelect = onSelect;
-            }
+			}
 
             public void Draw(float x, float y, float width, IParentStatWidget selected)
             {
@@ -196,11 +228,18 @@ namespace InGameDefEditor
                             onSelect = delegate (D d)
                             {
                                 this.onSelect(d, this.type);
-                            }
+
+							}
                         });
                 }
             }
-        }
+
+			public void ResetTypeDefs()
+			{
+				foreach (var v in this.possibleDefs)
+					Backup.ApplyStats(v);
+			}
+		}
         #endregion
     }
 }

@@ -16,16 +16,33 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
             this.VerbProperties = p;
 
             if (VerbProperties.defaultProjectile != null)
-                this.projectileWidget = new ProjectileDefWidget(VerbProperties.defaultProjectile);
+                this.projectileWidget = new ProjectileDefWidget(VerbProperties.defaultProjectile, DefType.Projectile);
 
             this.inputWidgets = new List<IInputWidget>()
             {
                 new FloatInputWidget<VerbProperties>(this.VerbProperties, "Warmup Time", (VerbProperties parent) => parent.warmupTime, (VerbProperties parent, float f) => parent.warmupTime = f),
-                new FloatInputWidget<VerbProperties>(this.VerbProperties, "Range", (VerbProperties parent) => parent.range, (VerbProperties parent, float f) => parent.range = f),
+				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Default Cooldown", (VerbProperties parent) => parent.defaultCooldownTime, (VerbProperties parent, float f) => parent.defaultCooldownTime = f),
+				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Min Range", (VerbProperties parent) => parent.minRange, (VerbProperties parent, float f) => parent.minRange = f),
+				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Range", (VerbProperties parent) => parent.range, (VerbProperties parent, float f) => parent.range = f),
                 new IntInputWidget<VerbProperties>(this.VerbProperties, "Time Between Shots", (VerbProperties parent) => parent.ticksBetweenBurstShots, (VerbProperties parent, int i) => parent.ticksBetweenBurstShots = i),
                 new IntInputWidget<VerbProperties>(this.VerbProperties, "Burst Shot Count", (VerbProperties parent) => parent.burstShotCount, (VerbProperties parent, int i) => parent.burstShotCount = i),
-                new FloatInputWidget<VerbProperties>(this.VerbProperties, "Muzzle Flash Scale", (VerbProperties parent) => parent.muzzleFlashScale, (VerbProperties parent, float f) => parent.muzzleFlashScale = f),
-                new FloatInputWidget<VerbProperties>(this.VerbProperties, "(AI) Avoid Friendly Fire Radius", (VerbProperties parent) => parent.ai_AvoidFriendlyFireRadius, (VerbProperties parent, float f) => parent.ai_AvoidFriendlyFireRadius = f)
+				new BoolInputWidget<VerbProperties>(this.VerbProperties, "Stop Burst Lose LOS", (VerbProperties parent) => parent.stopBurstWithoutLos, (VerbProperties parent, bool b) => parent.stopBurstWithoutLos = b),
+				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Muzzle Flash Scale", (VerbProperties parent) => parent.muzzleFlashScale, (VerbProperties parent, float f) => parent.muzzleFlashScale = f),
+				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Noise Radius", (VerbProperties parent) => parent.noiseRadius, (VerbProperties parent, float f) => parent.noiseRadius = f),
+				new BoolInputWidget<VerbProperties>(this.VerbProperties, "Standard Command", (VerbProperties parent) => parent.hasStandardCommand, (VerbProperties parent, bool b) => parent.hasStandardCommand = b),
+				new BoolInputWidget<VerbProperties>(this.VerbProperties, "Require LOS", (VerbProperties parent) => parent.requireLineOfSight, (VerbProperties parent, bool b) => parent.requireLineOfSight = b),
+				new BoolInputWidget<VerbProperties>(this.VerbProperties, "Force Normal Speed", (VerbProperties parent) => parent.forceNormalTimeSpeed, (VerbProperties parent, bool b) => parent.forceNormalTimeSpeed = b),
+				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Consume Fuel", (VerbProperties parent) => parent.consumeFuelPerShot, (VerbProperties parent, float f) => parent.consumeFuelPerShot = f),
+				new IntInputWidget<VerbProperties>(this.VerbProperties, "Base Melee Dmg", (VerbProperties parent) => parent.meleeDamageBaseAmount, (VerbProperties parent, int i) => parent.meleeDamageBaseAmount = i),
+				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Base Armor Penetration", (VerbProperties parent) => parent.meleeArmorPenetrationBase, (VerbProperties parent, float f) => parent.meleeArmorPenetrationBase = f),
+				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Forced Miss Radius", (VerbProperties parent) => parent.forcedMissRadius, (VerbProperties parent, float f) => parent.forcedMissRadius = f),
+				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Accuracy Touch", (VerbProperties parent) => parent.accuracyTouch, (VerbProperties parent, float f) => parent.accuracyTouch = f),
+				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Accuracy Short", (VerbProperties parent) => parent.accuracyShort, (VerbProperties parent, float f) => parent.accuracyShort = f),
+				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Accuracy Medium", (VerbProperties parent) => parent.accuracyMedium, (VerbProperties parent, float f) => parent.accuracyMedium = f),
+				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Accuracy Long", (VerbProperties parent) => parent.accuracyLong, (VerbProperties parent, float f) => parent.accuracyLong = f),
+				new BoolInputWidget<VerbProperties>(this.VerbProperties, "(AI) Is Weapon", (VerbProperties parent) => parent.ai_IsWeapon, (VerbProperties parent, bool b) => parent.ai_IsWeapon = b),
+				new BoolInputWidget<VerbProperties>(this.VerbProperties, "(AI) Is Building Destroyer", (VerbProperties parent) => parent.ai_IsBuildingDestroyer, (VerbProperties parent, bool b) => parent.ai_IsBuildingDestroyer = b),
+				new FloatInputWidget<VerbProperties>(this.VerbProperties, "(AI) Avoid Friendly Fire Radius", (VerbProperties parent) => parent.ai_AvoidFriendlyFireRadius, (VerbProperties parent, float f) => parent.ai_AvoidFriendlyFireRadius = f)
             };
 
             this.ResetBuffers();
@@ -59,7 +76,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
                     includeNullOption = true
                 });
 
-            y += 30;
+            y += 10;
 
             if (VerbProperties.defaultProjectile != null)
             {
@@ -71,12 +88,11 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
                         onSelect = delegate (ThingDef d)
                         {
                             this.VerbProperties.defaultProjectile = d;
-                            this.projectileWidget = new ProjectileDefWidget(d);
+                            this.projectileWidget = new ProjectileDefWidget(d, DefType.Projectile);
                         }
                     }, true);
-                y += 10;
 
-                x += 10;
+                x += 20;
                 this.projectileWidget.Draw(x, ref y, width - x);
             }
         }

@@ -12,13 +12,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
         private List<ToolWidget> ToolWidgets = new List<ToolWidget>();
         private List<FloatInputWidget<StatModifier>> EquipmentModifiers = new List<FloatInputWidget<StatModifier>>();
 
-        private readonly ProjectileDefWidget projectileWidget = null;
-
-        public ThingDefWidget(ThingDef d, WidgetType type) : base(d, type)
+        public ThingDefWidget(ThingDef d, DefType type) : base(d, type)
         {
-            if (base.Type == WidgetType.Projectile)
-                this.projectileWidget = new ProjectileDefWidget(d);
-
             if (base.Def.statBases == null)
                 base.Def.statBases = new List<StatModifier>();
 
@@ -30,24 +25,20 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         public override void DrawLeft(float x, ref float y, float width)
         {
-            if (base.Type == WidgetType.Apparel ||
-                base.Type == WidgetType.Weapon)
+            if (base.Type == DefType.Apparel ||
+                base.Type == DefType.Weapon)
             {
                 this.DrawStatModifiers(x, ref y, width);
-            }
-            else if (base.Type == WidgetType.Projectile)
-            {
-                this.projectileWidget.Draw(x, ref y, width);
             }
         }
 
         public override void DrawMiddle(float x, ref float y, float width)
         {
-            if (base.Type == WidgetType.Apparel)
+            if (base.Type == DefType.Apparel)
             {
                 this.DrawEquipmentStatOffsets(x, ref y, width);
             }
-            else if (base.Type == WidgetType.Weapon)
+            else if (base.Type == DefType.Weapon)
             {
                 this.DrawVerbs(x, ref y, width);
                 y += 20;
@@ -57,7 +48,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         public override void DrawRight(float x, ref float y, float width)
         {
-            if (base.Type == WidgetType.Weapon)
+            if (base.Type == DefType.Weapon)
             {
                 this.DrawEquipmentStatOffsets(x, ref y, width);
             }
@@ -289,9 +280,6 @@ namespace InGameDefEditor.Gui.EditorWidgets
             this.VerbWidgets.ForEach((VerbWidget w) => w.ResetBuffers());
             this.ToolWidgets.ForEach((ToolWidget w) => w.ResetBuffers());
             this.EquipmentModifiers.ForEach((FloatInputWidget<StatModifier> w) => w.ResetBuffers());
-
-            if (this.projectileWidget != null)
-                this.projectileWidget.ResetBuffers();
         }
 
         private FloatInputWidget<StatModifier> CreateFloatInput(StatModifier sm)

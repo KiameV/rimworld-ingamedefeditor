@@ -6,15 +6,18 @@ using Verse;
 
 namespace InGameDefEditor.Stats.Misc
 {
-    public class ToolStats
-    {
+	[Serializable]
+	public class ToolStats : IInitializable
+	{
         public string label;
         public float power;
         public float armorPenetration;
         public float cooldownTime;
         public List<DefStat<ToolCapacityDef>> capabilities;
 
-        public ToolStats() { }
+		public string Label => label;
+
+		public ToolStats() { }
         public ToolStats(Tool t)
         {
             this.label = t.label;

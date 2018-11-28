@@ -4,6 +4,7 @@ using Verse;
 
 namespace InGameDefEditor.Stats
 {
+	[System.Serializable]
 	public class SkillDefStats : DefStat<SkillDef>, IParentStat
 	{
 		public string skillLabel;
@@ -32,10 +33,6 @@ namespace InGameDefEditor.Stats
 				t.listOrder = this.listOrder;
 			}
 		}
-
-		/*public override void ApplyStats(DefStat<SkillDef> to)
-		{
-		}*/
 
 		public override bool Equals(object obj)
 		{

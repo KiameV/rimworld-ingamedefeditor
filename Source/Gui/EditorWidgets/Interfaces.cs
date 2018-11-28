@@ -2,15 +2,6 @@
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
-    public enum WidgetType
-    {
-        Apparel,
-        Biome,
-        Weapon,
-        Projectile,
-		Recipe,
-	};
-
     interface IStatWidget
     {
         string DisplayLabel { get; }
@@ -19,7 +10,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
     interface IParentStatWidget : IStatWidget
     {
-        WidgetType Type { get; }
+        DefType Type { get; }
         Def BaseDef { get; }
 
         void DrawLeft(float x, ref float y, float width);
@@ -36,16 +27,16 @@ namespace InGameDefEditor.Gui.EditorWidgets
     public abstract class AParentStatWidget<D> : IParentStatWidget where D : Def
     {
         public readonly D Def;
-        private readonly WidgetType type;
+        private readonly DefType type;
 
-        protected AParentStatWidget(D def, WidgetType type)
+        protected AParentStatWidget(D def, DefType type)
         {
             this.Def = def;
             this.type = type;
         }
 
         public virtual string DisplayLabel => this.Def.label;
-        public WidgetType Type => this.type;
+        public DefType Type => this.type;
 
         public Def BaseDef => this.Def;
 

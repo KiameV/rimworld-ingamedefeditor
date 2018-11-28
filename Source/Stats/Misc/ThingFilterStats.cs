@@ -1,40 +1,44 @@
 ﻿using InGameDefEditor.Stats.DefStat;
 using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Verse;
 
 namespace InGameDefEditor.Stats.Misc
 {
-	public class ThingFilterStats : IStat<ThingFilter>
+	[Serializable]
+	public class ThingFilterStats : IStat<ThingFilter>, IInitializable
 	{
 		/*private FloatRange allowedHitPointsPercents = FloatRange.ZeroToOne;
 		public bool allowedHitPointsConfigurable;
 		public bool allowedQualitiesConfigurable;
-		private FoodPreferability disallowWorsePreferability;
-		private bool disallowInedibleByHuman;
-		private float disallowCheaperThan;*/
+		public FoodPreferability disallowWorsePreferability;
+		public bool disallowInedibleByHuman;
+		public float disallowCheaperThan;*/
 
 		//private HashSet<DefStat<ThingDef>> allowedDefs;
-		private List<DefStat<ThingDef>> disallowedThingDefs;
-		private HashSet<DefStat<ThingDef>> thingDefs;
-		private List<string> categories;
-		private List<string> disallowedCategories;
-		private List<string> specialFiltersToAllow;
-		private List<string> specialFiltersToDisallow;
+		public List<DefStat<ThingDef>> disallowedThingDefs;
+		public HashSet<DefStat<ThingDef>> thingDefs;
+		public List<string> categories;
+		public List<string> disallowedCategories;
+		public List<string> specialFiltersToAllow;
+		public List<string> specialFiltersToDisallow;
+
+		public string Label => "Thing Filter";
 
 		/*
-		private QualityRangeStats allowedQualities;
-		private List<DefStat<ThingDef>> allowAllWhoCanMake;
-		private List<DefStat<StuffCategoryDef>> stuffCategoriesToAllow;
-		private List<DefStat<SpecialThingFilterDef>> disallowedSpecialFilters;
-		private List<string> tradeTagsToAllow;
-		private List<string> tradeTagsToDisallow;
-		private List<string> thingSetMakerTagsToAllow;
-		private List<string> thingSetMakerTagsToDisallow;*/
+		public QualityRangeStats allowedQualities;
+		public List<DefStat<ThingDef>> allowAllWhoCanMake;
+		public List<DefStat<StuffCategoryDef>> stuffCategoriesToAllow;
+		public List<DefStat<SpecialThingFilterDef>> disallowedSpecialFilters;
+		public List<string> tradeTagsToAllow;
+		public List<string> tradeTagsToDisallow;
+		public List<string> thingSetMakerTagsToAllow;
+		public List<string> thingSetMakerTagsToDisallow;*/
 
-		//private Type allowWithComp;
-		//private Type disallowWithComp;
+		//public Type allowWithComp;
+		//public Type disallowWithComp;
 
 		public ThingFilterStats() { }
 		public ThingFilterStats(ThingFilter f)
@@ -55,9 +59,14 @@ namespace InGameDefEditor.Stats.Misc
 			this.stuffCategoriesToAllow = Util.CreateDefStatList(GetStuffCategoriesToAllow(f));
 			this.disallowedSpecialFilters = Util.CreateDefStatList(GetDisallowedSpecialFilters(f));*/
 			this.thingDefs = Util.CreateDefStatHashSet(GetThingDefs(f));
-			if (GetAllowedDefs(f) != null)
+			HashSet<ThingDef> hs = GetAllowedDefs(f);
+			if (hs != null && hs.Count > 0)
+			{
+				if (this.thingDefs == null)
+					this.thingDefs = new HashSet<DefStat<ThingDef>>();
 				foreach (var v in GetAllowedDefs(f))
 					this.thingDefs.Add(new DefStat<ThingDef>(v));
+			}
 			this.categories = Util.CreateList(GetCategories(f));
 			/*this.tradeTagsToAllow = Util.CreateList(GetTradeTagsToAllow(f));
 			this.tradeTagsToDisallow = Util.CreateList(GetTradeTagsToDisallow(f));
@@ -81,6 +90,9 @@ namespace InGameDefEditor.Stats.Misc
 
 		public void ApplyStats(ThingFilter to)
 		{
+			//if (version <= 1)
+			//	return;
+
 			/*to.AllowedHitPointsPercents = this.allowedHitPointsPercents;
 			to.allowedHitPointsConfigurable = this.allowedHitPointsConfigurable;
 			to.allowedQualitiesConfigurable = this.allowedQualitiesConfigurable;

@@ -3,14 +3,15 @@ using Verse;
 
 namespace InGameDefEditor.Stats.DefStat
 {
-    public class MinMaxDefStat<D> : DefStat<D> where D : Def
-    {
+	[Serializable]
+	public class MinMaxFloatDefStat<D> : DefStat<D> where D : Def, new()
+	{
         public float Min;
         public float Max;
 
-        public MinMaxDefStat() { }
-        public MinMaxDefStat(D d) : base(d) { }
-        public MinMaxDefStat(MinMaxDefStat<D> s) : base(s.Def)
+        public MinMaxFloatDefStat() { }
+        public MinMaxFloatDefStat(D d) : base(d) { }
+        public MinMaxFloatDefStat(MinMaxFloatDefStat<D> s) : base(s.Def)
         {
             this.Min = s.Min;
             this.Max = s.Max;
@@ -29,7 +30,7 @@ namespace InGameDefEditor.Stats.DefStat
         public override bool Equals(object obj)
         {
             if (base.Equals(obj) && 
-                obj is MinMaxDefStat<D> stat)
+                obj is MinMaxFloatDefStat<D> stat)
             {
                 return
                     this.Min == stat.Min &&

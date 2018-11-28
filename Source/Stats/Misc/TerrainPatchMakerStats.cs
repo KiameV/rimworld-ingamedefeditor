@@ -1,14 +1,16 @@
 ﻿using InGameDefEditor.Stats.DefStat;
 using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Verse;
 
 namespace InGameDefEditor.Stats.Misc
 {
-    public class TerrainPatchMakerStats
-    {
-        public List<MinMaxDefStat<TerrainDef>> thresholds = new List<MinMaxDefStat<TerrainDef>>();
+	[Serializable]
+	public class TerrainPatchMakerStats : IInitializable
+	{
+        public List<MinMaxFloatDefStat<TerrainDef>> thresholds = new List<MinMaxFloatDefStat<TerrainDef>>();
         public float perlinFrequency;
         public float perlinLacunarity;
         public float perlinPersistence;
@@ -17,7 +19,9 @@ namespace InGameDefEditor.Stats.Misc
         public float maxFertility;
         public int minSize;
 
-        public TerrainPatchMakerStats() { }
+		public string Label => perlinFrequency.ToString();
+
+		public TerrainPatchMakerStats() { }
         public TerrainPatchMakerStats(TerrainPatchMaker m)
         {
             this.perlinFrequency = m.perlinFrequency;
@@ -30,10 +34,10 @@ namespace InGameDefEditor.Stats.Misc
 
             if (m.thresholds != null)
             {
-                this.thresholds = new List<MinMaxDefStat<TerrainDef>>(m.thresholds.Count);
+                this.thresholds = new List<MinMaxFloatDefStat<TerrainDef>>(m.thresholds.Count);
                 foreach (TerrainThreshold t in m.thresholds)
                 {
-                    this.thresholds.Add(new MinMaxDefStat<TerrainDef>(t.terrain)
+                    this.thresholds.Add(new MinMaxFloatDefStat<TerrainDef>(t.terrain)
                     {
                         Min = t.min,
                         Max = t.max

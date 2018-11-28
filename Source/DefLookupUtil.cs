@@ -19,68 +19,37 @@ namespace InGameDefEditor
                 defDic = null;
             }
         }
-        public static bool TryGetDef<D>(string defName, out D def) where D : Def
+
+        public static bool TryGetDef<D>(string defName, out D def) where D : Def, new()
         {
-            if (defDic == null || defDic.Count == 0)
-            {
+            if (defDic == null)
                 defDic = new Dictionary<string, Dictionary<string, Def>>();
-                AddToDefDic(DefDatabase<ThingDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<StatDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<SoundDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<WeatherDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<TerrainDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<PawnKindDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<BiomeDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<ToolCapacityDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<IncidentDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<RecipeDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<ThoughtDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<TraitDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<SkillDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<ThingSetMakerDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<DamageDef>.AllDefsListForReading);
-                AddToDefDic(DefDatabase<BuildableDef>.AllDefsListForReading);
-            }
 
             string name = typeof(D).Name;
-            if (defDic.TryGetValue(name, out Dictionary<string, Def> dic))
-            {
-                if (dic.TryGetValue(defName, out var d))
-                {
-                    def = d as D;
-                    return true;
-                }
-                else
-                    Log.Warning("Unable to find def [" + defName + "]");
-            }
-            else
-                Log.Warning("Unable to find def type [" + name + "]");
+			if (!defDic.TryGetValue(name, out Dictionary<string, Def> dic))
+			{
+				dic = new Dictionary<string, Def>();
+				foreach (var v in DefDatabase<D>.AllDefsListForReading)
+					dic.Add(v.defName, v);
+				defDic[name] = dic;
+			}
 
+			if (dic.TryGetValue(defName, out var d))
+			{
+				def = d as D;
+				return true;
+			}
+
+			Log.Warning("Unable to find def [" + defName + "] of type [" + name + "]");
             def = null;
             return false;
-        }
-        private static void AddToDefDic<D>(IEnumerable<D> defs) where D : Def
-        {
-            string name = typeof(D).Name;
-            if (!defDic.TryGetValue(name, out Dictionary<string, Def> dic))
-            {
-                dic = new Dictionary<string, Def>();
-                defDic[name] = dic;
-            }
-
-            foreach (Def d in defs)
-            {
-                dic[d.defName] = d;
-            }
         }
 
         public static IEnumerable<T> GetSortedDefs<T>(IEnumerable<T> items) where T : Def
         {
             SortedDictionary<string, T> dic = new SortedDictionary<string, T>();
             foreach (T t in items)
-            {
                 dic.Add(t.defName, t);
-            }
             return dic.Values;
         }
     }

@@ -28,7 +28,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
         private PlusMinusArgs<PawnKindDef> wildAnimalPlusMinusArgs;
         private PlusMinusArgs<ThingDef> allowedPackAnimalsPlusMinusArgs;
 
-        public BiomeWidget(BiomeDef d, WidgetType type) : base(d, type)
+        public BiomeWidget(BiomeDef d, DefType type) : base(d, type)
         {
             if (base.Def.baseWeatherCommonalities == null)
                 base.Def.baseWeatherCommonalities = new List<WeatherCommonalityRecord>();

@@ -7,7 +7,8 @@ using Verse;
 
 namespace InGameDefEditor.Stats
 {
-    public class ProjectileDefStats : DefStat<ThingDef>, IParentStat
+	[Serializable]
+	public class ProjectileDefStats : DefStat<ThingDef>, IParentStat
     {
         public int damage;
         public float stoppingPower;

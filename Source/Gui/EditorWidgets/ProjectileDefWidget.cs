@@ -5,13 +5,13 @@ using Verse;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
-    class ProjectileDefWidget : IDefEditorWidget
+    class ProjectileDefWidget : AParentStatWidget<ThingDef>, IDefEditorWidget
     {
         public readonly ThingDef ProjectileDef;
 
         private readonly List<IInputWidget> inputWidgets;
 
-        public ProjectileDefWidget(ThingDef d)
+        public ProjectileDefWidget(ThingDef d, DefType type) : base(d, type)
         {
             this.ProjectileDef = d;
 
@@ -26,18 +26,38 @@ namespace InGameDefEditor.Gui.EditorWidgets
             this.ResetBuffers();
         }
 
-        public string DisplayLabel => this.ProjectileDef.label;
-
         public void Draw(float x, ref float y, float width)
         {
             foreach (var w in this.inputWidgets)
                 w.Draw(x, ref y, width);
         }
 
-        public void ResetBuffers()
-        {
-            foreach (var w in this.inputWidgets)
-                w.ResetBuffers();
-        }
-    }
+		public override void DrawLeft(float x, ref float y, float width)
+		{
+			foreach (var w in this.inputWidgets)
+				w.Draw(x, ref y, width);
+		}
+
+		public override void DrawMiddle(float x, ref float y, float width)
+		{
+
+		}
+
+		public override void DrawRight(float x, ref float y, float width)
+		{
+
+		}
+
+		public override void Rebuild()
+		{
+			foreach (var v in this.inputWidgets)
+				v.ResetBuffers();
+		}
+		
+		public override void ResetBuffers()
+		{
+			foreach (var w in this.inputWidgets)
+				w.ResetBuffers();
+		}
+	}
 }

@@ -3,8 +3,14 @@ using Verse;
 
 namespace InGameDefEditor.Stats
 {
-    interface IParentStat : IDefStat
+	public interface IParentStat : IDefStat
     {
         void ApplyStats(Def to);
-    }
+	}
+
+	public interface IInitializable
+	{
+		string Label { get; }
+		bool Initialize();
+	}
 }

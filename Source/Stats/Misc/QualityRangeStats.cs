@@ -3,7 +3,8 @@ using System;
 
 namespace InGameDefEditor.Stats.Misc
 {
-	class QualityRangeStats
+	[Serializable]
+	public class QualityRangeStats
 	{
 		public QualityCategory Min;
 		public QualityCategory Max;

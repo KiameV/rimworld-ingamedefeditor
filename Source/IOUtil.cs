@@ -5,6 +5,8 @@ using System.IO;
 using System.Reflection;
 using System.Xml.Serialization;
 using Verse;
+using InGameDefEditor.Stats.DefStat;
+using System.Collections.Generic;
 
 namespace InGameDefEditor
 {
@@ -19,130 +21,34 @@ namespace InGameDefEditor
             {
                 try
                 {
-                    XmlSerializer serializer = new XmlSerializer(typeof(AllStats));
+					try
+					{
+						if (File.Exists(GetStatsPath()))
+							File.Delete(GetStatsPath());
+					}
+					catch
+					{
+						Log.Message("Unable to delete stats.xml");
+					}
 
-                    string path = GetStatsPath();
-                    if (!File.Exists(path))
-                    {
-                        Log.Message("No Change Equipment Stats file found.");
-                        return;
-                    }
+					if (Load(DefType.Apparel, out RootApparel ra))
+						ra?.stats.ForEach((d) => Initialize(d));
 
-                    FileStream fs = null;
-                    AllStats allStats = null;
-                    try
-                    {
-                        fs = new FileStream(path, FileMode.Open);
-                        allStats = (AllStats)serializer.Deserialize(fs);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Error(e.GetType().Name + Environment.NewLine + e.Message);
-                    }
-                    finally
-                    {
-                        if (fs != null)
-                            fs.Close();
-                    }
+					if (Load(DefType.Weapon, out RootWeapons rw))
+						rw?.stats.ForEach((d) => Initialize(d));
 
-                    //Log.Error("ThingDefs: " + allStats.thingDefStats.Count);
-                    //Log.Error("ProjectileDefs: " + allStats.projectileStats.Count);
+					if (Load(DefType.Projectile, out RootProjectiles rp))
+						rp?.stats.ForEach((d) => Initialize(d));
 
-                    if (allStats.projectileStats != null)
-                    {
-                        foreach (ProjectileDefStats s in allStats.projectileStats)
-                        {
-                            try
-                            {
-                                if (s.Initialize())
-                                {
-                                    s.ApplyStats(s.Def);
-                                }
-                                else
-                                {
-                                    Log.Warning("Unable to apply settings to " + s.defName);
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Log.Error("Failed to load " + s.defName + " due to " + e.Message);
-                            }
-                        }
-                        allStats.projectileStats.Clear();
-                    }
+					if (Load(DefType.Biome, out RootBiomes rb))
+						rb?.stats.ForEach((d) => Initialize(d));
 
-                    if (allStats.thingDefStats != null)
-                    {
-                        foreach (ThingDefStats s in allStats.thingDefStats)
-                        {
-                            try
-                            {
-                                if (s.Initialize())
-                                {
-                                    s.ApplyStats(s.Def);
-                                }
-                                else
-                                {
-                                    Log.Warning("Unable to apply settings to " + s.defName);
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Log.Error("Failed to load " + s.defName + " due to " + e.Message);
-                            }
-                        }
-                        allStats.thingDefStats.Clear();
-                    }
-
-                    if (allStats.biomeStats != null)
-                    {
-                        foreach (BiomeDefStats s in allStats.biomeStats)
-                        {
-                            try
-                            {
-                                if (s.Initialize())
-                                {
-                                    s.ApplyStats(s.Def);
-                                }
-                                else
-                                {
-                                    Log.Warning("Unable to apply settings to " + s.defName);
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Log.Error("Failed to load " + s.defName + " due to " + e.Message);
-                            }
-                        }
-                        allStats.thingDefStats.Clear();
-                    }
-
-                    if (allStats.recipeStats != null)
-                    {
-                        foreach (RecipeDefStats s in allStats.recipeStats)
-                        {
-                            try
-                            {
-                                if (s.Initialize())
-                                {
-                                    s.ApplyStats(s.Def);
-                                }
-                                else
-                                {
-                                    Log.Warning("Unable to apply settings to " + s.defName);
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Log.Error("Failed to load " + s.defName + " due to " + e.Message);
-                            }
-                        }
-                        allStats.recipeStats.Clear();
-                    }
-                }
-                catch
+					if (Load(DefType.Recipe, out RootRecipe rr))
+						rr?.stats.ForEach((d) => Initialize(d));
+				}
+                catch(Exception e)
                 {
-                    // Ignore
+					Log.Warning(e.Message);
                 }
                 finally
                 {
@@ -153,79 +59,129 @@ namespace InGameDefEditor
             }
         }
 
-        public static void SaveData()
-        {
-            AllStats allStats = new AllStats();
-            foreach (ThingDef d in Defs.ApparelDefs.Values)
-            {
-                ThingDefStats s = new ThingDefStats(d);
-                if (Backup.HasChanged(s))
-				{
-					allStats.thingDefStats.Add(s);
-                }
-            }
 
-            foreach (ThingDef d in Defs.WeaponDefs.Values)
-            {
-                ThingDefStats s = new ThingDefStats(d);
-                if (Backup.HasChanged(s))
-				{
-					allStats.thingDefStats.Add(s);
-                }
-            }
+		public static void SaveData()
+		{
+			Util.Populate(out List<ThingDefStats> ap, Defs.ApparelDefs.Values, (v) => HasChanged(new ThingDefStats(v)), false);
+			Save(DefType.Apparel, new RootApparel() { stats = ap });
 
-            foreach (ThingDef d in Defs.ProjectileDefs.Values)
-            {
-                ProjectileDefStats s = new ProjectileDefStats(d);
-                if (Backup.HasChanged(s))
-				{
-					allStats.projectileStats.Add(s);
-                }
-            }
+			Util.Populate(out List<ThingDefStats> we, Defs.WeaponDefs.Values, (v) => HasChanged(new ThingDefStats(v)), false);
+			Save(DefType.Weapon, new RootWeapons() { stats = we });
 
-            foreach (BiomeDef d in Defs.BiomeDefs.Values)
-            {
-                BiomeDefStats s = new BiomeDefStats(d);
-                if (Backup.HasChanged(s))
-				{
-					allStats.biomeStats.Add(s);
-                }
-			}
+			Util.Populate(out List<ProjectileDefStats> pr, Defs.ProjectileDefs.Values, (v) => HasChanged(new ProjectileDefStats(v)), false);
+			Save(DefType.Projectile, new RootProjectiles() { stats = pr });
 
-			foreach (RecipeDef d in Defs.RecipeDefs.Values)
-			{
-				RecipeDefStats s = new RecipeDefStats(d);
-				if (Backup.HasChanged(s))
-				{
-					s.PreSave(d);
-					allStats.recipeStats.Add(s);
-				}
-			}
+			Util.Populate(out List<BiomeDefStats> bi, Defs.BiomeDefs.Values, (v) => HasChanged(new BiomeDefStats(v)), false);
+			Save(DefType.Biome, new RootBiomes() { stats = bi });
 
-			//Log.Error("ThingDefs: " + allStats.thingDefStats.Count);
-			//Log.Error("ProjectileDefs: " + allStats.projectileStats.Count);
+			Util.Populate(out List<RecipeDefStats> re, Defs.RecipeDefs.Values, (v) => HasChanged(new RecipeDefStats(v)), false);
+			Save(DefType.Recipe, new RootRecipe() { stats = re });
+		}
 
-			XmlSerializer serializer = new XmlSerializer(typeof(AllStats));
-            FileStream fs = null;
-            try
-            {
-                fs = new FileStream(GetStatsPath(), FileMode.Create);
-                serializer.Serialize(fs, allStats);
-            }
-            finally
-            {
-                if (fs != null)
-                    fs.Close();
-            }
-        }
-
+		private static string basePath = null;
         private static string GetStatsPath()
         {
-            string path = (string)typeof(GenFilePaths).GetMethod("FolderUnderSaveData", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[]
-            {
-                "InGameDefEditor"
-            });
-            return path + "/stats.xml";
-        }
-    }
+			if (basePath == null)
+				basePath =(string)typeof(GenFilePaths).GetMethod("FolderUnderSaveData", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[]
+				{
+					"InGameDefEditor"
+				});
+            return basePath + "/stats.xml";
+		}
+
+		private static string GetStatsPath(DefType type)
+		{
+			if (basePath == null)
+				basePath = (string)typeof(GenFilePaths).GetMethod("FolderUnderSaveData", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[]
+				{
+					"InGameDefEditor"
+				});
+			return basePath + "/" + type.ToString() + ".xml";
+		}
+
+		private static bool Load<T>(DefType type, out T t)
+		{
+			XmlSerializer serializer = new XmlSerializer(typeof(T));
+			FileStream fs = null;
+			string path = GetStatsPath(type);
+
+			if (!File.Exists(path))
+			{
+				t = default(T);
+				return false;
+			}
+
+			try
+			{
+				fs = new FileStream(path, FileMode.Open);
+				t = (T)serializer.Deserialize(fs);
+			}
+			catch (Exception e)
+			{
+				Log.Error(
+					"Failed to load settings for Def type " + type.ToString() + Environment.NewLine + e.Message);
+				t = default(T);
+				return false;
+			}
+			finally
+			{
+				if (fs != null)
+					fs.Close();
+			}
+			return true;
+		}
+
+		private static bool Save<T>(DefType type, T t)
+		{
+			XmlSerializer serializer = new XmlSerializer(typeof(T));
+			FileStream fs = null;
+			try
+			{
+				fs = new FileStream(GetStatsPath(type), FileMode.Create);
+				serializer.Serialize(fs, t);
+			}
+			catch (Exception e)
+			{
+				Log.Error(
+					"Failed to save settings for Def type " + type.ToString() + Environment.NewLine + e.GetType().Name + " -- " + e.Message);
+				return false;
+			}
+			finally
+			{
+				if (fs != null)
+					fs.Close();
+			}
+			return true;
+		}
+
+		private static void Initialize<D>(DefStat<D> s) where D : Def, new()
+		{
+			if (s != null)
+			{
+				try
+				{
+					if (s.Initialize() &&
+						s is IParentStat p)
+					{
+						p.ApplyStats(s.Def);
+					}
+					else
+					{
+						Log.Warning("Unable to apply settings to " + s.defName);
+					}
+				}
+				catch (Exception e)
+				{
+					Log.Error("Failed to load " + s.defName + " due to " + e.Message);
+				}
+			}
+		}
+
+		private static T HasChanged<T>(T d) where T : IParentStat
+		{
+			if (Backup.HasChanged(d))
+				return d;
+			return default(T);
+		}
+	}
 }

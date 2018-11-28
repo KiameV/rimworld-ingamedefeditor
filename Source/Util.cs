@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using System;
+using InGameDefEditor.Stats;
 
 namespace InGameDefEditor
 {
@@ -89,7 +90,7 @@ namespace InGameDefEditor
 			return true;
 		}
 
-		public static bool AreEqual<D>(IEnumerable<DefStat<D>> l, IEnumerable<DefStat<D>> r) where D : Def
+		public static bool AreEqual<D>(IEnumerable<DefStat<D>> l, IEnumerable<DefStat<D>> r) where D : Def, new()
 		{
 			if (!ListsRoughlyEqual(l, r))
 				return false;
@@ -128,7 +129,7 @@ namespace InGameDefEditor
 			return true;
 		}
 
-		public static bool AreEqual<D>(IEnumerable<FloatValueStat<D>> l, IEnumerable<FloatValueStat<D>> r) where D : Def
+		public static bool AreEqual<D>(IEnumerable<FloatValueDefStat<D>> l, IEnumerable<FloatValueDefStat<D>> r) where D : Def, new()
 		{
 			if (!ListsRoughlyEqual(l, r))
 				return false;
@@ -167,7 +168,7 @@ namespace InGameDefEditor
 			return true;
 		}
 
-		public static bool AreEqual<D1, D2>(List<FloatValueDoubleDefStat<D1, D2>> l, IEnumerable<FloatValueDoubleDefStat<D1, D2>> r) where D1 : Def where D2 : Def
+		public static bool AreEqual<D1, D2>(List<FloatValueDoubleDefStat<D1, D2>> l, IEnumerable<FloatValueDoubleDefStat<D1, D2>> r) where D1 : Def, new() where D2 : Def, new()
 		{
 			if (!ListsRoughlyEqual(l, r))
 				return false;
@@ -206,7 +207,7 @@ namespace InGameDefEditor
 			return true;
 		}
 
-		public static bool AreEqual<D>(List<MinMaxDefStat<D>> l, IEnumerable<MinMaxDefStat<D>> r) where D : Def
+		public static bool AreEqual<D>(List<MinMaxFloatDefStat<D>> l, IEnumerable<MinMaxFloatDefStat<D>> r) where D : Def, new()
 		{
 			if (!ListsRoughlyEqual(l, r))
 				return false;
@@ -274,7 +275,7 @@ namespace InGameDefEditor
 			return ll.Count == 0;
 		}
 
-		public static bool AreEqual<T>(DefStat<T> l, DefStat<T> r) where T : Def
+		public static bool AreEqual<T>(DefStat<T> l, DefStat<T> r) where T : Def, new()
 		{
 			return
 				l == null && r == null ||
@@ -292,9 +293,45 @@ namespace InGameDefEditor
 				foreach (U u in from)
 					to.Add(createItem(u));
 			}
-        }
+		}
 
-        public static void Populate<T>(List<T> to, List<T> from)
+		public static void Populate<T>(out List<T> to, List<T> from, bool nullifyOutput = false)
+		{
+			if (from == null ||
+				from.Count == 0)
+			{
+				if (nullifyOutput)
+					to = null;
+				else
+					to = new List<T>();
+			}
+			else
+				to = new List<T>(from);
+		}
+
+		public static void Populate<T, U>(out List<T> to, IEnumerable<U> from, CreateItem<T, U> createItem, bool nullifyOutput = false)
+		{
+			if (from == null ||
+				from.Count() == 0)
+			{
+				if (nullifyOutput)
+					to = null;
+				else
+					to = new List<T>();
+			}
+			else
+			{
+				to = new List<T>(from.Count());
+				foreach (U u in from)
+				{
+					var v = createItem(u);
+					if (v != null)
+						to.Add(v);
+				}
+			}
+		}
+
+		public static void Populate<T>(List<T> to, List<T> from)
         {
             to.Clear();
 
@@ -319,7 +356,7 @@ namespace InGameDefEditor
 			return label + " is " + ((t == null) ? "null" : "not null");
 		}
 
-		public static void AssignDefStat<D>(D def, out DefStat<D> stat) where D : Def
+		public static void AssignDefStat<D>(D def, out DefStat<D> stat) where D : Def, new()
 		{
 			if (def == null)
 				stat = null;
@@ -327,7 +364,7 @@ namespace InGameDefEditor
 				stat = new DefStat<D>(def);
 		}
 
-		public static void AssignDef<D>(DefStat<D> from, out D def) where D : Def
+		public static void AssignDef<D>(DefStat<D> from, out D def) where D : Def, new()
 		{
 			if (from == null)
 				def = null;
@@ -335,18 +372,18 @@ namespace InGameDefEditor
 				def = from.Def;
 		}
 
-		public static bool InitializeDefStat<D>(DefStat<D> s) where D : Def
+		public static bool InitializeDefStat(IInitializable i)
 		{
-			if (s != null)
-				if (!s.Initialize())
+			if (i != null)
+				if (!i.Initialize())
 				{
-					Log.Warning("Failed to initialize DefStat " + s.defName);
+					Log.Warning("Failed to initialize DefStat " + i.Label);
 					return false;
 				}
 			return true;
 		}
 
-		public static bool InitializeDefStat<D>(IEnumerable<DefStat<D>> stats) where D : Def
+		public static bool InitializeDefStat<D>(IEnumerable<DefStat<D>> stats) where D : Def, new()
 		{
 			bool isInitialized = true;
 			if (stats != null)
@@ -359,7 +396,7 @@ namespace InGameDefEditor
 			return isInitialized;
 		}
 
-		public static bool InitializeDefStat<D>(IEnumerable<IntValueDefStat<D>> stats) where D : Def
+		public static bool InitializeDefStat<D>(IEnumerable<IntValueDefStat<D>> stats) where D : Def, new()
 		{
 			bool isInitialized = true;
 			if (stats != null)
@@ -375,14 +412,14 @@ namespace InGameDefEditor
 		public static List<T> CreateList<T>(IEnumerable<T> from)
 		{
 			if (from == null)
-				return new List<T>(0);
+				return null;
 			return new List<T>(from);
 		}
 
-		public static List<DefStat<D>> CreateDefStatList<D>(IEnumerable<D> from) where D : Def
+		public static List<DefStat<D>> CreateDefStatList<D>(IEnumerable<D> from) where D : Def, new()
 		{
 			if (from == null)
-				return new List<DefStat<D>>(0);
+				return null;
 			List<DefStat<D>> l = new List<DefStat<D>>(from.Count());
 			foreach (var v in from)
 				l.Add(new DefStat<D>(v));
@@ -392,21 +429,21 @@ namespace InGameDefEditor
 		public static HashSet<T> CreateHashSet<T>(IEnumerable<T> from)
 		{
 			if (from == null)
-				return new HashSet<T>();
+				return null;
 			return new HashSet<T>(from);
 		}
 
-		public static HashSet<DefStat<D>> CreateDefStatHashSet<D>(IEnumerable<D> from) where D : Def
+		public static HashSet<DefStat<D>> CreateDefStatHashSet<D>(IEnumerable<D> from) where D : Def, new()
 		{
 			if (from == null)
-				return new HashSet<DefStat<D>>();
+				return null;
 			HashSet<DefStat<D>> hs = new HashSet<DefStat<D>>();
 			foreach (var v in from)
 				hs.Add(new DefStat<D>(v));
 			return hs;
 		}
 
-		public static HashSet<D> ConvertDefStats<D>(HashSet<DefStat<D>> from) where D : Def
+		public static HashSet<D> ConvertDefStats<D>(HashSet<DefStat<D>> from) where D : Def, new()
 		{
 			if (from == null)
 				return null;
@@ -416,7 +453,7 @@ namespace InGameDefEditor
 			return to;
 		}
 
-		public static List<D> ConvertDefStats<D>(List<DefStat<D>> from) where D : Def
+		public static List<D> ConvertDefStats<D>(List<DefStat<D>> from) where D : Def, new()
 		{
 			if (from == null)
 				return null;
@@ -431,6 +468,39 @@ namespace InGameDefEditor
 			if (string.IsNullOrEmpty(s))
 				return "<none>";
 			return s;
+		}
+
+		internal static List<T> CreateIfNeeded<T>(List<T> l)
+		{
+			if (l == null)
+				l = new List<T>();
+			return l;
+		}
+
+		internal static List<T> AddTo<T>(List<T> l, T t)
+		{
+			if (l == null)
+				l = new List<T>();
+			l.Add(t);
+			return l;
+		}
+
+		internal static List<T> NullIfNeeded<T>(List<T> l)
+		{
+			if (l != null && l.Count == 0)
+				l = null;
+			return l;
+		}
+
+		internal static List<T> RemoveFrom<T>(List<T> l, T t, bool nullifyIfEmpty)
+		{
+			if (l != null)
+			{
+				l.Remove(t);
+				if (nullifyIfEmpty && l.Count == 0)
+					l = null;
+			}
+			return l;
 		}
 	}
 }

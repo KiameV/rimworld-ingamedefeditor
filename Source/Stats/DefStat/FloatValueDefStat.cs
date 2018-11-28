@@ -1,30 +1,31 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using Verse;
 
 namespace InGameDefEditor.Stats.DefStat
 {
-    public class FloatValueStat<D> : DefStat<D> where D : Def
-    {
+	[Serializable]
+	public class FloatValueDefStat<D> : DefStat<D> where D : Def, new()
+	{
         public float value;
 
-        public FloatValueStat() { }
-        public FloatValueStat(D d) : base(d) { }
-        public FloatValueStat(FloatValueStat<D> s) : base(s.Def)
-        {
-            this.value = s.value;
-        }
+        public FloatValueDefStat() { }
+        public FloatValueDefStat(D d, float value = 0) : base(d)
+		{
+			this.value = value;
+		}
 
-        /*public override void ApplyStats(DefStat<D> to)
+		/*public override void ApplyStats(DefStat<D> to)
         {
             base.ApplyStats(to);
             if (to is FloatValueStat<D> s)
                 s.value = this.value;
         }*/
 
-        public override bool Equals(object obj)
+		public override bool Equals(object obj)
         {
             if (obj != null &&
-                obj is FloatValueStat<D> s)
+                obj is FloatValueDefStat<D> s)
             {
                 return 
                     base.Equals(obj) &&

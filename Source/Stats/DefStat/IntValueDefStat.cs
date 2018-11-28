@@ -3,12 +3,17 @@ using Verse;
 
 namespace InGameDefEditor.Stats.DefStat
 {
-	public class IntValueDefStat<D> : DefStat<D> where D : Def
+	[Serializable]
+	public class IntValueDefStat<D> : DefStat<D> where D : Def, new()
 	{
 		public int value;
 
 		public IntValueDefStat() { }
 		public IntValueDefStat(D d) : base(d) { }
+		public IntValueDefStat(D d, int value) : base(d)
+		{
+			this.value = value;
+		}
 		public IntValueDefStat(IntValueDefStat<D> s) : base(s.Def)
 		{
 			this.value = s.value;

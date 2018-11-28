@@ -8,7 +8,8 @@ using Verse;
 
 namespace InGameDefEditor.Stats
 {
-    public class BiomeDefStats : DefStat<BiomeDef>, IParentStat
+	[Serializable]
+	public class BiomeDefStats : DefStat<BiomeDef>, IParentStat
     {
         public bool canBuildBase;
         public bool canAutoChoose;
@@ -27,12 +28,12 @@ namespace InGameDefEditor.Stats
         public float movementDifficulty;
         public bool hasBedrock;
 
-        public List<FloatValueStat<WeatherDef>> weatherCommonalities = null;
-        public List<MinMaxDefStat<TerrainDef>> terrainsByFertility = null;
+        public List<FloatValueDefStat<WeatherDef>> weatherCommonalities = null;
+        public List<MinMaxFloatDefStat<TerrainDef>> terrainsByFertility = null;
         public List<DefStat<SoundDef>> soundsAmbient = null;
         public List<TerrainPatchMakerStats> terrainPatchMakers = null;
-        public List<FloatValueStat<ThingDef>> wildPlants = null;
-        public List<FloatValueStat<PawnKindDef>> wildAnimals = null;
+        public List<FloatValueDefStat<ThingDef>> wildPlants = null;
+        public List<FloatValueDefStat<PawnKindDef>> wildAnimals = null;
         public List<FloatValueDoubleDefStat<IncidentDef, BiomeDef>> diseases = null;
         public List<DefStat<PawnKindDef>> allowedPackAnimals = null;
 
@@ -59,9 +60,9 @@ namespace InGameDefEditor.Stats
 
             if (d.baseWeatherCommonalities != null)
             {
-                this.weatherCommonalities = new List<FloatValueStat<WeatherDef>>(d.baseWeatherCommonalities.Count);
+                this.weatherCommonalities = new List<FloatValueDefStat<WeatherDef>>(d.baseWeatherCommonalities.Count);
                 foreach (var v in d.baseWeatherCommonalities)
-                    this.weatherCommonalities.Add(new FloatValueStat<WeatherDef>(v.weather)
+                    this.weatherCommonalities.Add(new FloatValueDefStat<WeatherDef>(v.weather)
                     {
                         value = v.commonality
                     });
@@ -69,9 +70,9 @@ namespace InGameDefEditor.Stats
 
             if (d.terrainsByFertility != null)
             {
-                this.terrainsByFertility = new List<MinMaxDefStat<TerrainDef>>(d.terrainsByFertility.Count);
+                this.terrainsByFertility = new List<MinMaxFloatDefStat<TerrainDef>>(d.terrainsByFertility.Count);
                 foreach (var v in d.terrainsByFertility)
-                    this.terrainsByFertility.Add(new MinMaxDefStat<TerrainDef>(v.terrain)
+                    this.terrainsByFertility.Add(new MinMaxFloatDefStat<TerrainDef>(v.terrain)
                     {
                         Min = v.min,
                         Max = v.max
@@ -95,9 +96,9 @@ namespace InGameDefEditor.Stats
             List<BiomePlantRecord> plants = GetWildPlants(base.Def);
             if (plants != null)
             {
-                this.wildPlants = new List<FloatValueStat<ThingDef>>(plants.Count);
+                this.wildPlants = new List<FloatValueDefStat<ThingDef>>(plants.Count);
                 foreach (var v in plants)
-                    this.wildPlants.Add(new FloatValueStat<ThingDef>(v.plant)
+                    this.wildPlants.Add(new FloatValueDefStat<ThingDef>(v.plant)
                     {
                         value = v.commonality
                     });
@@ -106,9 +107,9 @@ namespace InGameDefEditor.Stats
             List<BiomeAnimalRecord> animals = GetWildAnimals(base.Def);
             if (animals != null)
             {
-                this.wildAnimals = new List<FloatValueStat<PawnKindDef>>(animals.Count);
+                this.wildAnimals = new List<FloatValueDefStat<PawnKindDef>>(animals.Count);
                 foreach (var v in animals)
-                    this.wildAnimals.Add(new FloatValueStat<PawnKindDef>(v.animal)
+                    this.wildAnimals.Add(new FloatValueDefStat<PawnKindDef>(v.animal)
                     {
                         value = v.commonality
                     });
@@ -212,7 +213,7 @@ namespace InGameDefEditor.Stats
                 
                 if (this.weatherCommonalities != null && t.baseWeatherCommonalities == null)
                     t.baseWeatherCommonalities = new List<WeatherCommonalityRecord>(this.weatherCommonalities.Count);
-                Util.Populate(t.baseWeatherCommonalities, this.weatherCommonalities, delegate (FloatValueStat<WeatherDef> s)
+                Util.Populate(t.baseWeatherCommonalities, this.weatherCommonalities, delegate (FloatValueDefStat<WeatherDef> s)
                 {
                     return new WeatherCommonalityRecord()
                     {
@@ -223,7 +224,7 @@ namespace InGameDefEditor.Stats
 
                 if (this.terrainsByFertility != null && t.terrainsByFertility == null)
                     t.terrainsByFertility = new List<TerrainThreshold>(this.terrainsByFertility.Count);
-                Util.Populate(t.terrainsByFertility, this.terrainsByFertility, delegate (MinMaxDefStat<TerrainDef> s)
+                Util.Populate(t.terrainsByFertility, this.terrainsByFertility, delegate (MinMaxFloatDefStat<TerrainDef> s)
                 {
                     return new TerrainThreshold
                     {
@@ -255,7 +256,7 @@ namespace InGameDefEditor.Stats
                     wildPlants = new List<BiomePlantRecord>(this.wildPlants.Count);
                     SetWildPlants(base.Def, wildPlants);
                 }
-                Util.Populate(wildPlants, this.wildPlants, delegate (FloatValueStat<ThingDef> s)
+                Util.Populate(wildPlants, this.wildPlants, delegate (FloatValueDefStat<ThingDef> s)
                 {
                     return new BiomePlantRecord()
                     {
@@ -270,7 +271,7 @@ namespace InGameDefEditor.Stats
                     wildAnimals = new List<BiomeAnimalRecord>(this.wildAnimals.Count);
                     SetWildAnimals(base.Def, wildAnimals);
                 }
-                Util.Populate(wildAnimals, this.wildAnimals, delegate (FloatValueStat<PawnKindDef> s)
+                Util.Populate(wildAnimals, this.wildAnimals, delegate (FloatValueDefStat<PawnKindDef> s)
                 {
                     return new BiomeAnimalRecord()
                     {

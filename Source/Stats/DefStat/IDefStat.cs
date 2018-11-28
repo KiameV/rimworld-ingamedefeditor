@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using System;
+using Verse;
 
 namespace InGameDefEditor.Stats.DefStat
 {

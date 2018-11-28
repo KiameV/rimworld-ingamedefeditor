@@ -4,8 +4,9 @@ using Verse;
 
 namespace InGameDefEditor.Stats.DefStat
 {
-    public class FloatValueDoubleDefStat<D1, D2> : FloatValueStat<D1> where D1 : Def where D2 : Def
-    {
+	[Serializable]
+	public class FloatValueDoubleDefStat<D1, D2> : FloatValueDefStat<D1> where D1 : Def, new() where D2 : Def, new()
+	{
         [XmlIgnore]
         private D2 def2;
         
@@ -15,18 +16,13 @@ namespace InGameDefEditor.Stats.DefStat
         public string DefName2 => this.defName2;
 
         public FloatValueDoubleDefStat() { }
-        public FloatValueDoubleDefStat(D1 d1, D2 d2) : base(d1)
+        public FloatValueDoubleDefStat(D1 d1, D2 d2, float value = 0) : base(d1, value)
         {
             this.def2 = d2;
             if (this.def2 != null)
             {
                 this.defName2 = this.def2.defName;
             }
-        }
-        public FloatValueDoubleDefStat(FloatValueDoubleDefStat<D1, D2> s) : base(s)
-        {
-            this.def2 = s.def2;
-            this.defName2 = this.def2.defName;
         }
 
         public override bool Initialize()

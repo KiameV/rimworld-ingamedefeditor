@@ -7,6 +7,7 @@ using InGameDefEditor.Stats.Misc;
 
 namespace InGameDefEditor.Stats
 {
+	[Serializable]
 	public class RecipeDefStats : DefStat<RecipeDef>, IParentStat
 	{
 		public float workAmount;
@@ -22,13 +23,6 @@ namespace InGameDefEditor.Stats
 		public bool targetsBodyPart;
 		public bool anesthetize;
 		public bool dontShowIfAnyIngredientMissing;
-		//[Unsaved]
-		//private RecipeWorker workerInt;
-		//[Unsaved]
-		//private RecipeWorkerCounter workerCounterInt;
-		//[Unsaved]
-		//private IngredientValueGetter ingredientValueGetterInt;
-		//public ConceptDef conceptLearned;
 
 		public EffecterDefStat effectWorking;
 
@@ -116,20 +110,9 @@ namespace InGameDefEditor.Stats
 				def.appliedOnFixedBodyParts = new List<BodyPartDef>();
 			this.appliedOnFixedBodyParts = Util.CreateDefStatList(def.appliedOnFixedBodyParts);
 
-			this.products = new List<IntValueDefStat<ThingDef>>((def.products != null) ? def.products.Count : 0);
-			if (def.products != null)
-				foreach (var v in def.products)
-					this.products.Add(new IntValueDefStat<ThingDef>(v.thingDef) { value = v.count });
-
-			this.skillRequirements = new List<IntValueDefStat<SkillDef>>((def.skillRequirements != null) ? def.skillRequirements.Count : 0);
-			if (def.skillRequirements != null)
-				foreach (var v in def.skillRequirements)
-					this.skillRequirements.Add(new IntValueDefStat<SkillDef>(v.skill) { value = v.minLevel });
-
-			this.ingredients = new List<IngredientCountStats>((def.ingredients != null) ? def.ingredients.Count : 0);
-			if (def.ingredients != null)
-				foreach (var v in def.ingredients)
-					this.ingredients.Add(new IngredientCountStats(v));
+			Util.Populate(out this.products, def.products, (v) => new IntValueDefStat<ThingDef>(v.thingDef, v.count), false);
+			Util.Populate(out this.skillRequirements, def.skillRequirements, (v) => new IntValueDefStat<SkillDef>(v.skill, v.minLevel), false);
+			Util.Populate(out this.ingredients, def.ingredients, (v) => new IngredientCountStats(v), false);
 		}
 
 		internal void PreSave(RecipeDef d)
@@ -166,8 +149,8 @@ namespace InGameDefEditor.Stats
 
 				d.fixedIngredientFilter = new ThingFilter();
 				this.fixedIngredientFilter.ApplyStats(d.fixedIngredientFilter);
-
-				d.defaultIngredientFilter = new ThingFilter();
+				
+				d.fixedIngredientFilter = new ThingFilter();
 				this.defaultIngredientFilter.ApplyStats(d.defaultIngredientFilter);
 
 				Util.AssignDef(this.researchPrerequisite, out d.researchPrerequisite);
@@ -206,27 +189,15 @@ namespace InGameDefEditor.Stats
 
 				d.appliedOnFixedBodyParts = Util.ConvertDefStats(this.appliedOnFixedBodyParts);
 
-				if (d.products == null)
-					d.products = new List<ThingDefCountClass>();
-				d.products.Clear();
-				foreach (var v in this.products)
-					d.products.Add(new ThingDefCountClass()
-					{
-						thingDef = v.Def,
-						count = v.value
-					});
+				Util.Populate(out d.products, this.products, (v) => new ThingDefCountClass(v.Def, v.value), false);
+				Util.Populate(out d.skillRequirements, this.skillRequirements, delegate (IntValueDefStat<SkillDef> v) {
+					return new SkillRequirement() {
+							skill = v.Def,
+							minLevel = v.value }; }, false);
 
-				if (d.skillRequirements == null)
-					d.skillRequirements = new List<SkillRequirement>();
-				d.skillRequirements.Clear();
-				foreach (var v in this.skillRequirements)
-					d.skillRequirements.Add(new SkillRequirement()
-					{
-						skill = v.Def,
-						minLevel = v.value
-					});
-
-				if (d.ingredients == null)
+				
+				/* TODO Re-add
+					if (d.ingredients == null)
 					d.ingredients = new List<IngredientCount>();
 				d.ingredients.Clear();
 				foreach (var v in this.ingredients)
@@ -239,7 +210,7 @@ namespace InGameDefEditor.Stats
 					};
 					IngredientCountStats.SetIngredientCount(i, v.Count);
 					d.ingredients.Add(i);
-				}
+				}*/
 			}
 		}
 
@@ -278,6 +249,9 @@ namespace InGameDefEditor.Stats
 			if (base.Equals(obj) &&
 				obj is RecipeDefStats s)
 			{
+				//Log.Error("Are Equal:");
+				//Log.Error(this.ToString());
+				//Log.Error(obj.ToString());
 				return
 					this.workAmount == s.workAmount &&
 					this.allowMixingIngredients == s.allowMixingIngredients &&

@@ -4,8 +4,9 @@ using Verse;
 
 namespace InGameDefEditor.Stats.DefStat
 {
-    public class DefStat<D> : IDefStat where D : Def
-    {
+	[Serializable]
+	public class DefStat<D> : IInitializable, IDefStat where D : Def, new()
+	{
         [XmlIgnore]
         private D def;
 
@@ -33,8 +34,10 @@ namespace InGameDefEditor.Stats.DefStat
         {
             if (this.def == null)
             {
-                if (!DefLookupUtil.TryGetDef(this.defName, out this.def))
-                    Log.Error("Could not load def " + this.defName);
+				if (!DefLookupUtil.TryGetDef(this.defName, out this.def))
+				{
+					Log.Error("Could not load def " + this.defName);
+				}
             }
             return this.def != null;
         }

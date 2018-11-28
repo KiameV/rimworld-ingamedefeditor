@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Verse;
 
 namespace InGameDefEditor.Stats.DefStat
 {
-    public class EffecterDefStat : DefStat<EffecterDef>
+	[Serializable]
+	public class EffecterDefStat : DefStat<EffecterDef>
     {
         public float positionRadius;
         public FloatRange offsetTowardsTarget;

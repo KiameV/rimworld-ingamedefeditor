@@ -1,7 +1,9 @@
-﻿using Verse;
+﻿using System;
+using Verse;
 
 namespace InGameDefEditor.Stats.DefStat
 {
+	[Serializable]
 	public class SubEffecterStat
 	{
 		public int ticksBeforeSustainerStart;

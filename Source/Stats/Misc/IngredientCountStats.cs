@@ -4,10 +4,13 @@ using Verse;
 
 namespace InGameDefEditor.Stats.Misc
 {
-	public class IngredientCountStats
+	[Serializable]
+	public class IngredientCountStats : IInitializable
 	{
 		public readonly ThingFilterStats ThingFilterStats;
 		public float Count = 0;
+
+		public string Label => Count.ToString();
 
 		public IngredientCountStats() { }
 		public IngredientCountStats(IngredientCount i)

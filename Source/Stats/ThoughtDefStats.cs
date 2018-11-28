@@ -7,7 +7,8 @@ using Verse;
 
 namespace InGameDefEditor.Stats
 {
-    class ThoughtDefStats : DefStat<ThoughtDef>, IParentStat
+	[Serializable]
+	class ThoughtDefStats : DefStat<ThoughtDef>, IParentStat
     {
         public int stackLimit;
         public float stackedEffectMultiplier;

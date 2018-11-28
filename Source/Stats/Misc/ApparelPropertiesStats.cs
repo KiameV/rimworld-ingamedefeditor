@@ -1,12 +1,14 @@
 ﻿using InGameDefEditor.Stats.DefStat;
 using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Verse;
 
 namespace InGameDefEditor.Stats.Misc
 {
-    public class ApparelPropertiesStats
+	[Serializable]
+	public class ApparelPropertiesStats
     {
         public string wornGraphicPath;
         public float wearPerDay;
@@ -43,15 +45,16 @@ namespace InGameDefEditor.Stats.Misc
             to.hatRenderedFrontOfFace = this.hatRenderedFrontOfFace;
             to.useDeflectMetalEffect = this.useDeflectMetalEffect;
 
-            Util.Populate(to.tags, this.tags);
-            Util.Populate(to.defaultOutfitTags, this.defaultOutfitTags);
-            to.bodyPartGroups = Util.ConvertDefStats(this.bodyPartGroups);
-            to.layers = Util.ConvertDefStats(this.layers);
+            Util.Populate(out to.tags, this.tags, false);
+            Util.Populate(out to.defaultOutfitTags, this.defaultOutfitTags, false);
+			Util.Populate(out to.bodyPartGroups, this.bodyPartGroups, (v) => v.Def, false);
+            Util.Populate(out to.layers, this.layers, (v) => v.Def, false);
 
-            ApparelProperties.ResetStaticData();
             typeof(ApparelProperties).GetField("cachedHumanBodyCoverage", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(to, -1);
             typeof(ApparelProperties).GetField("interferingBodyPartGroups", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(to, null);
-        }
+
+			ApparelProperties.ResetStaticData();
+		}
 
         public bool Initialize()
         {
