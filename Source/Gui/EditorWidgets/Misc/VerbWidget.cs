@@ -59,7 +59,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
             foreach (var w in this.inputWidgets)
                 w.Draw(x, ref y, width);
 
-            WindowUtil.DrawInput(x, ref y, width, "InGameDefEditor.SoundCast".Translate(), 100, (VerbProperties.soundCast != null) ? VerbProperties.soundCast.defName : "<none>",
+            WindowUtil.DrawInput(x, ref y, width, "InGameDefEditor.SoundCast".Translate(), 100, (VerbProperties.soundCast != null) ? VerbProperties.soundCast.defName : "None",
                 new WindowUtil.FloatOptionsArgs<SoundDef>()
                 {
                     items = DefLookupUtil.GetSortedDefs(DefDatabase<SoundDef>.AllDefsListForReading),
@@ -67,7 +67,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
                     onSelect = delegate (SoundDef d) { VerbProperties.soundCast = d; },
                     includeNullOption = true
                 });
-            WindowUtil.DrawInput(x, ref y, width, "InGameDefEditor.SoundCastTail".Translate(), 100, (VerbProperties.soundCastTail != null) ? VerbProperties.soundCastTail.defName : "<none>",
+            WindowUtil.DrawInput(x, ref y, width, "InGameDefEditor.SoundCastTail".Translate(), 100, (VerbProperties.soundCastTail != null) ? VerbProperties.soundCastTail.defName : "None",
                 new WindowUtil.FloatOptionsArgs<SoundDef>()
                 {
                     items = DefLookupUtil.GetSortedDefs(DefDatabase<SoundDef>.AllDefsListForReading),

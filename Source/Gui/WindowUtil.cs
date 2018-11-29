@@ -40,7 +40,7 @@ namespace InGameDefEditor
             return value;
         }
 
-        public static void DrawInput<T>(float x, ref float y, float width, string label, int labelWidth, string buttonText, FloatOptionsArgs<T> floatingOptionArgs, bool isBolded = false)
+        public static void DrawInput<T>(float x, ref float y, float width, string label, float labelWidth, string buttonText, FloatOptionsArgs<T> floatingOptionArgs, bool isBolded = false)
         {
             DrawLabel(x, y, labelWidth, label, isBolded);
             x = x + labelWidth + 10;
@@ -55,7 +55,13 @@ namespace InGameDefEditor
             return Widgets.TextField(new Rect(x + 250, y, 60, 32), buffer);
         }
 
-        public static void DrawLabel(float x, float y, float width, string label, bool bolded = false)
+		public static void DrawLabel(float x, ref float y, float width, string label, float yInc = 32, bool bolded = false)
+		{
+			DrawLabel(x, y, width, label, bolded);
+			y += yInc;
+		}
+
+		public static void DrawLabel(float x, float y, float width, string label, bool bolded = false)
         {
             // 0.14 is about the size of each character
             if (label.Length > width * 0.14)
@@ -94,7 +100,7 @@ namespace InGameDefEditor
             if (args.includeNullOption)
             {
                 options.Add(new FloatMenuOption(
-                    "<none>", delegate { args.onSelect(default(T)); },
+                    "None", delegate { args.onSelect(default(T)); },
                     MenuOptionPriority.High, null, null, 0f, null, null));
             }
 			if (args.onCustomOption != null)
@@ -114,7 +120,7 @@ namespace InGameDefEditor
         }
         
         public static void PlusMinusLabel(
-            float x, ref float y, int labelWidth, string label, Action add, Action subtract)
+            float x, ref float y, float labelWidth, string label, Action add, Action subtract)
         {
             DrawLabel(x, y, labelWidth, label, true);
             if (Widgets.ButtonText(new Rect(x + labelWidth + 10, y - 4, 30, 32), "+"))
@@ -125,11 +131,11 @@ namespace InGameDefEditor
             {
                 subtract();
             }
-            y += 40;
+            y += 32;
         }
 
         public static void PlusMinusLabel<T, U>(
-            float x, ref float y, int labelWidth, string label,
+            float x, ref float y, float labelWidth, string label,
             FloatOptionsArgs<T> addFloatOptions, 
             FloatOptionsArgs<U> removeFloatOptions)
         {
@@ -171,7 +177,7 @@ namespace InGameDefEditor
             internal FloatOptionsArgs<T> addArgs = null;
             internal FloatOptionsArgs<T> removeArgs = null;
         }
-        public static void PlusMinusLabel<T>(float x, ref float y, int labelWidth, string label, PlusMinusArgs<T> args)
+        public static void PlusMinusLabel<T>(float x, ref float y, float labelWidth, string label, PlusMinusArgs<T> args)
         {
             if (args.addArgs == null)
             {

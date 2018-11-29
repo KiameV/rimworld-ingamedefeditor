@@ -27,13 +27,13 @@ namespace InGameDefEditor
         public InGameDefEditorWindow()
         {
             IOUtil.LoadData();
-
             buttons = new List<IButtonWidget>()
             {
                 new ButtonWidget<ThingDef>("Apparel", DefType.Apparel, Defs.ApparelDefs.Values, this.CreateSelected),
                 new ButtonWidget<ThingDef>("Weapons", DefType.Weapon, Defs.WeaponDefs.Values, this.CreateSelected),
                 new ButtonWidget<ThingDef>("Projectiles", DefType.Projectile, Defs.ProjectileDefs.Values, this.CreateSelected),
                 new ButtonWidget<BiomeDef>("Biomes", DefType.Biome, Defs.BiomeDefs.Values, this.CreateSelected),
+				new ButtonWidget<TraitDef>("Traits", DefType.Trait, Defs.TraitDefs.Values, this.CreateSelected),
 			};
 
 			if (Controller.EnableRecipes)
@@ -180,6 +180,9 @@ namespace InGameDefEditor
 				case DefType.Recipe:
 					this.selected = new RecipeWidget(d as RecipeDef, type);
 					break;
+				case DefType.Trait:
+					this.selected = new TraitWidget(d as TraitDef, type);
+					break;
             }
             this.ResetScrolls();
 			IngredientCountWidget.ResetUniqueId();
@@ -224,12 +227,8 @@ namespace InGameDefEditor
                         new WindowUtil.FloatOptionsArgs<D>()
                         {
                             items = possibleDefs,
-                            getDisplayName = delegate (D d) { return d.label; },
-                            onSelect = delegate (D d)
-                            {
-                                this.onSelect(d, this.type);
-
-							}
+                            getDisplayName = def => Util.GetDefLabel(def),
+                            onSelect = def => this.onSelect(def, this.type)
                         });
                 }
             }

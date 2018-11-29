@@ -1,4 +1,7 @@
-﻿using Verse;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Verse;
 using static InGameDefEditor.WindowUtil;
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
@@ -127,4 +130,94 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
             this.max.ResetBuffers();
         }
     }
+
+	class EnumInputWidget<P, E> : AInputWidget<P, E>
+	{
+		private readonly float labelWidth;
+		private WindowUtil.FloatOptionsArgs<E> args;
+
+		public EnumInputWidget(P parent, string label, float labelWidth, GetValue getValue, SetValue setValue) : base(parent, label, getValue, setValue)
+		{
+			this.labelWidth = labelWidth;
+			args = new FloatOptionsArgs<E>()
+			{
+				getDisplayName = v => v.ToString(),
+				items = Enum.GetValues(typeof(E)).Cast<E>(),
+				onSelect = v => base.setValue(base.Parent, v)
+			};
+		}
+
+		public override void Draw(float x, ref float y, float width)
+		{
+			WindowUtil.DrawInput(x, ref y, width, base.label, this.labelWidth, base.getValue(base.Parent).ToString(), this.args);
+		}
+
+		public override void ResetBuffers() { }
+	}
+
+	class DefInputWidget<P, D> : AInputWidget<P, D> where D : Def, new()
+	{
+		private readonly float labelWidth;
+		private WindowUtil.FloatOptionsArgs<D> args;
+
+		public DefInputWidget(P parent, string label, float labelWidth, GetValue getValue, SetValue setValue, bool includeNullOption) : base(parent, label, getValue, setValue)
+		{
+			this.labelWidth = labelWidth;
+			args = new FloatOptionsArgs<D>()
+			{
+				getDisplayName = def => Util.GetDefLabel(def),
+				items = DefDatabase<D>.AllDefsListForReading,
+				onSelect = def => base.setValue(base.Parent, def),
+				includeNullOption = includeNullOption
+			};
+		}
+
+		public override void Draw(float x, ref float y, float width)
+		{
+			WindowUtil.DrawInput(x, ref y, width, base.label, this.labelWidth, Util.GetDefLabel(base.getValue(base.Parent)), this.args);
+		}
+
+		public override void ResetBuffers() { }
+	}
+
+	class DefPlusMinusInputWidget<D> : IInputWidget where D : Def, new()
+	{
+		private readonly string label;
+		private readonly float labelWidth;
+		private readonly List<D> items;
+		private WindowUtil.PlusMinusArgs<D> args;
+
+		public DefPlusMinusInputWidget(string label, float labelWidth, List<D> items)
+		{
+			this.label = label;
+			this.labelWidth = labelWidth;
+			this.items = items;
+
+			args = new PlusMinusArgs<D>()
+			{
+				getDisplayName = def => Util.GetDefLabel(def),
+				allItems = DefDatabase<D>.AllDefsListForReading,
+				onAdd = def => Util.AddTo(this.items, def),
+				onRemove = def => Util.RemoveFrom(this.items, def),
+				beingUsed = () => this.items
+			};
+		}
+
+		public void Draw(float x, ref float y, float width)
+		{
+			WindowUtil.PlusMinusLabel(x, ref y, labelWidth, label, this.args);
+			IEnumerable<D> beingUsed = this.args.beingUsed.Invoke();
+			x += 10;
+			if (beingUsed != null)
+			{
+				foreach (var def in beingUsed)
+				{
+					WindowUtil.DrawLabel(x, y, width, "- " + Util.GetDefLabel(def));
+					y += 30;
+				}
+			}
+		}
+
+		public void ResetBuffers() { }
+	}
 }

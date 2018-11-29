@@ -43,6 +43,9 @@ namespace InGameDefEditor
 
 				foreach (RecipeDef d in Defs.RecipeDefs.Values)
 					backup[d] = new RecipeDefStats(d);
+
+				foreach (TraitDef d in Defs.TraitDefs.Values)
+					backup[d] = new TraitDefStat(d);
 			}
         }
 

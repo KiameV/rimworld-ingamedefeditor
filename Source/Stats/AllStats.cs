@@ -32,4 +32,10 @@ namespace InGameDefEditor.Stats
 	{
 		public List<RecipeDefStats> stats;
 	}
+
+	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
+	public class RootTraits
+	{
+		public List<TraitDefStat> stats;
+	}
 }

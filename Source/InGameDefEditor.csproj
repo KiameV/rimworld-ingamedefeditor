@@ -89,6 +89,8 @@
     <Compile Include="Gui\EditorWidgets\Misc\IngredientCountWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\QualityRangeWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\ThingFilterWidget.cs" />
+    <Compile Include="Gui\EditorWidgets\Misc\TraitDegreeDataWidget.cs" />
+    <Compile Include="Gui\EditorWidgets\TraitWidget.cs" />
     <Compile Include="Gui\EditorWidgets\RecipeWidget.cs" />
     <Compile Include="Gui\EditorWidgets\BiomeWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Interfaces.cs" />
@@ -106,6 +108,8 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Stats\AllStats.cs" />
     <Compile Include="Stats\BiomDefStats.cs" />
+    <Compile Include="Stats\Misc\TraitDegreeDataStats.cs" />
+    <Compile Include="Stats\TraitDefStat.cs" />
     <Compile Include="Stats\DefStat\EffecterDefStat.cs" />
     <Compile Include="Stats\DefStat\HoldOffsetSetStats.cs" />
     <Compile Include="Stats\DefStat\IntValueDefStat.cs" />

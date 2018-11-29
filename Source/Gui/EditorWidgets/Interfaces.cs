@@ -24,7 +24,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
         void Draw(float x, ref float y, float width);
     }
 
-    public abstract class AParentStatWidget<D> : IParentStatWidget where D : Def
+    public abstract class AParentStatWidget<D> : IParentStatWidget where D : Def, new()
     {
         public readonly D Def;
         private readonly DefType type;
@@ -35,7 +35,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
             this.type = type;
         }
 
-        public virtual string DisplayLabel => this.Def.label;
+        public virtual string DisplayLabel => Util.GetDefLabel(this.Def);
         public DefType Type => this.type;
 
         public Def BaseDef => this.Def;

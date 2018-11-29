@@ -5,6 +5,7 @@ using System.Linq;
 using Verse;
 using System;
 using InGameDefEditor.Stats;
+using InGameDefEditor.Stats.Misc;
 
 namespace InGameDefEditor
 {
@@ -295,6 +296,25 @@ namespace InGameDefEditor
 			}
 		}
 
+		public delegate T CreateItemInt<T, U>(U u, int v);
+		public static void Populate<T, U>(out List<T> to, Dictionary<U, int> from, CreateItemInt<T, U> createItem, bool nullifyOutput = false)
+		{
+			if (from == null ||
+				from.Count == 0)
+			{
+				if (nullifyOutput)
+					to = null;
+				else
+					to = new List<T>();
+			}
+			else
+			{
+				to = new List<T>(from.Count);
+				foreach (KeyValuePair<U, int> kv in from)
+					to.Add(createItem(kv.Key, kv.Value));
+			}
+		}
+
 		public static void Populate<T>(out List<T> to, List<T> from, bool nullifyOutput = false)
 		{
 			if (from == null ||
@@ -463,21 +483,21 @@ namespace InGameDefEditor
 			return to;
 		}
 
-		internal static string GetDisplayLabel(string s)
+		public static string GetDisplayLabel(string s)
 		{
 			if (string.IsNullOrEmpty(s))
-				return "<none>";
+				return "None";
 			return s;
 		}
 
-		internal static List<T> CreateIfNeeded<T>(List<T> l)
+		public static List<T> CreateIfNeeded<T>(List<T> l)
 		{
 			if (l == null)
 				l = new List<T>();
 			return l;
 		}
 
-		internal static List<T> AddTo<T>(List<T> l, T t)
+		public static List<T> AddTo<T>(List<T> l, T t)
 		{
 			if (l == null)
 				l = new List<T>();
@@ -485,14 +505,14 @@ namespace InGameDefEditor
 			return l;
 		}
 
-		internal static List<T> NullIfNeeded<T>(List<T> l)
+		public static List<T> NullIfNeeded<T>(List<T> l)
 		{
 			if (l != null && l.Count == 0)
 				l = null;
 			return l;
 		}
 
-		internal static List<T> RemoveFrom<T>(List<T> l, T t, bool nullifyIfEmpty)
+		public static List<T> RemoveFrom<T>(List<T> l, T t, bool nullifyIfEmpty = false)
 		{
 			if (l != null)
 			{
@@ -501,6 +521,13 @@ namespace InGameDefEditor
 					l = null;
 			}
 			return l;
+		}
+
+		public static string GetDefLabel<D>(D d) where D : Def, new()
+		{
+			if (d == null)
+				return "None";
+			return d.label ?? d.defName;
 		}
 	}
 }

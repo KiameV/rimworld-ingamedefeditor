@@ -13,6 +13,7 @@ namespace InGameDefEditor
         public static readonly SortedDictionary<string, BiomeDef> BiomeDefs = new SortedDictionary<string, BiomeDef>();
         public static readonly SortedDictionary<string, ThoughtDef> ThoughtDefs = new SortedDictionary<string, ThoughtDef>();
 		public static readonly SortedDictionary<string, RecipeDef> RecipeDefs = new SortedDictionary<string, RecipeDef>();
+		public static readonly SortedDictionary<string, TraitDef> TraitDefs = new SortedDictionary<string, TraitDef>();
 
 		private static bool isInit = false;
         public static void Initialize()
@@ -90,7 +91,12 @@ namespace InGameDefEditor
 						RecipeDefs[d.label] = d;
 				}
 
-                if (i > 0)
+				foreach (TraitDef d in DefDatabase<TraitDef>.AllDefsListForReading)
+				{
+					TraitDefs[d.defName] = d;
+				}
+
+				if (i > 0)
                 {
                     Backup.Initialize();
                     isInit = true;
@@ -113,6 +119,9 @@ namespace InGameDefEditor
 				Backup.ApplyStats(d);
 
 			foreach (RecipeDef d in Defs.RecipeDefs.Values)
+				Backup.ApplyStats(d);
+
+			foreach (TraitDef d in Defs.TraitDefs.Values)
 				Backup.ApplyStats(d);
 		}
 	}

@@ -198,7 +198,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
             foreach (var w in this.inputWidgets)
                 w.Draw(x, ref y, width);
 
-            WindowUtil.DrawInput(x, ref y, width, "Foraged Food", 100, (this.Def.foragedFood != null) ? this.Def.foragedFood.defName : "<none>",
+            WindowUtil.DrawInput(x, ref y, width, "Foraged Food", 100, (this.Def.foragedFood != null) ? this.Def.foragedFood.defName : "None",
                 new WindowUtil.FloatOptionsArgs<ThingDef>()
                 {
                     items = DefLookupUtil.GetSortedDefs(DefDatabase<ThingDef>.AllDefsListForReading),

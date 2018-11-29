@@ -7,5 +7,6 @@
 		Weapon,
 		Projectile,
 		Recipe,
+		Trait,
 	};
 }

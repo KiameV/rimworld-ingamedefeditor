@@ -45,6 +45,9 @@ namespace InGameDefEditor
 
 					if (Load(DefType.Recipe, out RootRecipe rr))
 						rr?.stats.ForEach((d) => Initialize(d));
+
+					if (Load(DefType.Trait, out RootTraits rtr))
+						rtr?.stats.ForEach((d) => Initialize(d));
 				}
                 catch(Exception e)
                 {
@@ -58,8 +61,7 @@ namespace InGameDefEditor
                 }
             }
         }
-
-
+		
 		public static void SaveData()
 		{
 			Util.Populate(out List<ThingDefStats> ap, Defs.ApparelDefs.Values, (v) => HasChanged(new ThingDefStats(v)), false);
@@ -76,6 +78,9 @@ namespace InGameDefEditor
 
 			Util.Populate(out List<RecipeDefStats> re, Defs.RecipeDefs.Values, (v) => HasChanged(new RecipeDefStats(v)), false);
 			Save(DefType.Recipe, new RootRecipe() { stats = re });
+
+			Util.Populate(out List<TraitDefStat> traits, Defs.TraitDefs.Values, (v) => HasChanged(new TraitDefStat(v)), false);
+			Save(DefType.Trait, new RootTraits() { stats = traits });
 		}
 
 		private static string basePath = null;
