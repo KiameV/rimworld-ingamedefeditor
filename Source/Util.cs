@@ -16,6 +16,19 @@ namespace InGameDefEditor
 			return l == null || l.Count == 0;
 		}
 
+		public static bool FloatsRoughlyEqual(float l, float r)
+		{
+			if (l == r)
+				return true;
+			if (l > 1e30f && r > 1e30f)
+				return true;
+			if (l < -1e30f && r < -1e30f)
+				return true;
+			if (Math.Abs(l - r) < 0.001f)
+				return true;
+			return false;
+		}
+
 		public static bool ListsRoughlyEqual<T>(IEnumerable<T> l, IEnumerable<T> r)
 		{
 			//Log.Error("L: " + ((l == null) ? "null" : l.Count().ToString()) + " R: " + ((r == null) ? "null" : r.Count().ToString()));
@@ -362,7 +375,7 @@ namespace InGameDefEditor
             }
         }
 
-        public delegate U Convert<T, U>(T t);
+		public delegate U Convert<T, U>(T t);
 		public static IEnumerable<U> ConvertItems<T, U>(IEnumerable<T> t, Convert<T, U> convert)
 		{
 			List<U> u = new List<U>();

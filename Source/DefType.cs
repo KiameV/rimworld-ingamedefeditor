@@ -8,5 +8,6 @@
 		Projectile,
 		Recipe,
 		Trait,
+		Thought,
 	};
 }

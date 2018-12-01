@@ -123,6 +123,9 @@ namespace InGameDefEditor
 
 			foreach (TraitDef d in Defs.TraitDefs.Values)
 				Backup.ApplyStats(d);
+
+			foreach (ThoughtDef d in Defs.ThoughtDefs.Values)
+				Backup.ApplyStats(d);
 		}
 	}
 }

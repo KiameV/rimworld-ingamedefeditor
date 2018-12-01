@@ -48,6 +48,9 @@ namespace InGameDefEditor
 
 					if (Load(DefType.Trait, out RootTraits rtr))
 						rtr?.stats.ForEach((d) => Initialize(d));
+
+					if (Load(DefType.Thought, out RootThoughts rth))
+						rth?.stats.ForEach((d) => Initialize(d));
 				}
                 catch(Exception e)
                 {
@@ -81,6 +84,9 @@ namespace InGameDefEditor
 
 			Util.Populate(out List<TraitDefStat> traits, Defs.TraitDefs.Values, (v) => HasChanged(new TraitDefStat(v)), false);
 			Save(DefType.Trait, new RootTraits() { stats = traits });
+
+			Util.Populate(out List<ThoughtDefStats> thoughts, Defs.ThoughtDefs.Values, (v) => HasChanged(new ThoughtDefStats(v)), false);
+			Save(DefType.Thought, new RootThoughts() { stats = thoughts });
 		}
 
 		private static string basePath = null;

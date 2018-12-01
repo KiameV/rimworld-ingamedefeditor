@@ -1,30 +1,30 @@
 ﻿using InGameDefEditor.Stats.DefStat;
+using InGameDefEditor.Stats.Misc;
 using RimWorld;
 using System;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 using Verse;
 
 namespace InGameDefEditor.Stats
 {
 	[Serializable]
-	class ThoughtDefStats : DefStat<ThoughtDef>, IParentStat
+	public class ThoughtDefStats : DefStat<ThoughtDef>, IParentStat
     {
         public int stackLimit;
         public float stackedEffectMultiplier;
         public float durationDays;
         public bool invert;
         public bool validWhileDespawned;
-        public int requiredTraitsDegree;
+        public int requiredTraitsDegree = -2147483648;
         public bool nullifiedIfNotColonist;
         public bool showBubble;
-        public int stackLimitForSameOtherPawn = -1;
-        public float lerpOpinionToZeroAfterDurationPct = 0.7f;
-        public float maxCumulatedOpinionOffset = 3.40282347E+38f;
+        public int stackLimitForSameOtherPawn;
+        public float lerpOpinionToZeroAfterDurationPct;
+        public float maxCumulatedOpinionOffset;
 
+		public DefStat<ThoughtDef> nextThought;
 		public DefStat<HediffDef> hediff;
 		public DefStat<GameConditionDef> gameCondition;
-        public DefStat<ThoughtDef> nextThought;
         public DefStat<StatDef> effectMultiplyingStat;
         public DefStat<ThoughtDef> thoughtToMake;
         public DefStat<TaleDef> taleDef;
@@ -33,7 +33,7 @@ namespace InGameDefEditor.Stats
         public List<DefStat<TaleDef>> nullifyingOwnTales = new List<DefStat<TaleDef>>();
         public List<DefStat<TraitDef>> requiredTraits = new List<DefStat<TraitDef>>();
 
-        public List<ThoughtStageStat> stages = new List<ThoughtStageStat>();
+        public List<ThoughtStageStats> stages = new List<ThoughtStageStats>();
 
         public ThoughtDefStats() : base() { }
         public ThoughtDefStats(ThoughtDef d) : base(d)
@@ -71,7 +71,7 @@ namespace InGameDefEditor.Stats
 
             if (d.stages == null)
                 d.stages = new List<ThoughtStage>();
-            d.stages.ForEach((ThoughtStage ts) => this.stages.Add(new ThoughtStageStat(ts)));
+            d.stages.ForEach((ThoughtStage ts) => this.stages.Add(new ThoughtStageStats(ts)));
         }
 
         public void ApplyStats(Def def)
@@ -106,7 +106,7 @@ namespace InGameDefEditor.Stats
                 to.requiredTraits.Clear();
                 this.requiredTraits.ForEach((DefStat<TraitDef> s) => to.requiredTraits.Add(s.Def));
                 
-                this.stages.ForEach((ThoughtStageStat s) => s.ApplyStats(to.stages));
+                this.stages.ForEach((ThoughtStageStats s) => s.ApplyStats(to.stages));
             }
         }
 
@@ -161,7 +161,7 @@ namespace InGameDefEditor.Stats
                     this.showBubble == s.showBubble &&
                     this.stackLimitForSameOtherPawn == s.stackLimitForSameOtherPawn &&
                     this.lerpOpinionToZeroAfterDurationPct == s.lerpOpinionToZeroAfterDurationPct &&
-                    this.maxCumulatedOpinionOffset == s.maxCumulatedOpinionOffset &&
+                    Util.FloatsRoughlyEqual(this.maxCumulatedOpinionOffset, s.maxCumulatedOpinionOffset) &&
 					Util.AreEqual(this.hediff, s.hediff) &&
 					Util.AreEqual(this.gameCondition, s.gameCondition) &&
                     Util.AreEqual(this.nextThought, s.nextThought) &&
@@ -171,84 +171,7 @@ namespace InGameDefEditor.Stats
                     Util.AreEqual(this.nullifyingTraits, s.nullifyingTraits) &&
                     Util.AreEqual(this.nullifyingOwnTales, s.nullifyingOwnTales) &&
                     Util.AreEqual(this.requiredTraits, s.requiredTraits) &&
-                    Util.AreEqual(this.stages, s.stages, (ThoughtStageStat l, ThoughtStageStat r) => l.Equals(r));
-            }
-            return false;
-        }
-    }
-
-    class ThoughtStageStat
-    {
-        [XmlElement(IsNullable = false)]
-        public string label;
-        public float baseMoodEffect;
-        public float baseOpinionOffset;
-        public bool visible = true;
-
-        public bool isNull;
-
-        public ThoughtStageStat(ThoughtStage ts)
-        {
-            if (ts != null)
-            {
-                this.label = ts.label;
-                this.baseMoodEffect = ts.baseMoodEffect;
-                this.baseOpinionOffset = ts.baseOpinionOffset;
-                this.visible = ts.visible;
-                this.isNull = false;
-            }
-            else
-            {
-                this.isNull = true;
-            }
-        }
-
-        public void ApplyStats(IEnumerable<ThoughtStage> s)
-        {
-            if (!this.isNull)
-            {
-                foreach (var v in s)
-                {
-                    if (v.label.Equals(this.label))
-                    {
-                        v.label = this.label;
-                        v.baseMoodEffect = this.baseMoodEffect;
-                        v.baseOpinionOffset = this.baseOpinionOffset;
-                        v.visible = this.visible;
-                        break;
-                    }
-                }
-            }
-        }
-
-        public override string ToString()
-        {
-            if (this.isNull)
-                return typeof(ThoughtDefStats).Name + " - is null";
-            return 
-                typeof(ThoughtDefStats).Name + Environment.NewLine + 
-                "label: " + label + Environment.NewLine +
-                "baseMoodEffect: " + baseMoodEffect + Environment.NewLine +
-                "baseOpinionOffset: " + baseOpinionOffset + Environment.NewLine +
-                "visible: " + visible;
-        }
-
-        public override int GetHashCode()
-        {
-            return this.ToString().GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj != null &&
-                obj is ThoughtStageStat s)
-            {
-                return
-                    string.Equals(this.label, s.label) &&
-                    this.baseMoodEffect == s.baseMoodEffect &&
-                    this.baseOpinionOffset == s.baseOpinionOffset &&
-                    this.visible == s.visible && 
-                    this.isNull == s.isNull;
+                    Util.AreEqual(this.stages, s.stages, (ThoughtStageStats l, ThoughtStageStats r) => l.Equals(r));
             }
             return false;
         }
