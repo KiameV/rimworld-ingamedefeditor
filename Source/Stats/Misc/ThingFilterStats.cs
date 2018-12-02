@@ -146,13 +146,13 @@ namespace InGameDefEditor.Stats.Misc
 					//Util.AreEqual(this.stuffCategoriesToAllow, f.stuffCategoriesToAllow) &&
 					//Util.AreEqual(this.disallowedSpecialFilters, f.disallowedSpecialFilters) &&
 					Util.AreEqual(this.thingDefs, f.thingDefs) &&
-					Util.AreEqual(this.categories, f.categories) &&
+					Util.AreEqual(this.categories, f.categories, v => v.GetHashCode()) &&
 					/*Util.AreEqual(this.tradeTagsToAllow, f.tradeTagsToAllow) &&
 					Util.AreEqual(this.tradeTagsToDisallow, f.tradeTagsToDisallow) &&
 					Util.AreEqual(this.thingSetMakerTagsToAllow, f.thingSetMakerTagsToAllow) &&*/
-					Util.AreEqual(this.disallowedCategories, f.disallowedCategories) &&
-					Util.AreEqual(this.specialFiltersToAllow, f.specialFiltersToAllow) &&
-					Util.AreEqual(this.specialFiltersToDisallow, f.specialFiltersToDisallow);
+					Util.AreEqual(this.disallowedCategories, f.disallowedCategories, v => v.GetHashCode()) &&
+					Util.AreEqual(this.specialFiltersToAllow, f.specialFiltersToAllow, v => v.GetHashCode()) &&
+					Util.AreEqual(this.specialFiltersToDisallow, f.specialFiltersToDisallow, v => v.GetHashCode());
 			}
 			return false;
 		}

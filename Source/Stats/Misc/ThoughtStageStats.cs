@@ -74,12 +74,14 @@ namespace InGameDefEditor.Stats.Misc
 			if (obj != null &&
 				obj is ThoughtStageStats s)
 			{
+				if (this.isNull)
+					return s.isNull;
 				return
 					string.Equals(this.label, s.label) &&
 					this.baseMoodEffect == s.baseMoodEffect &&
 					this.baseOpinionOffset == s.baseOpinionOffset &&
 					this.visible == s.visible &&
-					this.isNull == s.isNull;
+					s.isNull == false;
 			}
 			return false;
 		}

@@ -44,4 +44,10 @@ namespace InGameDefEditor.Stats
 	{
 		public List<ThoughtDefStats> stats;
 	}
+
+	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
+	public class RootStoryTeller
+	{
+		public List<StoryTellerDefStats> stats;
+	}
 }

@@ -45,24 +45,49 @@ namespace InGameDefEditor
 			return false;
 		}
 
-		public static bool AreEqual<T>(IEnumerable<T> left, IEnumerable<T> right)
+		public delegate int GetKey<T>(T t);
+		public static bool AreEqual<T>(IEnumerable<T> l, IEnumerable<T> r, GetKey<T> getKey)
 		{
-			if (!ListsRoughlyEqual(left, right))
+			if (!ListsRoughlyEqual(l, r))
 				return false;
 
-			if (left == null || right == null)
+			if (l == null || r == null)
 				return true;
 
-			int count = 0;
-			foreach (var l in left)
-				foreach (var r in right)
-					if (object.Equals(l, r))
-					{
-						++count;
-						break;
-					}
+			if (getKey == null)
+			{
+				int count = 0;
+				foreach (var i in l)
+					foreach (var j in r)
+						if (object.Equals(i, j))
+						{
+							++count;
+							break;
+						}
 
-			return count == left.Count();
+				return count == l.Count();
+			}
+
+			Dictionary<int, T> lookup = new Dictionary<int, T>();
+			foreach (var v in l)
+				lookup[getKey(v)] = v;
+			
+			foreach (var v in r)
+			{
+				if (!lookup.TryGetValue(getKey(v), out var found))
+				{
+					//Log.Error("Not Found");
+					return false;
+				}
+				if (!v.Equals(found))
+				{
+					//Log.Error("Not Equal");
+					return false;
+				}
+			}
+			lookup.Clear();
+			lookup = null;
+			return true;
 		}
 
 		public static bool AreEqual(IEnumerable<IDefStat> l, IEnumerable<IDefStat> r)
@@ -73,35 +98,7 @@ namespace InGameDefEditor
 			if (l == null || r == null)
 				return true;
 
-			Dictionary<Def, IDefStat> lookup = new Dictionary<Def, IDefStat>();
-			foreach (var v in l)
-				lookup[v.BaseDef] = v;
-
-			try
-			{
-				foreach (var v in r)
-				{
-					if (lookup.TryGetValue(v.BaseDef, out var found))
-					{
-						if (!v.Equals(found))
-						{
-							//Log.Error("Not Equal");
-							return false;
-						}
-					}
-					else
-					{
-						//Log.Error("Not Found");
-						return false;
-					}
-				}
-			}
-			finally
-			{
-				lookup.Clear();
-				lookup = null;
-			}
-			return true;
+			return AreEqual(l, r, v => v.BaseDef.GetHashCode());
 		}
 
 		public static bool AreEqual<D>(IEnumerable<DefStat<D>> l, IEnumerable<DefStat<D>> r) where D : Def, new()
@@ -112,35 +109,7 @@ namespace InGameDefEditor
 			if (l == null || r == null)
 				return true;
 
-			Dictionary<Def, IDefStat> lookup = new Dictionary<Def, IDefStat>();
-			foreach (var v in l)
-				lookup[v.BaseDef] = v;
-
-			try
-			{
-				foreach (var v in r)
-				{
-					if (lookup.TryGetValue(v.BaseDef, out var found))
-					{
-						if (!v.Equals(found))
-						{
-							//Log.Error("Not Equal");
-							return false;
-						}
-					}
-					else
-					{
-						//Log.Error("Not Found");
-						return false;
-					}
-				}
-			}
-			finally
-			{
-				lookup.Clear();
-				lookup = null;
-			}
-			return true;
+			return AreEqual(l, r, v => v.GetHashCode());
 		}
 
 		public static bool AreEqual<D>(IEnumerable<FloatValueDefStat<D>> l, IEnumerable<FloatValueDefStat<D>> r) where D : Def, new()
@@ -155,31 +124,7 @@ namespace InGameDefEditor
 			foreach (var v in l)
 				lookup[v.BaseDef] = v;
 
-			try
-			{
-				foreach (var v in r)
-				{
-					if (lookup.TryGetValue(v.BaseDef, out var found))
-					{
-						if (!v.Equals(found))
-						{
-							//Log.Error("Not Equal");
-							return false;
-						}
-					}
-					else
-					{
-						//Log.Error("Not Found");
-						return false;
-					}
-				}
-			}
-			finally
-			{
-				lookup.Clear();
-				lookup = null;
-			}
-			return true;
+			return AreEqual(l, r, v => v.GetHashCode());
 		}
 
 		public static bool AreEqual<D1, D2>(List<FloatValueDoubleDefStat<D1, D2>> l, IEnumerable<FloatValueDoubleDefStat<D1, D2>> r) where D1 : Def, new() where D2 : Def, new()
@@ -190,35 +135,7 @@ namespace InGameDefEditor
 			if (l == null || r == null)
 				return true;
 
-			Dictionary<Def, IDefStat> lookup = new Dictionary<Def, IDefStat>();
-			foreach (var v in l)
-				lookup[v.BaseDef] = v;
-
-			try
-			{
-				foreach (var v in r)
-				{
-					if (lookup.TryGetValue(v.BaseDef, out var found))
-					{
-						if (!v.Equals(found))
-						{
-							//Log.Error("Not Equal");
-							return false;
-						}
-					}
-					else
-					{
-						//Log.Error("Not Found");
-						return false;
-					}
-				}
-			}
-			finally
-			{
-				lookup.Clear();
-				lookup = null;
-			}
-			return true;
+			return AreEqual(l, r, v => v.GetHashCode());
 		}
 
 		public static bool AreEqual<D>(List<MinMaxFloatDefStat<D>> l, IEnumerable<MinMaxFloatDefStat<D>> r) where D : Def, new()
@@ -229,64 +146,7 @@ namespace InGameDefEditor
 			if (l == null || r == null)
 				return true;
 
-			Dictionary<Def, IDefStat> lookup = new Dictionary<Def, IDefStat>();
-			foreach (var v in l)
-				lookup[v.BaseDef] = v;
-
-			try
-			{
-				foreach (var v in r)
-				{
-					if (lookup.TryGetValue(v.BaseDef, out var found))
-					{
-						if (!v.Equals(found))
-						{
-							//Log.Error("Not Equal");
-							return false;
-						}
-					}
-					else
-					{
-						//Log.Error("Not Found");
-						return false;
-					}
-				}
-			}
-			finally
-			{
-				lookup.Clear();
-				lookup = null;
-			}
-			return true;
-		}
-
-		public delegate bool LREqual<T>(T l, T r);
-		public static bool AreEqual<T>(IEnumerable<T> l, IEnumerable<T> r, LREqual<T> areEqual)
-		{
-			if (!ListsRoughlyEqual(l, r))
-				return false;
-
-			if (l == null || r == null)
-				return true;
-
-			LinkedList<T> ll = new LinkedList<T>(l);
-			LinkedListNode<T> n = ll.First;
-			while (n != null)
-			{
-				var next = n.Next;
-				foreach (var v in r)
-				{
-					if ((areEqual != null && areEqual(n.Value, v)) ||
-						(areEqual == null && object.Equals(n.Value, v)))
-					{
-						ll.Remove(n);
-						break;
-					}
-				}
-				n = next;
-			}
-
-			return ll.Count == 0;
+			return AreEqual(l, r, v => v.GetHashCode());
 		}
 
 		public static bool AreEqual<T>(DefStat<T> l, DefStat<T> r) where T : Def, new()
@@ -375,7 +235,25 @@ namespace InGameDefEditor
             }
         }
 
+		public delegate void ApplyStats<F, T>(F from, T to);
+		public static void ListIndexAssign<F, T>(List<F> from, List<T> to, ApplyStats<F, T> applyStats)
+		{
+			if (from != null && to != null && from.Count == to.Count && applyStats != null)
+			{
+				for (int i = 0; i < from.Count; ++i)
+					applyStats(from[i], to[i]);
+			}
+		}
+
 		public delegate U Convert<T, U>(T t);
+
+		internal static IEnumerable<D> SortedDefList<D>() where D : Def, new()
+		{
+			List<D> list = DefDatabase<D>.AllDefsListForReading;
+			list.Sort((l, r) => Util.GetDefLabel(l).CompareTo(Util.GetDefLabel(r)));
+			return list;
+		}
+
 		public static IEnumerable<U> ConvertItems<T, U>(IEnumerable<T> t, Convert<T, U> convert)
 		{
 			List<U> u = new List<U>();
@@ -389,6 +267,13 @@ namespace InGameDefEditor
 			return label + " is " + ((t == null) ? "null" : "not null");
 		}
 
+		public static T Assign<T, U>(U from, CreateItem<T, U> createItem)
+		{
+			if (from == null)
+				return default(T);
+			return createItem(from);
+		}
+
 		public static void AssignDefStat<D>(D def, out DefStat<D> stat) where D : Def, new()
 		{
 			if (def == null)
@@ -397,12 +282,26 @@ namespace InGameDefEditor
 				stat = new DefStat<D>(def);
 		}
 
+		public static DefStat<D> AssignDefStat<D>(D def) where D : Def, new()
+		{
+			if (def == null)
+				return null;
+			return new DefStat<D>(def);
+		}
+
 		public static void AssignDef<D>(DefStat<D> from, out D def) where D : Def, new()
 		{
 			if (from == null)
 				def = null;
 			else
 				def = from.Def;
+		}
+
+		public static D AssignDef<D>(DefStat<D> from) where D : Def, new()
+		{
+			if (from == null)
+				return null;
+			return from.Def;
 		}
 
 		public static bool InitializeDefStat(IInitializable i)

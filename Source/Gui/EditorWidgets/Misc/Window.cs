@@ -35,6 +35,7 @@ namespace InGameDefEditor
                 new ButtonWidget<BiomeDef>("Biomes", DefType.Biome, Defs.BiomeDefs.Values, this.CreateSelected),
 				new ButtonWidget<TraitDef>("Traits", DefType.Trait, Defs.TraitDefs.Values, this.CreateSelected),
 				new ButtonWidget<ThoughtDef>("Thoughts", DefType.Thought, Defs.ThoughtDefs.Values, this.CreateSelected),
+				new ButtonWidget<StorytellerDef>("Story Tellers", DefType.StoryTeller, Defs.StoryTellerDefs.Values, this.CreateSelected),
 			};
 
 			if (Controller.EnableRecipes)
@@ -186,6 +187,9 @@ namespace InGameDefEditor
 					break;
 				case DefType.Thought:
 					this.selected = new ThoughtDefWidget(d as ThoughtDef, type);
+					break;
+				case DefType.StoryTeller:
+					this.selected = new StoryTellerDefWidget(d as StorytellerDef, type);
 					break;
             }
             this.ResetScrolls();

@@ -1,9 +1,7 @@
 ﻿using System;
 using Verse;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
-using UnityEngine;
 
 namespace InGameDefEditor.Stats.Misc
 {
@@ -15,13 +13,16 @@ namespace InGameDefEditor.Stats.Misc
 		public SimpleCurveStats() { }
 		public SimpleCurveStats(SimpleCurve w)
 		{
-			Util.Populate(out points, GetPoints(w), (v) => new Vector2Stats(v.x, v.y));
+			Util.Populate(out points, w.Points, (v) => new Vector2Stats(v.x, v.y));
 		}
 
 		public void ApplyStats(SimpleCurve to)
 		{
-			Util.Populate(out List<CurvePoint> l, this.points, v => new CurvePoint(v.ToVector2()));
-			SetPoints(to, l);
+			if (to != null)
+			{
+				Util.Populate(out List<CurvePoint> l, this.points, v => new CurvePoint(v.ToVector2()));
+				to.SetPoints(l);
+			}
 		}
 
 		public override bool Equals(object obj)
@@ -29,7 +30,7 @@ namespace InGameDefEditor.Stats.Misc
 			if (obj != null &&
 				obj is SimpleCurveStats s)
 			{
-				return Util.AreEqual(this.points, s.points, (l, r) => l.x == r.x && l.y == r.y);
+				return Util.AreEqual(this.points, s.points, v => v.GetHashCode());
 			}
 			return false;
 		}
@@ -45,16 +46,6 @@ namespace InGameDefEditor.Stats.Misc
 		public override int GetHashCode()
 		{
 			return this.ToString().GetHashCode();
-		}
-
-		public static List<CurvePoint> GetPoints(SimpleCurve c)
-		{
-			return (List<CurvePoint>)typeof(SimpleCurve).GetField("points", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(c);
-		}
-
-		public static void SetPoints(SimpleCurve c, List<CurvePoint> l)
-		{
-			typeof(SimpleCurve).GetField("points", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(c, l);
 		}
 	}
 }

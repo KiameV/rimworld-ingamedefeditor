@@ -39,14 +39,15 @@ namespace InGameDefEditor.Stats
 
 		public override bool Initialize()
 		{
-			if (base.Initialize())
-			{
-				Util.InitializeDefStat(this.disabledWorkTypes);
-				Util.InitializeDefStat(this.requiredWorkTypes);
-				Util.InitializeDefStat(this.conflictingTraits);
-				if (this.degreeDatas != null)
-					this.degreeDatas.ForEach((v) => v.Initialize());
-			}
+			if (!base.Initialize())
+				return false;
+		
+			Util.InitializeDefStat(this.disabledWorkTypes);
+			Util.InitializeDefStat(this.requiredWorkTypes);
+			Util.InitializeDefStat(this.conflictingTraits);
+			if (this.degreeDatas != null)
+				this.degreeDatas.ForEach((v) => v.Initialize());
+
 			return true;
 		}
 
@@ -95,7 +96,7 @@ namespace InGameDefEditor.Stats
 					Util.AreEqual(this.disabledWorkTypes, s.disabledWorkTypes) &&
 					Util.AreEqual(this.conflictingTraits, s.conflictingTraits) &&
 					Util.AreEqual(this.requiredWorkTypes, s.requiredWorkTypes) &&
-					Util.AreEqual(this.degreeDatas, s.degreeDatas);
+					Util.AreEqual(this.degreeDatas, s.degreeDatas, null);
 			}
 			return false;
 		}

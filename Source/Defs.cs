@@ -14,9 +14,11 @@ namespace InGameDefEditor
         public static readonly SortedDictionary<string, ThoughtDef> ThoughtDefs = new SortedDictionary<string, ThoughtDef>();
 		public static readonly SortedDictionary<string, RecipeDef> RecipeDefs = new SortedDictionary<string, RecipeDef>();
 		public static readonly SortedDictionary<string, TraitDef> TraitDefs = new SortedDictionary<string, TraitDef>();
+		public static readonly SortedDictionary<string, StorytellerDef> StoryTellerDefs = new SortedDictionary<string, StorytellerDef>();
 
 		private static bool isInit = false;
-        public static void Initialize()
+
+		public static void Initialize()
         {
             if (!isInit)
             {
@@ -31,70 +33,36 @@ namespace InGameDefEditor
 
                     ++i;
                     if (d.IsApparel)
-                    {
-						if (d.label == null)
-							Log.Warning("ApparelDef [" + d.defName + "] has a null label.");
-						else
-							ApparelDefs[d.label] = d;
+					{
+						ApparelDefs[Util.GetDefLabel(d)] = d;
                     }
                     if (d.IsWeapon)
 					{
-						if (d.label == null)
-							Log.Warning("WeaponDef [" + d.defName + "] has a null label.");
-						else
+						WeaponDefs[Util.GetDefLabel(d)] = d;
+						if (d.IsWeaponUsingProjectiles && d.Verbs != null)
 						{
-							WeaponDefs[d.label] = d;
-							if (d.IsWeaponUsingProjectiles && d.Verbs != null)
+							d.Verbs.ForEach(v =>
 							{
-								foreach (VerbProperties v in d.Verbs)
-								{
-									if (v.defaultProjectile != null)
-									{
-										if (d.label == null)
-											Log.Warning("ProjectileDef [" + v.defaultProjectile.defName + "] has a null label.");
-										else
-											ProjectileDefs[v.defaultProjectile.label] = v.defaultProjectile;
-									}
-								}
-							}
+								if (v.defaultProjectile != null)
+									ProjectileDefs[Util.GetDefLabel(v.defaultProjectile)] = v.defaultProjectile;
+								else
+									Log.Warning("No projectiles defined for " + d.defName);
+							});
 						}
                     }
                     if (d.defName.StartsWith("Arrow_") || 
                         d.defName.StartsWith("Bullet_") || 
                         d.defName.StartsWith("Proj_"))
 					{
-						if (d.label == null)
-							Log.Warning("Projectile [" + d.defName + "] has a null label.");
-						else
-							ProjectileDefs[d.label] = d;
+						ProjectileDefs[Util.GetDefLabel(d)] = d;
                     }
                 }
 
-                foreach (BiomeDef d in DefDatabase<BiomeDef>.AllDefsListForReading)
-				{
-					if (d.label == null)
-						Log.Warning("BiomeDef [" + d.defName + "] has a null label.");
-					else
-						BiomeDefs[d.label] = d;
-                }
-
-                foreach (ThoughtDef d in DefDatabase<ThoughtDef>.AllDefsListForReading)
-				{
-					ThoughtDefs[d.defName] = d;
-                }
-
-				foreach (RecipeDef d in DefDatabase<RecipeDef>.AllDefsListForReading)
-				{
-					if (d.label == null)
-						Log.Warning("RecipeDef [" + d.defName + "] has a null label.");
-					else
-						RecipeDefs[d.label] = d;
-				}
-
-				foreach (TraitDef d in DefDatabase<TraitDef>.AllDefsListForReading)
-				{
-					TraitDefs[d.defName] = d;
-				}
+				DefDatabase<BiomeDef>.AllDefsListForReading.ForEach(d => BiomeDefs[Util.GetDefLabel(d)] = d);
+				DefDatabase<ThoughtDef>.AllDefsListForReading.ForEach(d => ThoughtDefs[Util.GetDefLabel(d)] = d);
+				DefDatabase<RecipeDef>.AllDefsListForReading.ForEach(d => RecipeDefs[Util.GetDefLabel(d)] = d);
+				DefDatabase<TraitDef>.AllDefsListForReading.ForEach(d => TraitDefs[Util.GetDefLabel(d)] = d);
+				DefDatabase<StorytellerDef>.AllDefsListForReading.ForEach(d => StoryTellerDefs[Util.GetDefLabel(d)] = d);
 
 				if (i > 0)
                 {
@@ -125,6 +93,9 @@ namespace InGameDefEditor
 				Backup.ApplyStats(d);
 
 			foreach (ThoughtDef d in Defs.ThoughtDefs.Values)
+				Backup.ApplyStats(d);
+
+			foreach (StorytellerDef d in Defs.StoryTellerDefs.Values)
 				Backup.ApplyStats(d);
 		}
 	}

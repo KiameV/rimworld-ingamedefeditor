@@ -283,9 +283,9 @@ namespace InGameDefEditor.Stats
 					//Util.AreEqual(this.specialProducts, s.specialProducts) &&
 					Util.AreEqual(this.forceHiddenSpecialFilters, s.forceHiddenSpecialFilters) &&
 					Util.AreEqual(this.appliedOnFixedBodyParts, s.appliedOnFixedBodyParts) &&
-					Util.AreEqual(this.products, s.products) &&
-					Util.AreEqual(this.skillRequirements, s.skillRequirements) &&
-					Util.AreEqual(this.ingredients, s.ingredients);
+					Util.AreEqual(this.products, s.products, v => v.GetHashCode()) &&
+					Util.AreEqual(this.skillRequirements, s.skillRequirements, v => v.GetHashCode()) &&
+					Util.AreEqual(this.ingredients, s.ingredients, v => v.GetHashCode());
 			}
 			return false;
 		}

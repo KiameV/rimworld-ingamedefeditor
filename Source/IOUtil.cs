@@ -51,6 +51,9 @@ namespace InGameDefEditor
 
 					if (Load(DefType.Thought, out RootThoughts rth))
 						rth?.stats.ForEach((d) => Initialize(d));
+
+					if (Load(DefType.StoryTeller, out RootStoryTeller rst))
+						rst?.stats.ForEach((d) => Initialize(d));
 				}
                 catch(Exception e)
                 {
@@ -79,14 +82,18 @@ namespace InGameDefEditor
 			Util.Populate(out List<BiomeDefStats> bi, Defs.BiomeDefs.Values, (v) => HasChanged(new BiomeDefStats(v)), false);
 			Save(DefType.Biome, new RootBiomes() { stats = bi });
 
-			Util.Populate(out List<RecipeDefStats> re, Defs.RecipeDefs.Values, (v) => HasChanged(new RecipeDefStats(v)), false);
-			Save(DefType.Recipe, new RootRecipe() { stats = re });
+			// TODO
+			//Util.Populate(out List<RecipeDefStats> re, Defs.RecipeDefs.Values, (v) => HasChanged(new RecipeDefStats(v)), false);
+			//Save(DefType.Recipe, new RootRecipe() { stats = re });
 
 			Util.Populate(out List<TraitDefStat> traits, Defs.TraitDefs.Values, (v) => HasChanged(new TraitDefStat(v)), false);
 			Save(DefType.Trait, new RootTraits() { stats = traits });
 
 			Util.Populate(out List<ThoughtDefStats> thoughts, Defs.ThoughtDefs.Values, (v) => HasChanged(new ThoughtDefStats(v)), false);
 			Save(DefType.Thought, new RootThoughts() { stats = thoughts });
+
+			Util.Populate(out List<StoryTellerDefStats> storyTellers, Defs.StoryTellerDefs.Values, (v) => HasChanged(new StoryTellerDefStats(v)), false);
+			Save(DefType.StoryTeller, new RootStoryTeller() { stats = storyTellers });
 		}
 
 		private static string basePath = null;
@@ -174,7 +181,14 @@ namespace InGameDefEditor
 					if (s.Initialize() &&
 						s is IParentStat p)
 					{
-						p.ApplyStats(s.Def);
+						try
+						{
+							p.ApplyStats(s.Def);
+						}
+						catch (Exception e)
+						{
+							Log.Error("Failed to apply settings to " + s.defName + " due to " + e.Message);
+						}
 					}
 					else
 					{

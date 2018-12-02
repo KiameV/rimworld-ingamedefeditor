@@ -1,8 +1,6 @@
 ﻿using InGameDefEditor.Stats.DefStat;
-using RimWorld;
 using System;
 using System.Reflection;
-using System.Xml.Serialization;
 using Verse;
 
 namespace InGameDefEditor.Stats

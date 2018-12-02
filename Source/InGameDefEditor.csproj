@@ -85,9 +85,12 @@
     <Compile Include="DefLookupUtil.cs" />
     <Compile Include="Defs.cs" />
     <Compile Include="Gui\Dialog_Name.cs" />
+    <Compile Include="Gui\EditorWidgets\Dialog\Dialog_StoryTellerComponentDialog.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\EffecterDefWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\IngredientCountWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\QualityRangeWidget.cs" />
+    <Compile Include="Gui\EditorWidgets\Misc\SimpleCurveWidget.cs" />
+    <Compile Include="Gui\EditorWidgets\Misc\StorytellerCompPropertiesWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\ThingFilterWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\ThoughtStageWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\TraitDegreeDataWidget.cs" />
@@ -102,6 +105,7 @@
     <Compile Include="Gui\EditorWidgets\Misc\VerbWidget.cs" />
     <Compile Include="Gui\EditorWidgets\ThingDefWidget.cs" />
     <Compile Include="Gui\EditorWidgets\ProjectileDefWidget.cs" />
+    <Compile Include="Gui\EditorWidgets\StoryTellerDefWidget.cs" />
     <Compile Include="Gui\WindowUtil.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="IOUtil.cs" />
@@ -110,8 +114,10 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Stats\AllStats.cs" />
     <Compile Include="Stats\BiomDefStats.cs" />
+    <Compile Include="Stats\Misc\StorytellerCompPropertiesStats.cs" />
     <Compile Include="Stats\Misc\ThoughtStageStats.cs" />
     <Compile Include="Stats\Misc\TraitDegreeDataStats.cs" />
+    <Compile Include="Stats\StoryTellerDefStats.cs" />
     <Compile Include="Stats\TraitDefStat.cs" />
     <Compile Include="Stats\DefStat\EffecterDefStat.cs" />
     <Compile Include="Stats\DefStat\HoldOffsetSetStats.cs" />
@@ -162,7 +168,7 @@
     <Compile Include="Stats\ThingDefStats.cs" />
     <Compile Include="Stats\Misc\ToolStats.cs" />
     <Compile Include="Stats\Misc\VerbStats.cs" />
-    <Compile Include="Gui\Window.cs" />
+    <Compile Include="Gui\EditorWidgets\Misc\Window.cs" />
     <Compile Include="Stats\ThoughtDefStats.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>

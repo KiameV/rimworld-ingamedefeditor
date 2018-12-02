@@ -171,7 +171,7 @@ namespace InGameDefEditor.Stats
                     Util.AreEqual(this.nullifyingTraits, s.nullifyingTraits) &&
                     Util.AreEqual(this.nullifyingOwnTales, s.nullifyingOwnTales) &&
                     Util.AreEqual(this.requiredTraits, s.requiredTraits) &&
-                    Util.AreEqual(this.stages, s.stages, (ThoughtStageStats l, ThoughtStageStats r) => l.Equals(r));
+                    Util.AreEqual(this.stages, s.stages, null);
             }
             return false;
         }

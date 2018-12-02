@@ -213,7 +213,12 @@ namespace InGameDefEditor
                     updateItems = delegate ()
 					{
 						if (args.beingUsed != null)
-							return args.beingUsed();
+						{
+							var v = args.beingUsed();
+							if (v == null)
+								v = new List<T>(0);
+							return v;
+						}
 
 						List<T> l = new List<T>();
 						foreach (var v in args.allItems)

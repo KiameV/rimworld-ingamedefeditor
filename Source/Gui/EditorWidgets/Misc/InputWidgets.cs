@@ -173,7 +173,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			args = new FloatOptionsArgs<D>()
 			{
 				getDisplayName = def => Util.GetDefLabel(def),
-				items = DefDatabase<D>.AllDefsListForReading,
+				items = Util.SortedDefList<D>(),
 				onSelect = def => base.setValue(base.Parent, def),
 				includeNullOption = includeNullOption
 			};

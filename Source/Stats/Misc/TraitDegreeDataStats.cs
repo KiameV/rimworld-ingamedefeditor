@@ -128,7 +128,7 @@ namespace InGameDefEditor.Stats.Misc
 					Util.AreEqual(this.disallowedMentalStates, d.disallowedMentalStates) &&
 					Util.AreEqual(this.disallowedInspirations, d.disallowedInspirations) &&
 					Util.AreEqual(this.theOnlyAllowedMentalBreaks, d.theOnlyAllowedMentalBreaks) &&
-					Util.AreEqual(this.skillGains, d.skillGains) &&
+					Util.AreEqual(this.skillGains, d.skillGains, v => v.GetHashCode()) &&
 					Util.AreEqual(this.statOffsets, d.statOffsets) &&
 					Util.AreEqual(this.statFactors, d.statFactors);
 			}
@@ -137,12 +137,12 @@ namespace InGameDefEditor.Stats.Misc
 
 		public override string ToString()
 		{
-			return this.label + " " + base.ToString();
+			return this.label + " " + this.degree;
 		}
 
 		public override int GetHashCode()
 		{
-			return base.GetHashCode();
+			return base.ToString().GetHashCode();
 		}
 	}
 }

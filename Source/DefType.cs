@@ -9,5 +9,6 @@
 		Recipe,
 		Trait,
 		Thought,
+		StoryTeller,
 	};
 }

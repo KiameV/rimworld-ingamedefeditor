@@ -73,9 +73,9 @@ namespace InGameDefEditor.Stats.Misc
                     this.careIfWornByCorpse == s.careIfWornByCorpse &&
                     this.hatRenderedFrontOfFace == s.hatRenderedFrontOfFace &&
                     this.useDeflectMetalEffect == s.useDeflectMetalEffect &&
-                    Util.AreEqual(this.tags, s.tags) &&
-                    Util.AreEqual(this.defaultOutfitTags, s.defaultOutfitTags) &&
-                    Util.AreEqual(this.bodyPartGroups, s.bodyPartGroups) &&
+                    Util.AreEqual(this.tags, s.tags, v => v.GetHashCode()) &&
+                    Util.AreEqual(this.defaultOutfitTags, s.defaultOutfitTags, v => v.GetHashCode()) &&
+                    Util.AreEqual(this.bodyPartGroups, s.bodyPartGroups, v => v.GetHashCode()) &&
                     Util.AreEqual(this.layers, s.layers))
                 {
                     return true;

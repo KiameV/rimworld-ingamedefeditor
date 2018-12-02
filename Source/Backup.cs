@@ -46,6 +46,9 @@ namespace InGameDefEditor
 
 				foreach (TraitDef d in Defs.TraitDefs.Values)
 					backup[d] = new TraitDefStat(d);
+
+				foreach (StorytellerDef d in Defs.StoryTellerDefs.Values)
+					backup[d] = new StoryTellerDefStats(d);
 			}
         }
 
