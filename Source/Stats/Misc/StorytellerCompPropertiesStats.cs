@@ -314,10 +314,10 @@ namespace InGameDefEditor.Stats.Misc
 								this.onDays == d.onDays &&
 								this.offDays == d.offDays &&
 								this.minSpacingDays == d.minSpacingDays &&
-								//object.Equals(this.numIncidentsRange, d.numIncidentsRange) &&
-								//object.Equals(this.acceptFractionByDaysPassedCurve, d.acceptFractionByDaysPassedCurve) &&
-								//object.Equals(this.acceptPercentFactorPerThreatPointsCurve, d.acceptPercentFactorPerThreatPointsCurve) &&
-								//object.Equals(this.incident, d.incident) &&
+								object.Equals(this.numIncidentsRange, d.numIncidentsRange) &&
+								object.Equals(this.acceptFractionByDaysPassedCurve, d.acceptFractionByDaysPassedCurve) &&
+								object.Equals(this.acceptPercentFactorPerThreatPointsCurve, d.acceptPercentFactorPerThreatPointsCurve) &&
+								object.Equals(this.incident, d.incident) &&
 								this.applyRaidBeaconThreatMtbFactor == d.applyRaidBeaconThreatMtbFactor &&
 								this.forceRaidEnemyBeforeDaysPassed == d.forceRaidEnemyBeforeDaysPassed;
 						case "RimWorld.StorytellerComp_RandomMain":

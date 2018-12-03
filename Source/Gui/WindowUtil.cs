@@ -13,7 +13,7 @@ namespace InGameDefEditor
         {
             string s = DrawLabeledInput(x, y, label, valueBuffer);
             if (float.TryParse(s, out float f))
-                onChange(f);
+				onChange(f);
             y += 40;
             return s;
         }
@@ -22,7 +22,7 @@ namespace InGameDefEditor
         {
             string s = DrawLabeledInput(x, y, label, valueBuffer);
             if (Double.TryParse(s, out double d))
-                onChange((int)d);
+				onChange((int)d);
             y += 40;
             return s;
         }
@@ -120,14 +120,14 @@ namespace InGameDefEditor
         }
         
         public static void PlusMinusLabel(
-            float x, ref float y, float labelWidth, string label, Action add, Action subtract)
+            float x, ref float y, float width, string label, Action add, Action subtract)
         {
-            DrawLabel(x, y, labelWidth, label, true);
-            if (Widgets.ButtonText(new Rect(x + labelWidth + 10, y - 4, 30, 32), "+"))
+            DrawLabel(x, y, width - 80, label, true);
+            if (Widgets.ButtonText(new Rect(width - 74, y - 4, 30, 32), "+"))
             {
                 add();
             }
-            if (Widgets.ButtonText(new Rect(x + labelWidth + 52, y - 4, 30, 32), "-"))
+            if (Widgets.ButtonText(new Rect(width - 32, y - 4, 30, 32), "-"))
             {
                 subtract();
             }
@@ -135,11 +135,11 @@ namespace InGameDefEditor
         }
 
         public static void PlusMinusLabel<T, U>(
-            float x, ref float y, float labelWidth, string label,
+            float x, ref float y, float width, string label,
             FloatOptionsArgs<T> addFloatOptions, 
             FloatOptionsArgs<U> removeFloatOptions)
         {
-            PlusMinusLabel(x, ref y, labelWidth, label,
+            PlusMinusLabel(x, ref y, width, label,
                 delegate ()
                 {
                     if (addFloatOptions.updateItems != null)
@@ -177,7 +177,7 @@ namespace InGameDefEditor
             internal FloatOptionsArgs<T> addArgs = null;
             internal FloatOptionsArgs<T> removeArgs = null;
         }
-        public static void PlusMinusLabel<T>(float x, ref float y, float labelWidth, string label, PlusMinusArgs<T> args)
+        public static void PlusMinusLabel<T>(float x, ref float y, float width, string label, PlusMinusArgs<T> args)
         {
             if (args.addArgs == null)
             {
@@ -229,7 +229,7 @@ namespace InGameDefEditor
                     onSelect = args.onRemove
                 };
             }
-            PlusMinusLabel(x, ref y, labelWidth, label, args.addArgs, args.removeArgs);
+            PlusMinusLabel(x, ref y, width, label, args.addArgs, args.removeArgs);
         }
     }
 }

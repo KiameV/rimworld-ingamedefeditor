@@ -274,7 +274,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         private void DrawDiseases(float x, ref float y, float width)
         {
-            PlusMinusLabel(x, ref y, 150, "Disease Commonality", this.diseasesPlusMinusArgs);
+            PlusMinusLabel(x, ref y, width, "Disease Commonality", this.diseasesPlusMinusArgs);
 
             x += 10;
             foreach (var v in this.diseases)
@@ -283,7 +283,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         private void DrawTerrainPatchMakers(float x, ref float y, float width)
         {
-            WindowUtil.PlusMinusLabel(x, ref y, 100, "Patch Maker",
+            WindowUtil.PlusMinusLabel(x, ref y, width, "Patch Maker",
                 delegate
                 {
                     Find.WindowStack.Add(new Dialog_Name(
@@ -326,7 +326,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         private void DrawTerrainsByFertility(float x, ref float y, float width)
         {
-            PlusMinusLabel(x, ref y, 150, "Terrain Fertility", this.terrainFertilityPlusMinusArgs);
+            PlusMinusLabel(x, ref y, width, "Terrain Fertility", this.terrainFertilityPlusMinusArgs);
             x += 10;
             foreach (var v in this.terrainsByFertility)
                 v.Draw(x, ref y, width);
@@ -334,7 +334,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         private void DrawAmbientSounds(float x, ref float y, float width)
         {
-            WindowUtil.PlusMinusLabel(x, ref y, 150, "Ambient Sounds", this.ambientSoundPlusMinusArgs);
+            WindowUtil.PlusMinusLabel(x, ref y, width, "Ambient Sounds", this.ambientSoundPlusMinusArgs);
 
             x += 10;
             foreach (var w in this.soundsAmbient)
@@ -346,7 +346,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         private void DrawWeatherCommonality(float x, ref float y, float width)
         {
-            WindowUtil.PlusMinusLabel(x, ref y, 150, "Weather Commonality", this.weatherPlusMinusArgs);
+            WindowUtil.PlusMinusLabel(x, ref y, width, "Weather Commonality", this.weatherPlusMinusArgs);
 
             x += 10;
             foreach (var w in this.weatherCommonalityRecords)
@@ -355,7 +355,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         private void DrawWildPlants(float x, ref float y, float width)
         {
-            WindowUtil.PlusMinusLabel(x, ref y, 200, "Wild Plant Commonality", this.wildPlantPlusMinusArgs);
+            WindowUtil.PlusMinusLabel(x, ref y, width, "Wild Plant Commonality", this.wildPlantPlusMinusArgs);
 
             x += 10;
             foreach (var w in this.wildPlants)
@@ -364,7 +364,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         private void DrawWildAnimals(float x, ref float y, float width)
         {
-            WindowUtil.PlusMinusLabel(x, ref y, 200, "Wild Animal Commonality", this.wildAnimalPlusMinusArgs);
+            WindowUtil.PlusMinusLabel(x, ref y, width, "Wild Animal Commonality", this.wildAnimalPlusMinusArgs);
 
             x += 10;
             foreach (var w in this.wildAnimals)
@@ -373,7 +373,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         private void DrawAllowedPackAnimals(float x, ref float y, float width)
         {
-            WindowUtil.PlusMinusLabel(x, ref y, 200, "Allowed Pack Animals", this.allowedPackAnimalsPlusMinusArgs);
+            WindowUtil.PlusMinusLabel(x, ref y, width, "Allowed Pack Animals", this.allowedPackAnimalsPlusMinusArgs);
 
             x += 10;
             foreach (var w in this.allowedPackAnimals)

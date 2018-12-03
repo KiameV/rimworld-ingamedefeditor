@@ -77,7 +77,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
             foreach (var v in this.inputWidgets)
                 v.Draw(x, ref y, width);
 
-            WindowUtil.PlusMinusLabel(x, ref y, 100, "Thresholds", this.thresholdsArgs);
+            WindowUtil.PlusMinusLabel(x, ref y, width, "Thresholds", this.thresholdsArgs);
 
             x += 10;
             foreach (var v in this.thresholds)

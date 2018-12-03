@@ -1,11 +1,8 @@
 ﻿using InGameDefEditor.Gui.EditorWidgets.Misc;
 using InGameDefEditor.Stats.Misc;
 using RimWorld;
-using System;
-using System.Linq;
 using System.Collections.Generic;
 using Verse;
-using static InGameDefEditor.WindowUtil;
 using InGameDefEditor.Gui.EditorWidgets.Dialog;
 
 namespace InGameDefEditor.Gui.EditorWidgets
@@ -13,9 +10,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
 	class StoryTellerDefWidget : AParentStatWidget<StorytellerDef>
 	{
 		private readonly List<IInputWidget> inputWidgets;
-
-		// TODO
-		//private readonly List<SimpleCurveWidgets> simpleCurveWidgets;
+		
+		private readonly List<SimpleCurveWidget> simpleCurveWidgets = new List<SimpleCurveWidget>();
 
 		private List<StorytellerCompPropertiesWidget> comps;
 
@@ -49,7 +45,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		public override void DrawMiddle(float x, ref float y, float width)
 		{
-			WindowUtil.PlusMinusLabel(x, ref y, 100, "Components",
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Components",
 				delegate
 				{
 					Find.WindowStack.Add(new Dialog_StoryTellerComponentDialog(v =>
@@ -91,7 +87,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		public override void DrawRight(float x, ref float y, float width)
 		{
-
+			foreach (var v in this.simpleCurveWidgets)
+				v.Draw(x, ref y, width);
 		}
 
 		public override void Rebuild()
@@ -99,6 +96,16 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			this.comps?.Clear();
 			Util.Populate(out this.comps, base.Def.comps, v => new StorytellerCompPropertiesWidget(v));
 			this.comps?.ForEach(v => v.Rebuild());
+
+			this.simpleCurveWidgets?.Clear();
+			this.simpleCurveWidgets.Add(new SimpleCurveWidget("Population Intent Factor From Pop Curve", base.Def.populationIntentFactorFromPopCurve));
+			this.simpleCurveWidgets.Add(new SimpleCurveWidget("Population Intent Factor From Pop Adapt Days Curve", base.Def.populationIntentFactorFromPopAdaptDaysCurve));
+			this.simpleCurveWidgets.Add(new SimpleCurveWidget("Points Factor From Days Passed", base.Def.pointsFactorFromDaysPassed));
+			this.simpleCurveWidgets.Add(new SimpleCurveWidget("Points Factor From Adapt Days", base.Def.pointsFactorFromAdaptDays));
+			this.simpleCurveWidgets.Add(new SimpleCurveWidget("Adapt Days Loss From Colonist Lost By Post Population", base.Def.adaptDaysLossFromColonistLostByPostPopulation));
+			this.simpleCurveWidgets.Add(new SimpleCurveWidget("Adapt Days Loss From Colonist Violently Downed By Population", base.Def.adaptDaysLossFromColonistViolentlyDownedByPopulation));
+			this.simpleCurveWidgets.Add(new SimpleCurveWidget("Adapt Days Growth Rate Curve", base.Def.adaptDaysGrowthRateCurve));
+
 			this.ResetBuffers();
 		}
 

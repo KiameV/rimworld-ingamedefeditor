@@ -41,7 +41,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
             x += 20;
             WindowUtil.PlusMinusLabel(
-                x, ref y, 100, "Capabilities",
+                x, ref y, width, "Capabilities",
                 new WindowUtil.FloatOptionsArgs<ToolCapacityDef>()
                 {
                     // Add

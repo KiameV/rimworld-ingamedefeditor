@@ -109,12 +109,12 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			foreach (var v in this.inputWidgets)
 				v.Draw(x, ref y, width);
 
-			WindowUtil.PlusMinusLabel(x, ref y, 150, "Required Work Tags", this.requiredWorkTags);
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Required Work Tags", this.requiredWorkTags);
 			foreach (var v in this.workTags)
 				if ((base.Def.requiredWorkTags & v) == v)
 					WindowUtil.DrawLabel(x + 20, ref y, width, "- " + v.ToString(), 30);
 
-			WindowUtil.PlusMinusLabel(x, ref y, 150, "Disabled Work Tags", this.disabledWorkTags);
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Disabled Work Tags", this.disabledWorkTags);
 			foreach (var v in this.workTags)
 				if ((base.Def.disabledWorkTags & v) == v)
 					WindowUtil.DrawLabel(x + 20, ref y, width, "- " + v.ToString(), 30);
@@ -128,19 +128,19 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		public override void DrawRight(float x, ref float y, float width)
 		{
-			WindowUtil.PlusMinusLabel(x, ref y, 150, "Required Work Types", this.requiredWorkTypes);
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Required Work Types", this.requiredWorkTypes);
 			foreach (var v in this.Def.requiredWorkTypes)
 			{
 				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetDefLabel(v));
 				y += 30;
 			}
-			WindowUtil.PlusMinusLabel(x, ref y, 150, "Disabled Work Types", this.disabledWorkTypes);
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Disabled Work Types", this.disabledWorkTypes);
 			foreach (var v in this.Def.disabledWorkTypes)
 			{
 				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetDefLabel(v));
 				y += 30;
 			}
-			WindowUtil.PlusMinusLabel(x, ref y, 150, "Confliting Traits", this.conflictingTraits);
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Confliting Traits", this.conflictingTraits);
 			foreach (var v in this.Def.conflictingTraits)
 			{
 				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetDefLabel(v));

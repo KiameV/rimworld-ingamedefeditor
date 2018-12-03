@@ -258,7 +258,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 						this.inputWidgets[i].Draw(x, ref y, width);
 			}*/
 
-			WindowUtil.PlusMinusLabel(x, ref y, 150, "Allowed Defs", this.thingDefsPlusMinusArgs);
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Allowed Defs", this.thingDefsPlusMinusArgs);
 			foreach (var v in ThingFilterStats.GetAllowedDefs(this.ThingFilter))
 			{
 				WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v.label);
@@ -278,7 +278,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			if (this.ShouldDrawPart(DrawOptionsEnum.All) ||
 				this.ShouldDrawPart(DrawOptionsEnum.Category))
 			{
-				WindowUtil.PlusMinusLabel(x, ref y, 150, "Allowed Categories", this.categories);
+				WindowUtil.PlusMinusLabel(x, ref y, width, "Allowed Categories", this.categories);
 				foreach (var v in ThingFilterStats.GetCategories(this.ThingFilter))
 				{
 					WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
@@ -286,7 +286,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				}
 				y += 8;
 
-				WindowUtil.PlusMinusLabel(x, ref y, 150, "Disallow Categories", this.disallowedCategories);
+				WindowUtil.PlusMinusLabel(x, ref y, width, "Disallow Categories", this.disallowedCategories);
 				foreach (var v in ThingFilterStats.GetDisallowedCategories(this.ThingFilter))
 				{
 					WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
@@ -298,7 +298,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			if (this.ShouldDrawPart(DrawOptionsEnum.All) ||
 				this.ShouldDrawPart(DrawOptionsEnum.SpecialFilters))
 			{
-				WindowUtil.PlusMinusLabel(x, ref y, 150, "Disallowed Defs", this.disallowedThingDefsPlusMinusArgs);
+				WindowUtil.PlusMinusLabel(x, ref y, width, "Disallowed Defs", this.disallowedThingDefsPlusMinusArgs);
 				foreach (var v in ThingFilterStats.GetDisallowedThingDefs(this.ThingFilter))
 				{
 					WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v.label);
@@ -306,7 +306,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				}
 				y += 8;
 
-				WindowUtil.PlusMinusLabel(x, ref y, 150, "Allowed Custom Filters", this.specialFiltersToAllow);
+				WindowUtil.PlusMinusLabel(x, ref y, width, "Allowed Custom Filters", this.specialFiltersToAllow);
 				foreach (var v in ThingFilterStats.GetSpecialFiltersToAllow(this.ThingFilter))
 				{
 					WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);
@@ -314,7 +314,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				}
 				y += 8;
 
-				WindowUtil.PlusMinusLabel(x, ref y, 150, "Disallowed Custom Filters", this.specialFiltersToDisallow);
+				WindowUtil.PlusMinusLabel(x, ref y, width, "Disallowed Custom Filters", this.specialFiltersToDisallow);
 				foreach (var v in ThingFilterStats.GetSpecialFiltersToDisallow(this.ThingFilter))
 				{
 					WindowUtil.DrawLabel(x + 10, y, width - 10, "- " + v);

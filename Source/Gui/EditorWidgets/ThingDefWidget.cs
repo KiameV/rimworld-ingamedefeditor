@@ -65,7 +65,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
         private void DrawStatModifiers(float x, ref float y, float width)
         {
             WindowUtil.PlusMinusLabel(
-                x, ref y, 150, "Base Modifiers",
+                x, ref y, width, "Base Modifiers",
                 new WindowUtil.FloatOptionsArgs<StatDef>()
                 {
                     items = this.GetPossibleStatModifiers(base.Def.statBases),
@@ -112,7 +112,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         private void DrawTools(float x, ref float y, float width)
         {
-            WindowUtil.PlusMinusLabel(x, ref y, 100, "Tools",
+            WindowUtil.PlusMinusLabel(x, ref y, width, "Tools",
                 delegate
                 {
                     Find.WindowStack.Add(new Dialog_Name(
@@ -175,7 +175,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         private void DrawEquipmentStatOffsets(float x, ref float y, float width)
         {
-            WindowUtil.PlusMinusLabel(x, ref y, 200, "Equipped Stat Offsets",
+            WindowUtil.PlusMinusLabel(x, ref y, width, "Equipped Stat Offsets",
                 new WindowUtil.FloatOptionsArgs<StatDef>()
                 {
                     items = this.GetPossibleStatModifiers(base.Def.equippedStatOffsets),

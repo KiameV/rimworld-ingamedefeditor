@@ -213,7 +213,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 		public void Draw(float x, ref float y, float width)
 		{
-			WindowUtil.PlusMinusLabel(x, ref y, labelWidth, label, this.args);
+			WindowUtil.PlusMinusLabel(x, ref y, width, label, this.args);
 			IEnumerable<D> beingUsed = this.args.beingUsed.Invoke();
 			x += 10;
 			if (beingUsed != null)

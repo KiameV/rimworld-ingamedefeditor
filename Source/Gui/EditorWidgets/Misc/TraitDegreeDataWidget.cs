@@ -87,13 +87,13 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				onAdd = def =>
 				{
 					StatModifier sm = new StatModifier() { stat = def, value = 0 };
-					this.data.statOffsets.Add(sm);
-					this.statOffsets.Add(this.CreateStatModifierInput(sm));
+					this.data.statOffsets = Util.AddTo(this.data.statOffsets, sm);
+					this.statOffsets = Util.AddTo(this.statOffsets, this.CreateStatModifierInput(sm));
 				},
 				onRemove = def =>
 				{
-					this.statOffsets.RemoveAll(v => v.Parent.stat == def);
-					this.data.statOffsets.RemoveAll(v => v.stat == def);
+					this.statOffsets?.RemoveAll(v => v.Parent.stat == def);
+					this.data.statOffsets?.RemoveAll(v => v.stat == def);
 				}
 			};
 
@@ -112,13 +112,13 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				onAdd = def =>
 				{
 					StatModifier sm = new StatModifier() { stat = def, value = 0 };
-					this.data.statFactors.Add(sm);
-					this.statFactors.Add(this.CreateStatModifierInput(sm));
+					this.data.statFactors = Util.AddTo(this.data.statFactors, sm);
+					this.statFactors = Util.AddTo(this.statFactors, this.CreateStatModifierInput(sm));
 				},
 				onRemove = def =>
 				{
-					this.statFactors.RemoveAll(v => v.Parent.stat == def);
-					this.data.statFactors.RemoveAll(v => v.stat == def);
+					this.statFactors?.RemoveAll(v => v.Parent.stat == def);
+					this.data.statFactors?.RemoveAll(v => v.stat == def);
 				}
 			};
 
@@ -134,15 +134,15 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			foreach (var v in this.inputWidgets)
 				v.Draw(x, ref y, width);
 			
-			WindowUtil.PlusMinusLabel(x, ref y, 200, "Skill Gains", this.skillGainsArgs);
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Skill Gains", this.skillGainsArgs);
 			foreach (var v in this.skillGains)
 				v.Draw(x + 20, ref y, width);
 
-			WindowUtil.PlusMinusLabel(x, ref y, 200, "Stat Offsets", this.statOffsetsArgs);
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Stat Offsets", this.statOffsetsArgs);
 			foreach (var v in this.statOffsets)
 				v.Draw(x + 20, ref y, width);
 
-			WindowUtil.PlusMinusLabel(x, ref y, 200, "Stat Factors", this.statFactorsArgs);
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Stat Factors", this.statFactorsArgs);
 			foreach (var v in this.statFactors)
 				v.Draw(x + 20, ref y, width);
 		}

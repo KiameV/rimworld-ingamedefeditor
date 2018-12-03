@@ -269,7 +269,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				v.Draw(x + 10, ref y, width);
 			}
 
-			WindowUtil.PlusMinusLabel(x, ref y, 150, "Skill Requirements", this.skillRequirementsPlusMinusArgs);
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Skill Requirements", this.skillRequirementsPlusMinusArgs);
 			foreach (var v in this.skillRequirements)
 			{
 				v.Draw(x + 10, ref y, width);
@@ -314,7 +314,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 y += 8;
             }*/
 
-			WindowUtil.PlusMinusLabel(x, ref y, 150, "Force Hidden Special Filters", this.forceHiddenSpecialFilters);
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Force Hidden Special Filters", this.forceHiddenSpecialFilters);
 			if (base.Def.forceHiddenSpecialFilters != null)
 				foreach (var v in base.Def.forceHiddenSpecialFilters)
 				{
@@ -323,7 +323,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				}
 			y += 8;
 
-			WindowUtil.PlusMinusLabel(x, ref y, 150, "Applied On Fixed Body Parts", this.appliedOnFixedBodyParts);
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Applied On Fixed Body Parts", this.appliedOnFixedBodyParts);
 			if (base.Def.appliedOnFixedBodyParts != null)
 				foreach (var v in base.Def.appliedOnFixedBodyParts)
 				{

@@ -105,19 +105,19 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		public override void DrawMiddle(float x, ref float y, float width)
 		{
-			WindowUtil.PlusMinusLabel(x, ref y, 150, "Nullifying Own Tales", this.nullifyingOwnTales);
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Nullifying Own Tales", this.nullifyingOwnTales);
 			foreach (var v in this.Def.nullifyingOwnTales)
 			{
 				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetDefLabel(v));
 				y += 30;
 			}
-			WindowUtil.PlusMinusLabel(x, ref y, 150, "Required Traits", this.requiredTraits);
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Required Traits", this.requiredTraits);
 			foreach (var v in this.Def.requiredTraits)
 			{
 				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetDefLabel(v));
 				y += 30;
 			}
-			WindowUtil.PlusMinusLabel(x, ref y, 150, "Nullifying Traits", this.nullifyingTraits);
+			WindowUtil.PlusMinusLabel(x, ref y, width, "Nullifying Traits", this.nullifyingTraits);
 			foreach (var v in this.Def.nullifyingTraits)
 			{
 				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetDefLabel(v));
