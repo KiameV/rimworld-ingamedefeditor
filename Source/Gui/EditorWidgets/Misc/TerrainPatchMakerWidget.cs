@@ -8,7 +8,7 @@ using static InGameDefEditor.WindowUtil;
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
-    class TerrainPatchMakerWidget : IStatWidget
+    class TerrainPatchMakerWidget : IInputWidget
     {
         public readonly TerrainPatchMaker Parent;
 

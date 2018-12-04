@@ -6,7 +6,7 @@ using static InGameDefEditor.WindowUtil;
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
-	class StorytellerCompPropertiesWidget : IDefEditorWidget
+	class StorytellerCompPropertiesWidget : ACollapsibleWidget
 	{
 		private readonly StorytellerCompProperties Props;
 		private readonly string label;
@@ -20,9 +20,9 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 		private List<FloatInputWidget<IncidentCategoryEntry>> categoryWeights;
 		private PlusMinusArgs<IncidentCategoryDef> categoryWeightArgs;
 
-		public string DisplayLabel => label;
+		public override string DisplayLabel => label;
 
-		public StorytellerCompPropertiesWidget(StorytellerCompProperties p)
+		public StorytellerCompPropertiesWidget(StorytellerCompProperties p) : base(true, true)
 		{
 			if (p.allowedTargetTags == null)
 				p.allowedTargetTags = new List<IncidentTargetTagDef>();
@@ -189,10 +189,8 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			return new FloatInputWidget<IncidentCategoryEntry>(ice, Util.GetDefLabel(ice.category), c => c.weight, (c, v) => c.weight = v);
 		}
 
-		public void Draw(float x, ref float y, float width)
+		protected override void DrawInputs(float x, ref float y, float width)
 		{
-			WindowUtil.DrawLabel(x - 5, ref y, width, "- " + this.DisplayLabel, 32, true);
-			x += 10;
 			foreach (var v in this.inputWidgets)
 				v.Draw(x, ref y, width);
 
@@ -255,7 +253,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			this.ResetBuffers();
 		}
 
-		public void ResetBuffers()
+		public override void ResetBuffers()
 		{
 			this.inputWidgets.ForEach(v => v.ResetBuffers());
 		}

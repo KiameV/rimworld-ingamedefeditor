@@ -5,7 +5,7 @@ using System;
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
-	class TraitDegreeDataWidget : IDefEditorWidget
+	class TraitDegreeDataWidget : IInputWidget
 	{
 		private readonly TraitDegreeData data;
 		private readonly List<IInputWidget> inputWidgets;

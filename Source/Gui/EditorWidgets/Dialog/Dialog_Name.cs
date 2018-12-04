@@ -1,6 +1,6 @@
 ﻿using Verse;
 
-namespace InGameDefEditor.Gui
+namespace InGameDefEditor.Gui.Dialog
 {
     public class Dialog_Name : Dialog_Rename
     {

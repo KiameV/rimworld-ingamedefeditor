@@ -3,8 +3,8 @@ using Verse;
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
-    class VerbWidget : IDefEditorWidget
-    {
+    class VerbWidget : IInputWidget
+	{
         public readonly VerbProperties VerbProperties;
 
         private readonly List<IInputWidget> inputWidgets;

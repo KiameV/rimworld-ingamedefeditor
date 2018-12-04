@@ -84,8 +84,9 @@
     <Compile Include="DefType.cs" />
     <Compile Include="DefLookupUtil.cs" />
     <Compile Include="Defs.cs" />
-    <Compile Include="Gui\Dialog_Name.cs" />
+    <Compile Include="Gui\EditorWidgets\Dialog\Dialog_Name.cs" />
     <Compile Include="Gui\EditorWidgets\Dialog\Dialog_StoryTellerComponentDialog.cs" />
+    <Compile Include="Gui\EditorWidgets\Misc\ACollapsibleWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\EffecterDefWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\IngredientCountWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\QualityRangeWidget.cs" />

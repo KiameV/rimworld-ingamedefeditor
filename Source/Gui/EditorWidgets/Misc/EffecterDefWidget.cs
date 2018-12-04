@@ -2,7 +2,7 @@
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
-	class EffecterDefWidget : IDefEditorWidget
+	class EffecterDefWidget : IInputWidget
 	{
 		public readonly EffecterDef EffecterDef;
 

@@ -1,4 +1,5 @@
-﻿using InGameDefEditor.Gui.EditorWidgets.Misc;
+﻿using InGameDefEditor.Gui.Dialog;
+using InGameDefEditor.Gui.EditorWidgets.Misc;
 using InGameDefEditor.Stats;
 using RimWorld;
 using System.Collections.Generic;

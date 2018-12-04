@@ -5,10 +5,11 @@ using System.Linq;
 using System.Collections.Generic;
 using Verse;
 using static InGameDefEditor.WindowUtil;
+using InGameDefEditor.Gui.Dialog;
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
-	class ThingFilterWidget : IDefEditorWidget
+	class ThingFilterWidget : IInputWidget
 	{
 		public readonly ThingFilter ThingFilter;
 

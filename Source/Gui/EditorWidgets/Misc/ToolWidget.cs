@@ -6,8 +6,8 @@ using Verse;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
-    class ToolWidget : IDefEditorWidget
-    {
+    class ToolWidget : IInputWidget
+	{
         public readonly Tool Tool;
 
         private readonly List<IInputWidget> inputWidgets;

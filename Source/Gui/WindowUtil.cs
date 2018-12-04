@@ -9,29 +9,29 @@ namespace InGameDefEditor
     public static class WindowUtil
     {
         public delegate void OnChange<T>(T t);
-        public static string DrawInput(float x, ref float y, string label, float value, OnChange<float> onChange, string valueBuffer)
+        public static string DrawInput(float x, ref float y, float width, string label, float value, OnChange<float> onChange, string valueBuffer)
         {
-            string s = DrawLabeledInput(x, y, label, valueBuffer);
+            string s = DrawLabeledInput(x, y, width, label, valueBuffer);
             if (float.TryParse(s, out float f))
 				onChange(f);
             y += 40;
             return s;
         }
 
-        public static string DrawInput(float x, ref float y, string label, int value, OnChange<int> onChange, string valueBuffer)
+        public static string DrawInput(float x, ref float y, float width, string label, int value, OnChange<int> onChange, string valueBuffer)
         {
-            string s = DrawLabeledInput(x, y, label, valueBuffer);
+            string s = DrawLabeledInput(x, y, width, label, valueBuffer);
             if (Double.TryParse(s, out double d))
 				onChange((int)d);
             y += 40;
             return s;
         }
 
-        public static bool DrawInput(float x, ref float y, string label, bool value, OnChange<bool> onChange)
+        public static bool DrawInput(float x, ref float y, float width, string label, bool value, OnChange<bool> onChange, float buttonWidth = 60f)
         {
             DrawLabel(x, y, 240, label);
             
-            if (Widgets.ButtonText(new Rect(x + 250, y, 60, 32), value.ToString()))
+            if (Widgets.ButtonText(new Rect(width - buttonWidth, y, buttonWidth, 32), value.ToString()))
             {
                 value = !value;
                 onChange(value);
@@ -49,10 +49,10 @@ namespace InGameDefEditor
             y += 40;
         }
 
-        public static String DrawLabeledInput(float x, float y, string label, string buffer)
+        public static String DrawLabeledInput(float x, float y, float width, string label, string buffer)
         {
             DrawLabel(x, y, 240, label);
-            return Widgets.TextField(new Rect(x + 250, y, 60, 32), buffer);
+            return Widgets.TextField(new Rect(width - 60, y, 60, 32), buffer);
         }
 
 		public static void DrawLabel(float x, ref float y, float width, string label, float yInc = 32, bool bolded = false)

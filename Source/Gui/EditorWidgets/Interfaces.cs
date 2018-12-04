@@ -2,29 +2,27 @@
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
-    interface IStatWidget
-    {
-        string DisplayLabel { get; }
-        void ResetBuffers();
-    }
+	interface IInputWidget
+	{
+		string DisplayLabel { get; }
+		void Draw(float x, ref float y, float width);
+		void ResetBuffers();
+	}
 
-    interface IParentStatWidget : IStatWidget
-    {
-        DefType Type { get; }
-        Def BaseDef { get; }
+	interface IParentStatWidget
+	{
+		DefType Type { get; }
+		Def BaseDef { get; }
+		string DisplayLabel { get; }
 
-        void DrawLeft(float x, ref float y, float width);
-        void DrawMiddle(float x, ref float y, float width);
-        void DrawRight(float x, ref float y, float width);
-        void Rebuild();
-    }
+		void DrawLeft(float x, ref float y, float width);
+		void DrawMiddle(float x, ref float y, float width);
+		void DrawRight(float x, ref float y, float width);
+		void Rebuild();
+		void ResetBuffers();
+	}
 
-    interface IDefEditorWidget : IStatWidget
-    {
-        void Draw(float x, ref float y, float width);
-    }
-
-    public abstract class AParentStatWidget<D> : IParentStatWidget where D : Def, new()
+	public abstract class AParentStatWidget<D> : IParentStatWidget where D : Def, new()
     {
         public readonly D Def;
         private readonly DefType type;

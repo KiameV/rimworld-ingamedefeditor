@@ -6,12 +6,6 @@ using static InGameDefEditor.WindowUtil;
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
-    interface IInputWidget
-    {
-        void Draw(float x, ref float y, float width);
-        void ResetBuffers();
-    }
-
     abstract class AInputWidget<P, V> : IInputWidget
     {
         public delegate V GetValue(P d);
@@ -26,7 +20,9 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 		protected string buffer = "";
 
-        public AInputWidget(P parent, string label, GetValue getValue, SetValue setValue, DrawInput drawInput = null)
+		public string DisplayLabel => "";
+
+		public AInputWidget(P parent, string label, GetValue getValue, SetValue setValue, DrawInput drawInput = null)
         {
             this.Parent = parent;
             this.label = label;
@@ -52,7 +48,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
         public override void Draw(float x, ref float y, float width)
         {
 			if (drawInput == null || drawInput(base.Parent))
-				this.value = DrawInput(x, ref y, base.label, this.value, delegate(bool b) { base.setValue(this.Parent, b); });
+				this.value = DrawInput(x, ref y, width, base.label, this.value, delegate(bool b) { base.setValue(this.Parent, b); });
         }
 
         public override void ResetBuffers()
@@ -74,7 +70,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
         public override void Draw(float x, ref float y, float width)
 		{
 			if (drawInput == null || drawInput(base.Parent))
-				this.buffer = WindowUtil.DrawInput(x, ref y, this.label, this.value, delegate (int i) { base.setValue(this.Parent, i); }, this.buffer);
+				this.buffer = WindowUtil.DrawInput(x, ref y, width, this.label, this.value, delegate (int i) { base.setValue(this.Parent, i); }, this.buffer);
         }
 
         public override void ResetBuffers()
@@ -96,7 +92,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
         public override void Draw(float x, ref float y, float width)
 		{
 			if (drawInput == null || drawInput(base.Parent))
-				this.buffer = WindowUtil.DrawInput(x, ref y, this.label, this.value, delegate (float f) { base.setValue(this.Parent, f); }, this.buffer);
+				this.buffer = WindowUtil.DrawInput(x, ref y, width, this.label, this.value, delegate (float f) { base.setValue(this.Parent, f); }, this.buffer);
         }
 
         public override void ResetBuffers()
@@ -113,7 +109,9 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
         public P Parent { get { return min.Parent; } }
 
-        public MinMaxInputWidget(string label, FloatInputWidget<P> min, FloatInputWidget<P> max)
+		public string DisplayLabel => label;
+
+		public MinMaxInputWidget(string label, FloatInputWidget<P> min, FloatInputWidget<P> max)
         {
             this.label = label;
             this.min = min;
@@ -210,6 +208,8 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				beingUsed = () => this.items
 			};
 		}
+
+		public string DisplayLabel => label;
 
 		public void Draw(float x, ref float y, float width)
 		{

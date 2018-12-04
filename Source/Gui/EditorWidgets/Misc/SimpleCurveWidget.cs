@@ -6,12 +6,10 @@ using static InGameDefEditor.WindowUtil;
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
-	class SimpleCurveWidget : IDefEditorWidget, IInputWidget
+	class SimpleCurveWidget : ACollapsibleWidget
 	{
 		private readonly string name;
 		private readonly SimpleCurve curve;
-
-		public string DisplayLabel => this.name;
 
 		private Vector2 scroll;
 		private float innerY = float.MaxValue;
@@ -21,7 +19,9 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 		private FloatOptionsArgs<MinMaxFloatStats> pointsArgs;
 
-		public SimpleCurveWidget(string name, SimpleCurve curve)
+		public override string DisplayLabel => this.name;
+
+		public SimpleCurveWidget(string name, SimpleCurve curve) : base(true, true)
 		{
 			this.name = name;
 			this.curve = curve;
@@ -41,7 +41,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			this.ResetBuffers();
 		}
 
-		public void Draw(float x, ref float y, float width)
+		protected override void DrawInputs(float x, ref float y, float width)
 		{
 			WindowUtil.PlusMinusLabel(x, ref y, width, this.name,
 				() =>
@@ -63,19 +63,24 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				this.innerY = 0;
 
 				foreach (var v in this.pointsInputs)
-					v.Draw(0, ref this.innerY, width);
+					v.Draw(10, ref this.innerY, width - 60);
 
 				Widgets.EndScrollView();
 				y += 332;
 			}
 			else
 			{
+				this.innerY = 0;
 				foreach (var v in this.pointsInputs)
-					v.Draw(0, ref y, width);
+				{
+					float orig = y;
+					v.Draw(10, ref y, width - 60);
+					this.innerY += y - orig;
+				}
 			}
 		}
 
-		public void ResetBuffers()
+		public override void ResetBuffers()
 		{
 			this.points?.Clear();
 			this.pointsInputs?.Clear();

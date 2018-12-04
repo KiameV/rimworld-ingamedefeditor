@@ -3,7 +3,7 @@ using Verse;
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
-	class IngredientCountWidget : IDefEditorWidget
+	class IngredientCountWidget : IInputWidget
 	{
 		private static int uniqueCount = 1;
 		public static void  ResetUniqueId() { uniqueCount = 1; }

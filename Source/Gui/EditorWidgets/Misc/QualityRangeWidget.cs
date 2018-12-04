@@ -8,7 +8,7 @@ using static InGameDefEditor.WindowUtil;
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
-	class QualityRangeWidget : IDefEditorWidget
+	class QualityRangeWidget : IInputWidget
 	{
 		private QualityRange QualityRange;
 

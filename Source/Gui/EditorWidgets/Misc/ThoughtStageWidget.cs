@@ -5,7 +5,7 @@ using Verse;
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
-	class ThoughtStageWidget : IDefEditorWidget
+	class ThoughtStageWidget : IInputWidget
 	{
 		private readonly ThoughtStage stage;
 
