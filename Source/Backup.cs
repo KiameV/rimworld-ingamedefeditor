@@ -49,6 +49,9 @@ namespace InGameDefEditor
 
 				foreach (StorytellerDef d in Defs.StoryTellerDefs.Values)
 					backup[d] = new StoryTellerDefStats(d);
+
+				foreach (DifficultyDef d in Defs.DifficultyDefs.Values)
+					backup[d] = new DifficultyDefStat(d);
 			}
         }
 

@@ -50,4 +50,10 @@ namespace InGameDefEditor.Stats
 	{
 		public List<StoryTellerDefStats> stats;
 	}
+
+	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
+	public class RootDifficulty
+	{
+		public List<DifficultyDefStat> stats;
+	}
 }

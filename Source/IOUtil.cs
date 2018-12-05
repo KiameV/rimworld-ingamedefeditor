@@ -54,6 +54,9 @@ namespace InGameDefEditor
 
 					if (Load(DefType.StoryTeller, out RootStoryTeller rst))
 						rst?.stats.ForEach((d) => Initialize(d));
+
+					if (Load(DefType.Difficulty, out RootDifficulty dif))
+						dif?.stats.ForEach((d) => Initialize(d));
 				}
                 catch(Exception e)
                 {
@@ -94,6 +97,9 @@ namespace InGameDefEditor
 
 			Util.Populate(out List<StoryTellerDefStats> storyTellers, Defs.StoryTellerDefs.Values, (v) => HasChanged(new StoryTellerDefStats(v)), false);
 			Save(DefType.StoryTeller, new RootStoryTeller() { stats = storyTellers });
+
+			Util.Populate(out List<DifficultyDefStat> difficulties, Defs.DifficultyDefs.Values, (v) => HasChanged(new DifficultyDefStat(v)), false);
+			Save(DefType.Difficulty, new RootDifficulty() { stats = difficulties });
 		}
 
 		private static string basePath = null;

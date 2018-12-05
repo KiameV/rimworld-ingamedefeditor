@@ -15,6 +15,7 @@ namespace InGameDefEditor
 		public static readonly SortedDictionary<string, RecipeDef> RecipeDefs = new SortedDictionary<string, RecipeDef>();
 		public static readonly SortedDictionary<string, TraitDef> TraitDefs = new SortedDictionary<string, TraitDef>();
 		public static readonly SortedDictionary<string, StorytellerDef> StoryTellerDefs = new SortedDictionary<string, StorytellerDef>();
+		public static readonly SortedDictionary<string, DifficultyDef> DifficultyDefs = new SortedDictionary<string, DifficultyDef>();
 
 		private static bool isInit = false;
 
@@ -63,6 +64,7 @@ namespace InGameDefEditor
 				DefDatabase<RecipeDef>.AllDefsListForReading.ForEach(d => RecipeDefs[Util.GetDefLabel(d)] = d);
 				DefDatabase<TraitDef>.AllDefsListForReading.ForEach(d => TraitDefs[Util.GetDefLabel(d)] = d);
 				DefDatabase<StorytellerDef>.AllDefsListForReading.ForEach(d => StoryTellerDefs[Util.GetDefLabel(d)] = d);
+				DefDatabase<DifficultyDef>.AllDefsListForReading.ForEach(d => DifficultyDefs[Util.GetDefLabel(d)] = d);
 
 				if (i > 0)
                 {
@@ -96,6 +98,9 @@ namespace InGameDefEditor
 				Backup.ApplyStats(d);
 
 			foreach (StorytellerDef d in Defs.StoryTellerDefs.Values)
+				Backup.ApplyStats(d);
+
+			foreach (DifficultyDef d in Defs.DifficultyDefs.Values)
 				Backup.ApplyStats(d);
 		}
 	}

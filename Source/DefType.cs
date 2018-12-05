@@ -10,5 +10,6 @@
 		Trait,
 		Thought,
 		StoryTeller,
+		Difficulty,
 	};
 }

@@ -86,6 +86,7 @@
     <Compile Include="Defs.cs" />
     <Compile Include="Gui\EditorWidgets\Dialog\Dialog_Name.cs" />
     <Compile Include="Gui\EditorWidgets\Dialog\Dialog_StoryTellerComponentDialog.cs" />
+    <Compile Include="Gui\EditorWidgets\DifficultyDefWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\ACollapsibleWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\EffecterDefWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\IngredientCountWidget.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Stats\AllStats.cs" />
     <Compile Include="Stats\BiomDefStats.cs" />
+    <Compile Include="Stats\DifficultyDefStat.cs" />
     <Compile Include="Stats\Misc\StorytellerCompPropertiesStats.cs" />
     <Compile Include="Stats\Misc\ThoughtStageStats.cs" />
     <Compile Include="Stats\Misc\TraitDegreeDataStats.cs" />
@@ -169,7 +171,7 @@
     <Compile Include="Stats\ThingDefStats.cs" />
     <Compile Include="Stats\Misc\ToolStats.cs" />
     <Compile Include="Stats\Misc\VerbStats.cs" />
-    <Compile Include="Gui\EditorWidgets\Misc\Window.cs" />
+    <Compile Include="Gui\Window.cs" />
     <Compile Include="Stats\ThoughtDefStats.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>

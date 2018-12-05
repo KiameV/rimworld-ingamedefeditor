@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Text;
 using UnityEngine;
+using Verse;
 
 namespace InGameDefEditor.Stats.Misc
 {
@@ -26,6 +28,37 @@ namespace InGameDefEditor.Stats.Misc
 		public Color ToColor()
 		{
 			return new Color(this.r, this.g, this.b, this.a);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj != null && 
+				obj is ColorStats s)
+			{
+				return
+					this.r == s.r &&
+					this.g == s.g &&
+					this.b == s.b &&
+					this.a == s.a;
+			}
+			return false;
+		}
+
+		public override string ToString()
+		{
+			StringBuilder sb = new StringBuilder(r.ToString());
+			sb.Append(",");
+			sb.Append(g.ToString());
+			sb.Append(",");
+			sb.Append(b.ToString());
+			sb.Append(",");
+			sb.Append(a.ToString());
+			return sb.ToString();
+		}
+
+		public override int GetHashCode()
+		{
+			return this.ToString().GetHashCode();
 		}
 	}
 }

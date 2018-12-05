@@ -64,7 +64,7 @@ namespace InGameDefEditor
 		public static void DrawLabel(float x, float y, float width, string label, bool bolded = false)
         {
             // 0.14 is about the size of each character
-            if (label.Length > width * 0.14)
+            if (label.Length > width * 0.137)
             {
                 Text.Font = GameFont.Tiny;
             }

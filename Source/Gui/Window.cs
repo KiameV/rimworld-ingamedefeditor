@@ -27,22 +27,23 @@ namespace InGameDefEditor
         public InGameDefEditorWindow()
         {
             IOUtil.LoadData();
-            buttons = new List<IButtonWidget>()
-            {
-                new ButtonWidget<ThingDef>("Apparel", DefType.Apparel, Defs.ApparelDefs.Values, this.CreateSelected),
-                new ButtonWidget<ThingDef>("Weapons", DefType.Weapon, Defs.WeaponDefs.Values, this.CreateSelected),
-                new ButtonWidget<ThingDef>("Projectiles", DefType.Projectile, Defs.ProjectileDefs.Values, this.CreateSelected),
-                new ButtonWidget<BiomeDef>("Biomes", DefType.Biome, Defs.BiomeDefs.Values, this.CreateSelected),
+			buttons = new List<IButtonWidget>()
+			{
+				new ButtonWidget<ThingDef>("Apparel", DefType.Apparel, Defs.ApparelDefs.Values, this.CreateSelected),
+				new ButtonWidget<ThingDef>("Weapons", DefType.Weapon, Defs.WeaponDefs.Values, this.CreateSelected),
+				new ButtonWidget<ThingDef>("Projectiles", DefType.Projectile, Defs.ProjectileDefs.Values, this.CreateSelected),
+				new ButtonWidget<BiomeDef>("Biomes", DefType.Biome, Defs.BiomeDefs.Values, this.CreateSelected),
 				new ButtonWidget<TraitDef>("Traits", DefType.Trait, Defs.TraitDefs.Values, this.CreateSelected),
 				new ButtonWidget<ThoughtDef>("Thoughts", DefType.Thought, Defs.ThoughtDefs.Values, this.CreateSelected),
 				new ButtonWidget<StorytellerDef>("Story Tellers", DefType.StoryTeller, Defs.StoryTellerDefs.Values, this.CreateSelected),
+				new ButtonWidget<DifficultyDef>("Difficulty", DefType.Difficulty, this.sortDifficultyOptions(Defs.DifficultyDefs.Values), this.CreateSelected),
 			};
 
 			if (Controller.EnableRecipes)
 				buttons.Add(new ButtonWidget<RecipeDef>("Recipes", DefType.Recipe, Defs.RecipeDefs.Values, this.CreateSelected));
         }
 
-        public override void DoWindowContents(Rect rect)
+		public override void DoWindowContents(Rect rect)
         {
             Text.Font = GameFont.Small;
             float outerY = 0;
@@ -191,13 +192,24 @@ namespace InGameDefEditor
 				case DefType.StoryTeller:
 					this.selected = new StoryTellerDefWidget(d as StorytellerDef, type);
 					break;
+				case DefType.Difficulty:
+					this.selected = new DifficultyDefWidget(d as DifficultyDef, type);
+					break;
             }
             this.ResetScrolls();
 			IngredientCountWidget.ResetUniqueId();
-        }
+		}
 
-        #region ButonWidget
-        private interface IButtonWidget
+		private IEnumerable<DifficultyDef> sortDifficultyOptions(SortedDictionary<string, DifficultyDef>.ValueCollection values)
+		{
+			SortedDictionary<int, DifficultyDef> d = new SortedDictionary<int, DifficultyDef>();
+			foreach (var v in values)
+				d.Add(v.difficulty, v);
+			return d.Values;
+		}
+
+		#region ButonWidget
+		private interface IButtonWidget
         {
 			DefType Type { get; }
             void Draw(float x, float y, float width, IParentStatWidget selected);
