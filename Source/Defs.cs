@@ -16,7 +16,7 @@ namespace InGameDefEditor
 		public static readonly SortedDictionary<string, TraitDef> TraitDefs = new SortedDictionary<string, TraitDef>();
 		public static readonly SortedDictionary<string, StorytellerDef> StoryTellerDefs = new SortedDictionary<string, StorytellerDef>();
 		public static readonly SortedDictionary<string, DifficultyDef> DifficultyDefs = new SortedDictionary<string, DifficultyDef>();
-
+		public static readonly SortedDictionary<string, ThingDef> DisabledThingDefs = new SortedDictionary<string, ThingDef>();
 		private static bool isInit = false;
 
 		public static void Initialize()
@@ -76,6 +76,8 @@ namespace InGameDefEditor
 
 		public static void ResetAll()
 		{
+			Defs.DisabledThingDefs.Clear();
+
 			foreach (ThingDef d in Defs.ApparelDefs.Values)
 				Backup.ApplyStats(d);
 

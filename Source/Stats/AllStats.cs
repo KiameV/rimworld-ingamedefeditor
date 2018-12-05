@@ -1,9 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using InGameDefEditor.Stats.DefStat;
+using System.Collections.Generic;
 using System.Xml.Serialization;
+using Verse;
 
 namespace InGameDefEditor.Stats
 {
-    [XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
+	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
+	public class RootDisabledDefs
+	{
+		public List<string> disabledThingDefs;
+	}
+
+	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
     public class RootApparel
 	{
 		public List<ThingDefStats> stats;

@@ -10,17 +10,17 @@ using System.Collections.Generic;
 
 namespace InGameDefEditor
 {
-    static class IOUtil
-    {
-        private static bool hasLoaded = false;
+	static class IOUtil
+	{
+		private static bool hasLoaded = false;
 
-        public static void LoadData()
-        {
-            Defs.Initialize();
-            if (!hasLoaded)
-            {
-                try
-                {
+		public static void LoadData()
+		{
+			Defs.Initialize();
+			if (!hasLoaded)
+			{
+				try
+				{
 					try
 					{
 						if (File.Exists(GetStatsPath()))
@@ -57,22 +57,42 @@ namespace InGameDefEditor
 
 					if (Load(DefType.Difficulty, out RootDifficulty dif))
 						dif?.stats.ForEach((d) => Initialize(d));
+
+
+					// Do Last
+					if (Load("DisabledDefs", out RootDisabledDefs rdd))
+					{
+						rdd?.disabledThingDefs.ForEach(defName =>
+						{
+							if (!DefLookupUtil.TryGetDef(defName, out ThingDef def))
+							{
+								Log.Error("Could not disable ThingDef " + defName);
+							}
+							else
+							{
+								Defs.DisabledThingDefs.Add(defName, def);
+								typeof(DefDatabase<ThingDef>).GetMethod("Remove", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { def });
+							}
+						});
+					}
 				}
-                catch(Exception e)
-                {
+				catch (Exception e)
+				{
 					Log.Warning(e.Message);
-                }
-                finally
-                {
-                    hasLoaded = true;
-                    DefLookupUtil.ClearDefDic();
-                    Log.Message("InGameDefEditor".Translate() + ": Settings Applied");
-                }
-            }
-        }
-		
+				}
+				finally
+				{
+					hasLoaded = true;
+					DefLookupUtil.ClearDefDic();
+					Log.Message("InGameDefEditor".Translate() + ": Settings Applied");
+				}
+			}
+		}
+
 		public static void SaveData()
 		{
+			Save("DisabledDefs", new RootDisabledDefs() { disabledThingDefs = new List<string>(Defs.DisabledThingDefs.Keys) });
+
 			Util.Populate(out List<ThingDefStats> ap, Defs.ApparelDefs.Values, (v) => HasChanged(new ThingDefStats(v)), false);
 			Save(DefType.Apparel, new RootApparel() { stats = ap });
 
@@ -103,31 +123,36 @@ namespace InGameDefEditor
 		}
 
 		private static string basePath = null;
-        private static string GetStatsPath()
-        {
-			if (basePath == null)
-				basePath =(string)typeof(GenFilePaths).GetMethod("FolderUnderSaveData", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[]
-				{
-					"InGameDefEditor"
-				});
-            return basePath + "/stats.xml";
-		}
-
-		private static string GetStatsPath(DefType type)
+		private static string GetStatsPath()
 		{
 			if (basePath == null)
 				basePath = (string)typeof(GenFilePaths).GetMethod("FolderUnderSaveData", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[]
 				{
 					"InGameDefEditor"
 				});
-			return basePath + "/" + type.ToString() + ".xml";
+			return basePath + "/stats.xml";
+		}
+
+		private static string GetStatsPath(string typeName)
+		{
+			if (basePath == null)
+				basePath = (string)typeof(GenFilePaths).GetMethod("FolderUnderSaveData", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[]
+				{
+					"InGameDefEditor"
+				});
+			return basePath + "/" + typeName.ToString() + ".xml";
 		}
 
 		private static bool Load<T>(DefType type, out T t)
 		{
+			return Load<T>(type.ToString(), out t);
+		}
+
+		private static bool Load<T>(string typeName, out T t)
+		{
 			XmlSerializer serializer = new XmlSerializer(typeof(T));
 			FileStream fs = null;
-			string path = GetStatsPath(type);
+			string path = GetStatsPath(typeName);
 
 			if (!File.Exists(path))
 			{
@@ -142,8 +167,7 @@ namespace InGameDefEditor
 			}
 			catch (Exception e)
 			{
-				Log.Error(
-					"Failed to load settings for Def type " + type.ToString() + Environment.NewLine + e.Message);
+				Log.Error("Failed to load settings for Def type " + typeName + Environment.NewLine + e.Message);
 				t = default(T);
 				return false;
 			}
@@ -157,17 +181,22 @@ namespace InGameDefEditor
 
 		private static bool Save<T>(DefType type, T t)
 		{
+			return Save<T>(type.ToString(), t);
+		}
+
+		private static bool Save<T>(string typeName, T t)
+		{
 			XmlSerializer serializer = new XmlSerializer(typeof(T));
 			FileStream fs = null;
 			try
 			{
-				fs = new FileStream(GetStatsPath(type), FileMode.Create);
+				fs = new FileStream(GetStatsPath(typeName), FileMode.Create);
 				serializer.Serialize(fs, t);
 			}
 			catch (Exception e)
 			{
 				Log.Error(
-					"Failed to save settings for Def type " + type.ToString() + Environment.NewLine + e.GetType().Name + " -- " + e.Message);
+					"Failed to save settings for Def type " + typeName + Environment.NewLine + e.GetType().Name + " -- " + e.Message);
 				return false;
 			}
 			finally

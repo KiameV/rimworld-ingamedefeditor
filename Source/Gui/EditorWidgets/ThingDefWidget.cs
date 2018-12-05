@@ -2,6 +2,7 @@
 using InGameDefEditor.Gui.EditorWidgets.Misc;
 using RimWorld;
 using System.Collections.Generic;
+using System.Reflection;
 using Verse;
 
 namespace InGameDefEditor.Gui.EditorWidgets
@@ -12,6 +13,9 @@ namespace InGameDefEditor.Gui.EditorWidgets
         private List<VerbWidget> VerbWidgets = new List<VerbWidget>();
         private List<ToolWidget> ToolWidgets = new List<ToolWidget>();
         private List<FloatInputWidget<StatModifier>> EquipmentModifiers = new List<FloatInputWidget<StatModifier>>();
+		
+		private BoolInputWidget<ThingDef> disabledInput;
+		private bool isDisabled;
 
         public ThingDefWidget(ThingDef d, DefType type) : base(d, type)
         {
@@ -21,21 +25,53 @@ namespace InGameDefEditor.Gui.EditorWidgets
             if (base.Def.equippedStatOffsets == null)
                 base.Def.equippedStatOffsets = new List<StatModifier>();
 
+			this.isDisabled = Defs.DisabledThingDefs.ContainsKey(d.defName);
+
+			this.disabledInput = new BoolInputWidget<ThingDef>(
+				d, "Disable Def",
+				def =>
+				{
+					this.isDisabled = Defs.DisabledThingDefs.ContainsKey(def.defName);
+					return this.isDisabled;
+				},
+				(def, isDisabled) =>
+				{
+					this.isDisabled = isDisabled;
+					if (isDisabled)
+					{
+						Defs.DisabledThingDefs[def.defName] = def;
+						typeof(DefDatabase<ThingDef>).GetMethod("Remove", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { def });
+					}
+					else
+					{
+						Defs.DisabledThingDefs.Remove(def.defName);
+						DefDatabase<ThingDef>.Add(def);
+					}
+				});
+
             this.Rebuild();
         }
 
         public override void DrawLeft(float x, ref float y, float width)
         {
-            if (base.Type == DefType.Apparel ||
-                base.Type == DefType.Weapon)
-            {
-                this.DrawStatModifiers(x, ref y, width);
-            }
+			this.disabledInput.Draw(x, ref y, width);
+			if (this.isDisabled)
+				return;
+
+			y += 10;
+			if (base.Type == DefType.Apparel ||
+				base.Type == DefType.Weapon)
+			{
+				this.DrawStatModifiers(x, ref y, width);
+			}
         }
 
         public override void DrawMiddle(float x, ref float y, float width)
-        {
-            if (base.Type == DefType.Apparel)
+		{
+			if (this.isDisabled)
+				return;
+
+			if (base.Type == DefType.Apparel)
             {
                 this.DrawEquipmentStatOffsets(x, ref y, width);
             }
@@ -48,8 +84,11 @@ namespace InGameDefEditor.Gui.EditorWidgets
         }
 
         public override void DrawRight(float x, ref float y, float width)
-        {
-            if (base.Type == DefType.Weapon)
+		{
+			if (this.isDisabled)
+				return;
+
+			if (base.Type == DefType.Weapon)
             {
                 this.DrawEquipmentStatOffsets(x, ref y, width);
             }
@@ -277,7 +316,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         public override void ResetBuffers()
         {
-            this.StatModifiers.ForEach((FloatInputWidget<StatModifier> w) => w.ResetBuffers());
+			this.disabledInput.ResetBuffers();
+			this.StatModifiers.ForEach((FloatInputWidget<StatModifier> w) => w.ResetBuffers());
             this.VerbWidgets.ForEach((VerbWidget w) => w.ResetBuffers());
             this.ToolWidgets.ForEach((ToolWidget w) => w.ResetBuffers());
             this.EquipmentModifiers.ForEach((FloatInputWidget<StatModifier> w) => w.ResetBuffers());

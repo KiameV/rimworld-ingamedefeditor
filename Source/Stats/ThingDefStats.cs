@@ -17,7 +17,7 @@ namespace InGameDefEditor.Stats
         public List<VerbStats> VerbStats = null;
         public List<ToolStats> Tools = null;
         public List<FloatValueDefStat<StatDef>> EquippedStatOffsets = null;
-		
+
 		public bool destroyable;
 		public bool rotatable;
 		public bool smallVolume;
