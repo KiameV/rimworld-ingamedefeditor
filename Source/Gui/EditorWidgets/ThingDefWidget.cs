@@ -47,6 +47,10 @@ namespace InGameDefEditor.Gui.EditorWidgets
 						Defs.DisabledThingDefs.Remove(def.defName);
 						DefDatabase<ThingDef>.Add(def);
 					}
+				}, v =>
+				{
+					bool enabled = Current.Game == null || this.isDisabled;
+					return new AInputWidget<ThingDef, bool>.ShouldDrawInputResult(enabled, (enabled) ? "" : "Cannot disabled defs while a game is not running.");
 				});
 
             this.Rebuild();

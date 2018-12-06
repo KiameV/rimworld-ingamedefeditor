@@ -10,28 +10,51 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
     {
         public delegate V GetValue(P d);
         public delegate void SetValue(P d, V v);
-		public delegate bool DrawInput(P d);
+		public struct ShouldDrawInputResult
+		{
+			public bool drawInput;
+			public string message;
+			public ShouldDrawInputResult(bool drawInput, string message = null)
+			{
+				this.drawInput = drawInput;
+				this.message = message;
+			}
+		}
+		public delegate ShouldDrawInputResult ShouldDrawInput(P d);
 
 		public readonly P Parent;
         protected readonly string label;
         protected readonly GetValue getValue;
         protected readonly SetValue setValue;
-		protected readonly DrawInput drawInput;
+		protected readonly ShouldDrawInput shouldDrawInput;
 
 		protected string buffer = "";
 
 		public string DisplayLabel => "";
 
-		public AInputWidget(P parent, string label, GetValue getValue, SetValue setValue, DrawInput drawInput = null)
+		public AInputWidget(P parent, string label, GetValue getValue, SetValue setValue, ShouldDrawInput shouldDrawInput = null)
         {
             this.Parent = parent;
             this.label = label;
             this.getValue = getValue;
             this.setValue = setValue;
-			this.drawInput = drawInput;
+			this.shouldDrawInput = shouldDrawInput;
 		}
 
-        public abstract void Draw(float x, ref float y, float width);
+		public void Draw(float x, ref float y, float width)
+		{
+			if (this.shouldDrawInput == null)
+				this.DrawInput(x, ref y, width);
+			else
+			{
+				ShouldDrawInputResult result = this.shouldDrawInput(this.Parent);
+				if (result.drawInput)
+					this.DrawInput(x, ref y, width);
+				else if (result.message != null && result.message.Length > 0)
+					DrawLabel(x, ref y, width, result.message);
+			}
+		}
+		protected abstract void DrawInput(float x, ref float y, float width);
         public abstract void ResetBuffers();
     }
 
@@ -39,16 +62,15 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
     {
         private bool value;
 
-        public BoolInputWidget(P parent, string label, GetValue getValue, SetValue setValue, DrawInput drawInput = null) : base(parent, label, getValue, setValue, drawInput)
+        public BoolInputWidget(P parent, string label, GetValue getValue, SetValue setValue, ShouldDrawInput shouldDrawInput = null) : base(parent, label, getValue, setValue, shouldDrawInput)
         {
             this.value = base.getValue(base.Parent);
             this.ResetBuffers();
         }
 
-        public override void Draw(float x, ref float y, float width)
-        {
-			if (drawInput == null || drawInput(base.Parent))
-				this.value = DrawInput(x, ref y, width, base.label, this.value, delegate(bool b) { base.setValue(this.Parent, b); });
+		protected override void DrawInput(float x, ref float y, float width)
+		{
+			this.value = WindowUtil.DrawInput(x, ref y, width, base.label, this.value, delegate (bool b) { base.setValue(this.Parent, b); });
         }
 
         public override void ResetBuffers()
@@ -61,16 +83,15 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
     {
         private int value;
 
-        public IntInputWidget(P parent, string label, GetValue getValue, SetValue setValue, DrawInput drawInput = null) : base(parent, label, getValue, setValue, drawInput)
+        public IntInputWidget(P parent, string label, GetValue getValue, SetValue setValue, ShouldDrawInput shouldDrawInput = null) : base(parent, label, getValue, setValue, shouldDrawInput)
 		{
             this.value = base.getValue(base.Parent);
             this.ResetBuffers();
         }
 
-        public override void Draw(float x, ref float y, float width)
+        protected override void DrawInput(float x, ref float y, float width)
 		{
-			if (drawInput == null || drawInput(base.Parent))
-				this.buffer = WindowUtil.DrawInput(x, ref y, width, this.label, this.value, delegate (int i) { base.setValue(this.Parent, i); }, this.buffer);
+			this.buffer = WindowUtil.DrawInput(x, ref y, width, this.label, this.value, delegate (int i) { base.setValue(this.Parent, i); }, this.buffer);
         }
 
         public override void ResetBuffers()
@@ -83,16 +104,15 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
     {
         private float value;
 
-        public FloatInputWidget(P parent, string label, GetValue getValue, SetValue setValue, DrawInput drawInput = null) : base(parent, label, getValue, setValue, drawInput)
+        public FloatInputWidget(P parent, string label, GetValue getValue, SetValue setValue, ShouldDrawInput shouldDrawInput = null) : base(parent, label, getValue, setValue, shouldDrawInput)
 		{
             this.value = base.getValue(base.Parent);
             this.ResetBuffers();
         }
 
-        public override void Draw(float x, ref float y, float width)
+        protected override void DrawInput(float x, ref float y, float width)
 		{
-			if (drawInput == null || drawInput(base.Parent))
-				this.buffer = WindowUtil.DrawInput(x, ref y, width, this.label, this.value, delegate (float f) { base.setValue(this.Parent, f); }, this.buffer);
+			this.buffer = WindowUtil.DrawInput(x, ref y, width, this.label, this.value, delegate (float f) { base.setValue(this.Parent, f); }, this.buffer);
         }
 
         public override void ResetBuffers()
@@ -140,7 +160,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 		private readonly float labelWidth;
 		private WindowUtil.FloatOptionsArgs<E> args;
 
-		public EnumInputWidget(P parent, string label, float labelWidth, GetValue getValue, SetValue setValue, DrawInput drawInput = null) : base(parent, label, getValue, setValue, drawInput)
+		public EnumInputWidget(P parent, string label, float labelWidth, GetValue getValue, SetValue setValue, ShouldDrawInput shouldDrawInput = null) : base(parent, label, getValue, setValue, shouldDrawInput)
 		{
 			this.labelWidth = labelWidth;
 			args = new FloatOptionsArgs<E>()
@@ -151,10 +171,9 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			};
 		}
 
-		public override void Draw(float x, ref float y, float width)
+		protected override void DrawInput(float x, ref float y, float width)
 		{
-			if (drawInput == null || drawInput(base.Parent))
-				WindowUtil.DrawInput(x, ref y, width, base.label, this.labelWidth, base.getValue(base.Parent).ToString(), this.args);
+			WindowUtil.DrawInput(x, ref y, width, base.label, this.labelWidth, base.getValue(base.Parent).ToString(), this.args);
 		}
 
 		public override void ResetBuffers() { }
@@ -165,7 +184,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 		private readonly float labelWidth;
 		private WindowUtil.FloatOptionsArgs<D> args;
 
-		public DefInputWidget(P parent, string label, float labelWidth, GetValue getValue, SetValue setValue, bool includeNullOption, DrawInput drawInput = null) : base(parent, label, getValue, setValue, drawInput)
+		public DefInputWidget(P parent, string label, float labelWidth, GetValue getValue, SetValue setValue, bool includeNullOption, ShouldDrawInput shouldDrawInput = null) : base(parent, label, getValue, setValue, shouldDrawInput)
 		{
 			this.labelWidth = labelWidth;
 			args = new FloatOptionsArgs<D>()
@@ -177,10 +196,9 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			};
 		}
 
-		public override void Draw(float x, ref float y, float width)
+		protected override void DrawInput(float x, ref float y, float width)
 		{
-			if (drawInput == null || drawInput(base.Parent))
-				WindowUtil.DrawInput(x, ref y, width, base.label, this.labelWidth, Util.GetDefLabel(base.getValue(base.Parent)), this.args);
+			WindowUtil.DrawInput(x, ref y, width, base.label, this.labelWidth, Util.GetDefLabel(base.getValue(base.Parent)), this.args);
 		}
 
 		public override void ResetBuffers() { }

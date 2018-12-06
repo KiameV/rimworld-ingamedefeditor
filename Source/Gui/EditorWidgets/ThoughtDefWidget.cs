@@ -45,7 +45,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 						d.requiredTraitsDegree = 0;
 					this.inputWidgets[6].ResetBuffers();
 				}),
-				new IntInputWidget<ThoughtDef>(base.Def, "Degree", d => d.requiredTraitsDegree, (d, v) => d.requiredTraitsDegree = v, d => d.requiredTraitsDegree != TRAIT_DEGREE_MIN),
+				new IntInputWidget<ThoughtDef>(base.Def, "Degree", d => d.requiredTraitsDegree, (d, v) => d.requiredTraitsDegree = v, d => new AInputWidget<ThoughtDef, int>.ShouldDrawInputResult(d.requiredTraitsDegree != TRAIT_DEGREE_MIN)),
 				new BoolInputWidget<ThoughtDef>(base.Def, "Colonists Only", d => d.nullifiedIfNotColonist, (d, v) => d.nullifiedIfNotColonist = v),
 				new BoolInputWidget<ThoughtDef>(base.Def, "Show Bubble", d => d.showBubble, (d, v) => d.showBubble = v),
 				new IntInputWidget<ThoughtDef>(base.Def, "Stack Limit For Other Pawns", d => d.stackLimitForSameOtherPawn, (d, v) => d.stackLimitForSameOtherPawn = v),
