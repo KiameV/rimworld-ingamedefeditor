@@ -7,7 +7,6 @@ namespace InGameDefEditor
     public class Controller : Mod
     {
         public Controller(ModContentPack content) : base(content) { }
-		public static bool EnableRecipes = false;
 
         public override string SettingsCategory()
         {
@@ -44,7 +43,7 @@ namespace InGameDefEditor
             sb.Replace("{a}", a.ToString());
             sb.Replace("{b}", b.ToString());
 
-			Widgets.CheckboxLabeled(new Rect(0, 100, 150, 32), "Enable Recipes", ref EnableRecipes);
+			//Widgets.CheckboxLabeled(new Rect(0, 100, 150, 32), "Enable Recipes", ref EnableRecipes);
 
             Listing_Standard l = new Listing_Standard();
 			l.Begin(new Rect(60, 150, 400, 300));
@@ -52,13 +51,4 @@ namespace InGameDefEditor
             l.End();
         }
     }
-
-	public class Settings : ModSettings
-	{
-		public override void ExposeData()
-		{
-			base.ExposeData();
-			Scribe_Values.Look(ref Controller.EnableRecipes, "enableRecipes", false);
-		}
-	}
 }

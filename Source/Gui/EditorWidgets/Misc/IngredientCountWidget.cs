@@ -21,7 +21,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 			this.IngredientCount = ingredientCount;
 
-			this.filter = new ThingFilterWidget(this.IngredientCount.filter);
+			this.filter = new ThingFilterWidget("Ingredient Filter", this.IngredientCount.filter);
 
 			this.count = new FloatInputWidget<IngredientCount>(
 				this.IngredientCount, "Ingredient Count", (ic) => IngredientCountStats.GetIngredientCount(ic), (ic, f) => IngredientCountStats.SetIngredientCount(ic, f));

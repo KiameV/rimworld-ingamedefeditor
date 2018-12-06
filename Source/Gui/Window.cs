@@ -39,7 +39,7 @@ namespace InGameDefEditor
 				new ButtonWidget<DifficultyDef>("Difficulty", DefType.Difficulty, this.sortDifficultyOptions(Defs.DifficultyDefs.Values), this.CreateSelected),
 			};
 
-			if (Controller.EnableRecipes)
+			//if (Controller.EnableRecipes)
 				buttons.Add(new ButtonWidget<RecipeDef>("Recipes", DefType.Recipe, Defs.RecipeDefs.Values, this.CreateSelected));
         }
 

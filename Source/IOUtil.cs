@@ -44,7 +44,7 @@ namespace InGameDefEditor
 						rb?.stats.ForEach((d) => Initialize(d));
 
 					if (Load(DefType.Recipe, out RootRecipe rr))
-						rr?.stats.ForEach((d) => Initialize(d));
+						rr?.recipes.ForEach((d) => Initialize(d));
 
 					if (Load(DefType.Trait, out RootTraits rtr))
 						rtr?.stats.ForEach((d) => Initialize(d));
@@ -105,9 +105,11 @@ namespace InGameDefEditor
 			Util.Populate(out List<BiomeDefStats> bi, Defs.BiomeDefs.Values, (v) => HasChanged(new BiomeDefStats(v)), false);
 			Save(DefType.Biome, new RootBiomes() { stats = bi });
 
-			// TODO
-			//Util.Populate(out List<RecipeDefStats> re, Defs.RecipeDefs.Values, (v) => HasChanged(new RecipeDefStats(v)), false);
-			//Save(DefType.Recipe, new RootRecipe() { stats = re });
+			//if (Controller.EnableRecipes)
+			//{ 
+				Util.Populate(out List<RecipeDefStats> re, Defs.RecipeDefs.Values, (v) => HasChanged(new RecipeDefStats(v)), false);
+				Save(DefType.Recipe, new RootRecipe() { recipes = re });
+			//}
 
 			Util.Populate(out List<TraitDefStat> traits, Defs.TraitDefs.Values, (v) => HasChanged(new TraitDefStat(v)), false);
 			Save(DefType.Trait, new RootTraits() { stats = traits });

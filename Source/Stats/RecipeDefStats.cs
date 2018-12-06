@@ -4,6 +4,7 @@ using RimWorld;
 using Verse;
 using InGameDefEditor.Stats.DefStat;
 using InGameDefEditor.Stats.Misc;
+using System.Reflection;
 
 namespace InGameDefEditor.Stats
 {
@@ -41,22 +42,20 @@ namespace InGameDefEditor.Stats
 		public DefStat<HediffDef> removesHediff;
 		public DefStat<SkillDef> workSkill;
 
-        // TODO Needs to be null when empty
-        //public List<SpecialProductType> specialProducts;
-
 		public List<DefStat<SpecialThingFilterDef>> forceHiddenSpecialFilters;
-		//public List<DefStat<ThingDef>> recipeUsers;
+		public List<DefStat<ThingDef>> recipeUsers;
 		public List<DefStat<BodyPartDef>> appliedOnFixedBodyParts;
 
 		public List<IntValueDefStat<ThingDef>> products;
 		public List<IntValueDefStat<SkillDef>> skillRequirements;
 		public List<IngredientCountStats> ingredients;
 
-		//[Unsaved]
-		//private List<ThingDef> premultipliedSmallIngredients;
-		//public List<string> factionPrerequisiteTags;
-		//[MustTranslate]
-		//public string successfullyRemovedHediffMessage;
+		// TODO Needs to be null when empty
+		public List<SpecialProductType> specialProducts;
+		
+		public List<DefStat<ThingDef>> premultipliedSmallIngredients;
+		public List<string> factionPrerequisiteTags;
+
 		//private Type ingredientValueGetterClass = typeof(IngredientValueGetter_Volume);
 
 		public RecipeDefStats() : base() { }
@@ -94,33 +93,23 @@ namespace InGameDefEditor.Stats
 			Util.AssignDefStat(def.removesHediff, out this.removesHediff);
 			Util.AssignDefStat(def.workSkill, out this.workSkill);
 
-			/*if (def.specialProducts == null)
-				def.specialProducts = new List<SpecialProductType>(0);
-			this.specialProducts = Util.CreateList(def.specialProducts);*/
-
-			if (def.forceHiddenSpecialFilters == null)
-				def.forceHiddenSpecialFilters = new List<SpecialThingFilterDef>(0);
-			this.forceHiddenSpecialFilters = Util.CreateDefStatList(def.forceHiddenSpecialFilters);
-
-			/*if (def.recipeUsers == null)
-				def.recipeUsers = new List<ThingDef>(0);
-			this.recipeUsers = Util.CreateDefStatList(def.recipeUsers);*/
-
-			if (def.appliedOnFixedBodyParts == null)
-				def.appliedOnFixedBodyParts = new List<BodyPartDef>();
-			this.appliedOnFixedBodyParts = Util.CreateDefStatList(def.appliedOnFixedBodyParts);
-
+			Util.Populate(out this.specialProducts, def.specialProducts, true);
+			Util.Populate(out this.forceHiddenSpecialFilters, def.forceHiddenSpecialFilters, v => new DefStat<SpecialThingFilterDef>(v));
+			Util.Populate(out this.recipeUsers, def.recipeUsers, v => new DefStat<ThingDef>(v));
+			Util.Populate(out this.appliedOnFixedBodyParts, def.appliedOnFixedBodyParts, v => new DefStat<BodyPartDef>(v));
 			Util.Populate(out this.products, def.products, (v) => new IntValueDefStat<ThingDef>(v.thingDef, v.count), false);
 			Util.Populate(out this.skillRequirements, def.skillRequirements, (v) => new IntValueDefStat<SkillDef>(v.skill, v.minLevel), false);
 			Util.Populate(out this.ingredients, def.ingredients, (v) => new IngredientCountStats(v), false);
-		}
+			Util.Populate(out this.premultipliedSmallIngredients, GetPremultipliedSmallIngredients(def), v => new DefStat<ThingDef>(v));
+			Util.Populate(out this.factionPrerequisiteTags, def.factionPrerequisiteTags);
+	}
 
 		internal void PreSave(RecipeDef d)
 		{
-			d.fixedIngredientFilter.ResolveReferences();
-			d.defaultIngredientFilter.ResolveReferences();
-			foreach (var v in d.ingredients)
-				v.ResolveReferences();
+			//d.fixedIngredientFilter.ResolveReferences();
+			//d.defaultIngredientFilter.ResolveReferences();
+			//foreach (var v in d.ingredients)
+			//	v.ResolveReferences();
 		}
 
 		public void ApplyStats(Def def)
@@ -147,11 +136,11 @@ namespace InGameDefEditor.Stats
 					this.effectWorking.ApplyStats(d.effectWorking);
 				}
 
-				d.fixedIngredientFilter = new ThingFilter();
-				this.fixedIngredientFilter.ApplyStats(d.fixedIngredientFilter);
-				
-				d.fixedIngredientFilter = new ThingFilter();
-				this.defaultIngredientFilter.ApplyStats(d.defaultIngredientFilter);
+				//d.fixedIngredientFilter = new ThingFilter();
+				//this.fixedIngredientFilter.ApplyStats(d.fixedIngredientFilter);
+
+				//d.fixedIngredientFilter = new ThingFilter();
+				//this.defaultIngredientFilter.ApplyStats(d.defaultIngredientFilter);
 
 				Util.AssignDef(this.researchPrerequisite, out d.researchPrerequisite);
 				Util.AssignDef(this.requiredGiverWorkType, out d.requiredGiverWorkType);
@@ -165,52 +154,25 @@ namespace InGameDefEditor.Stats
 				Util.AssignDef(this.removesHediff, out d.removesHediff);
 				Util.AssignDef(this.workSkill, out d.workSkill);
 
-				//d.specialProducts = Util.CreateList(this.specialProducts);
-
-				/* TODO
-				 * if (d.forceHiddenSpecialFilters == null)
-					d.forceHiddenSpecialFilters = new List<SpecialThingFilterDef>();
-				else
-					d.forceHiddenSpecialFilters.Clear();
-				foreach (var v in this.forceHiddenSpecialFilters)
-				{
-					SpecialThingFilterDef
-				}*/
-
-				//d.forceHiddenSpecialFilters = Util.CreateDefStatList(this.forceHiddenSpecialFilters);
-
-				/*
-				 * TODO Doubt this is needed
-				if (this.recipeUsers == null)
-				{
-					if (d.recipeUsers != null)
-						d.recipeUsers.Clear();
-				}*/
-
-				d.appliedOnFixedBodyParts = Util.ConvertDefStats(this.appliedOnFixedBodyParts);
-
+				Util.Populate(out d.specialProducts, this.specialProducts, true);
+				Util.Populate(out d.forceHiddenSpecialFilters, this.forceHiddenSpecialFilters, v => v.Def);
+				Util.Populate(out d.recipeUsers, this.recipeUsers, v => v.Def);
+				Util.Populate(out d.appliedOnFixedBodyParts, this.appliedOnFixedBodyParts, v => v.Def);
 				Util.Populate(out d.products, this.products, (v) => new ThingDefCountClass(v.Def, v.value), false);
 				Util.Populate(out d.skillRequirements, this.skillRequirements, delegate (IntValueDefStat<SkillDef> v) {
-					return new SkillRequirement() {
-							skill = v.Def,
-							minLevel = v.value }; }, false);
-
-				
-				/* TODO Re-add
-					if (d.ingredients == null)
-					d.ingredients = new List<IngredientCount>();
-				d.ingredients.Clear();
-				foreach (var v in this.ingredients)
-				{
-					ThingFilter tf = new ThingFilter();
-					v.ThingFilterStats.ApplyStats(tf);
-					var i = new IngredientCount()
+					return new SkillRequirement()
 					{
-						filter = tf
+						skill = v.Def,
+						minLevel = v.value
 					};
-					IngredientCountStats.SetIngredientCount(i, v.Count);
-					d.ingredients.Add(i);
-				}*/
+				}, false);
+
+				Util.ListIndexAssign(this.ingredients, d.ingredients, (f, t) => IngredientCountStats.SetIngredientCount(t, f.Count));
+
+				Util.Populate(out List<ThingDef> l, this.premultipliedSmallIngredients, v => v.Def);
+				SetPremultipliedSmallIngredients(d, l);
+
+				Util.Populate(out d.factionPrerequisiteTags, this.factionPrerequisiteTags);
 			}
 		}
 
@@ -235,12 +197,12 @@ namespace InGameDefEditor.Stats
                 v.Initialize();
 
 			Util.InitializeDefStat(forceHiddenSpecialFilters);
-			//Util.InitializeDefStat(recipeUsers);
+			Util.InitializeDefStat(recipeUsers);
 			Util.InitializeDefStat(appliedOnFixedBodyParts);
 
 			Util.InitializeDefStat(products);
 			Util.InitializeDefStat(skillRequirements);
-
+			Util.InitializeDefStat(premultipliedSmallIngredients);
 			return true;
 		}
 
@@ -267,8 +229,8 @@ namespace InGameDefEditor.Stats
 					this.anesthetize == s.anesthetize &&
 					this.dontShowIfAnyIngredientMissing == s.dontShowIfAnyIngredientMissing &&
 					object.Equals(this.effectWorking, s.effectWorking) &&
-					object.Equals(this.fixedIngredientFilter, s.fixedIngredientFilter) &&
-					object.Equals(this.defaultIngredientFilter, s.defaultIngredientFilter) &&
+					//object.Equals(this.fixedIngredientFilter, s.fixedIngredientFilter) &&
+					//object.Equals(this.defaultIngredientFilter, s.defaultIngredientFilter) &&
 					Util.AreEqual(this.researchPrerequisite, s.researchPrerequisite) &&
 					Util.AreEqual(this.requiredGiverWorkType, s.requiredGiverWorkType) &&
 					Util.AreEqual(this.unfinishedThingDef, s.unfinishedThingDef) &&
@@ -280,12 +242,14 @@ namespace InGameDefEditor.Stats
 					Util.AreEqual(this.addsHediff, s.addsHediff) &&
 					Util.AreEqual(this.removesHediff, s.removesHediff) &&
 					Util.AreEqual(this.workSkill, s.workSkill) &&
-					//Util.AreEqual(this.specialProducts, s.specialProducts) &&
+					Util.AreEqual(this.specialProducts, s.specialProducts, v => v.ToString().GetHashCode()) &&
 					Util.AreEqual(this.forceHiddenSpecialFilters, s.forceHiddenSpecialFilters) &&
 					Util.AreEqual(this.appliedOnFixedBodyParts, s.appliedOnFixedBodyParts) &&
 					Util.AreEqual(this.products, s.products, v => v.GetHashCode()) &&
 					Util.AreEqual(this.skillRequirements, s.skillRequirements, v => v.GetHashCode()) &&
-					Util.AreEqual(this.ingredients, s.ingredients, v => v.GetHashCode());
+					Util.AreEqual(this.ingredients, s.ingredients, v => v.GetHashCode()) && 
+					Util.AreEqual(this.premultipliedSmallIngredients, s.premultipliedSmallIngredients, v => v.Def.GetHashCode()) && 
+					Util.AreEqual(this.factionPrerequisiteTags, s.factionPrerequisiteTags, v => v.GetHashCode());
 			}
 			return false;
 		}
@@ -298,6 +262,16 @@ namespace InGameDefEditor.Stats
 		public override string ToString()
 		{
 			return base.ToString();
+		}
+
+		public static List<ThingDef> GetPremultipliedSmallIngredients(RecipeDef d)
+		{
+			return (List<ThingDef>)typeof(RecipeDef).GetField("premultipliedSmallIngredients", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(d);
+		}
+
+		public static void SetPremultipliedSmallIngredients(RecipeDef d, List<ThingDef> v)
+		{
+			typeof(RecipeDef).GetField("premultipliedSmallIngredients", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(d, v);
 		}
 	}
 }

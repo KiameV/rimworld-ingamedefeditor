@@ -4,7 +4,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
 	class EffecterDefWidget : IInputWidget
 	{
-		public readonly EffecterDef EffecterDef;
+		public EffecterDef EffecterDef;
 
 		public FloatInputWidget<EffecterDef> positionRadius = null;
 		public MinMaxInputWidget<EffecterDef> offsetTowardsTarget = null;

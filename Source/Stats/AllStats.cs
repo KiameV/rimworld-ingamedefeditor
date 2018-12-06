@@ -38,7 +38,7 @@ namespace InGameDefEditor.Stats
 	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
 	public class RootRecipe
 	{
-		public List<RecipeDefStats> stats;
+		public List<RecipeDefStats> recipes;
 	}
 
 	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]

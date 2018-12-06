@@ -61,7 +61,11 @@ namespace InGameDefEditor
 
 				DefDatabase<BiomeDef>.AllDefsListForReading.ForEach(d => BiomeDefs[Util.GetDefLabel(d)] = d);
 				DefDatabase<ThoughtDef>.AllDefsListForReading.ForEach(d => ThoughtDefs[Util.GetDefLabel(d)] = d);
-				DefDatabase<RecipeDef>.AllDefsListForReading.ForEach(d => RecipeDefs[Util.GetDefLabel(d)] = d);
+				DefDatabase<RecipeDef>.AllDefsListForReading.ForEach(d =>
+				{
+					if (!d.defName.StartsWith("OCD_MineDeep"))
+						RecipeDefs[Util.GetDefLabel(d)] = d;
+				});
 				DefDatabase<TraitDef>.AllDefsListForReading.ForEach(d => TraitDefs[Util.GetDefLabel(d)] = d);
 				DefDatabase<StorytellerDef>.AllDefsListForReading.ForEach(d => StoryTellerDefs[Util.GetDefLabel(d)] = d);
 				DefDatabase<DifficultyDef>.AllDefsListForReading.ForEach(d => DifficultyDefs[Util.GetDefLabel(d)] = d);

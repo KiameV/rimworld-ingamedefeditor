@@ -7,7 +7,7 @@ namespace InGameDefEditor.Stats.Misc
 	[Serializable]
 	public class IngredientCountStats : IInitializable
 	{
-		public readonly ThingFilterStats ThingFilterStats;
+		public ThingFilterStats ThingFilterStats;
 		public float Count = 0;
 
 		public string Label => Count.ToString();
