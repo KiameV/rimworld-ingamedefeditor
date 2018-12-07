@@ -322,7 +322,8 @@ namespace InGameDefEditor.Stats
 					this.apparel.ApplyStats(t.apparel);
 				}
 
-				t.ingestible = this.ingestible?.ToIngestibleProperties();
+				if (t.ingestible != null)
+					this.ingestible?.ApplyStats(t.ingestible);
 #if DEBUG_THINGDEF
             Log.Warning("ApplyStats Done");
 #endif

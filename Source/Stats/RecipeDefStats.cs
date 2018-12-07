@@ -130,10 +130,9 @@ namespace InGameDefEditor.Stats
 				d.anesthetize = this.anesthetize;
 				d.dontShowIfAnyIngredientMissing = this.dontShowIfAnyIngredientMissing;
 
-				if (this.effectWorking != null)
+				if (d.effectWorking != null)
 				{
-					d.effectWorking = new EffecterDef();
-					this.effectWorking.ApplyStats(d.effectWorking);
+					this.effectWorking?.ApplyStats(d.effectWorking);
 				}
 
 				//d.fixedIngredientFilter = new ThingFilter();

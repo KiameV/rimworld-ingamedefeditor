@@ -83,35 +83,31 @@ namespace InGameDefEditor.Stats.Misc
 			typeof(IngestibleProperties).GetField("cachedNutrition", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(p, -1);
 		}
 
-		public IngestibleProperties ToIngestibleProperties()
+		public void ApplyStats(IngestibleProperties to)
 		{
-			var v = new IngestibleProperties()
-			{
-				maxNumToIngestAtOnce = this.maxNumToIngestAtOnce,
-				baseIngestTicks = this.baseIngestTicks,
-				chairSearchRadius = this.chairSearchRadius,
-				useEatingSpeedStat = this.useEatingSpeedStat,
-				ingestHoldUsesTable = this.ingestHoldUsesTable,
-				foodType = this.foodType,
-				joy = this.joy,
-				preferability = this.preferability,
-				nurseable = this.nurseable,
-				optimalityOffsetHumanlikes = this.optimalityOffsetHumanlikes,
-				optimalityOffsetFeedingAnimals = this.optimalityOffsetFeedingAnimals,
-				drugCategory = this.drugCategory,
-				
-			};
-			v.ingestHoldOffsetStanding = this.ingestHoldOffsetStanding?.ToHoldOffsetSet();
+			to.maxNumToIngestAtOnce = this.maxNumToIngestAtOnce;
+			to.baseIngestTicks = this.baseIngestTicks;
+			to.chairSearchRadius = this.chairSearchRadius;
+			to.useEatingSpeedStat = this.useEatingSpeedStat;
+			to.ingestHoldUsesTable = this.ingestHoldUsesTable;
+			to.foodType = this.foodType;
+			to.joy = this.joy;
+			to.preferability = this.preferability;
+			to.nurseable = this.nurseable;
+			to.optimalityOffsetHumanlikes = this.optimalityOffsetHumanlikes;
+			to.optimalityOffsetFeedingAnimals = this.optimalityOffsetFeedingAnimals;
+			to.drugCategory = this.drugCategory;
+			to.ingestHoldOffsetStanding = this.ingestHoldOffsetStanding?.ToHoldOffsetSet();
 			//Util.AssignDef(this.parent, out v.parent);
-			Util.AssignDef(this.joyKind, out v.joyKind);
-			Util.AssignDef(this.sourceDef, out v.sourceDef);
-			Util.AssignDef(this.tasteThought, out v.tasteThought);
-			Util.AssignDef(this.specialThoughtDirect, out v.specialThoughtDirect);
-			Util.AssignDef(this.specialThoughtAsIngredient, out v.specialThoughtAsIngredient);
-			Util.AssignDef(this.ingestEffect, out v.ingestEffect);
-			Util.AssignDef(this.ingestEffectEat, out v.ingestEffectEat);
-			Util.AssignDef(this.ingestSound, out v.ingestSound);
-			return v;
+			Util.AssignDef(this.joyKind, out to.joyKind);
+			Util.AssignDef(this.sourceDef, out to.sourceDef);
+			Util.AssignDef(this.tasteThought, out to.tasteThought);
+			Util.AssignDef(this.specialThoughtDirect, out to.specialThoughtDirect);
+			Util.AssignDef(this.specialThoughtAsIngredient, out to.specialThoughtAsIngredient);
+			Util.AssignDef(this.ingestEffect, out to.ingestEffect);
+			Util.AssignDef(this.ingestEffectEat, out to.ingestEffectEat);
+			Util.AssignDef(this.ingestSound, out to.ingestSound);
+			ResetCache(to);
 		}
 
 		public bool Initialize()
