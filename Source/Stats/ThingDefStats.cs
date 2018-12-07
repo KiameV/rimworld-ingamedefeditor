@@ -9,11 +9,13 @@ using Verse;
 
 namespace InGameDefEditor.Stats
 {
-    public class ThingDefStats : DefStat<ThingDef>, IParentStat
+    public class ThingDefStats : ABuildableDefStat<ThingDef>
 	{
 		//public GraphicStats interactionCellGraphic;
 
-		public List<FloatValueDefStat<StatDef>> StatModifiers = null;
+		// Version 2 adds BuildableDefStat as a parent
+		public int version = 1;
+
         public List<VerbStats> VerbStats = null;
         public List<ToolStats> Tools = null;
         public List<FloatValueDefStat<StatDef>> EquippedStatOffsets = null;
@@ -89,27 +91,26 @@ namespace InGameDefEditor.Stats
 		public DefStat<SoundDef> soundImpactDefault;
 		public DefStat<Def> entityDefToBuild;
 
-		public ApparelPropertiesStats apparel;
-		public MinMaxIntStats deepLumpSizeRange;
-		public IntVec3Stats interactionCellOffset;
-		public MinMaxFloatStats startingHpRange;
-		public GraphicDataStats graphicData;
-		public IngestiblePropertiesStats ingestible;
-		public FilthPropertiesStats filth;
-		public GasPropertiesStats gas;
-		public BuildingPropertiesStats building;
-		public RacePropertiesStats race;
-		public MotePropertiesStats mote;
-		public PlantPropertiesStats plant;
-		public StuffPropertiesStats stuffProps;
-		public SkyfallerPropertiesStats skyfaller;
+		public ApparelPropertiesStats apparel = null;
+		public MinMaxIntStats deepLumpSizeRange = null;
+		public IntVec3Stats interactionCellOffset = null;
+		public MinMaxFloatStats startingHpRange = null;
+		public GraphicDataStats graphicData = null;
+		public IngestiblePropertiesStats ingestible = null;
+		public FilthPropertiesStats filth = null;
+		public GasPropertiesStats gas = null;
+		public BuildingPropertiesStats building = null;
+		public RacePropertiesStats race = null;
+		public MotePropertiesStats mote = null;
+		public PlantPropertiesStats plant = null;
+		public StuffPropertiesStats stuffProps = null;
+		public SkyfallerPropertiesStats skyfaller = null;
 
 		public List<DefStat<ThingCategoryDef>> thingCategories;
 		public List<IntValueDefStat<ThingDef>> killedLeavings;
 		public List<IntValueDefStat<ThingDef>> butcherProducts;
 		public List<IntValueDefStat<ThingDef>> smeltProducts;
 		public List<FloatValueDefStat<DamageDef>> damageMultipliers;
-		public List<DefStat<StuffCategoryDef>> stuffCategories;
 		public List<string> thingSetMakers;
 		public List<string> comps;
 		public List<string> tradeTags;
@@ -122,7 +123,7 @@ namespace InGameDefEditor.Stats
         public ThingDefStats() { }
 		public ThingDefStats(ThingDef d) : base(d)
 		{
-			Util.Populate(out this.StatModifiers, Def.statBases, (v) => new FloatValueDefStat<StatDef>(v.stat, v.value));
+			this.version = 2;
 			Util.Populate(out this.VerbStats, Def.Verbs, (v) =>
 			{
 				try
@@ -242,7 +243,6 @@ namespace InGameDefEditor.Stats
 			Util.Populate(out this.butcherProducts, Def.butcherProducts, (v) => new IntValueDefStat<ThingDef>(v.thingDef, v.count));
 			Util.Populate(out this.smeltProducts, Def.smeltProducts, (v) => new IntValueDefStat<ThingDef>(v.thingDef, v.count));
 			Util.Populate(out this.damageMultipliers, Def.damageMultipliers, (v) => new FloatValueDefStat<DamageDef>(v.damageDef, v.multiplier));
-			Util.Populate(out this.stuffCategories, Def.stuffCategories, (v) => new DefStat<StuffCategoryDef>(v));
 			Util.Populate(out this.thingSetMakers, Def.thingSetMakerTags);
 			Util.Populate(out this.comps, Def.comps, (v) => v.compClass.FullName);
 			Util.Populate(out this.tradeTags, Def.tradeTags);
@@ -255,9 +255,6 @@ namespace InGameDefEditor.Stats
             if (!base.Initialize())
                 return false;
 
-			if (this.StatModifiers != null)
-				this.StatModifiers.ForEach(v => Util.InitializeDefStat(v));
-
 			if (this.VerbStats != null)
 				this.VerbStats.ForEach(v => Util.InitializeDefStat(v));
 
@@ -267,52 +264,44 @@ namespace InGameDefEditor.Stats
 			if (this.EquippedStatOffsets != null)
 				this.EquippedStatOffsets.ForEach(v => Util.InitializeDefStat(v));
 
-			if (!base.Initialize())
-				return false;
-
-			foreach (var v in this.stuffCategories)
-				v.Initialize();
-
 			this.apparel?.Initialize();
+			this.ingestible?.Initialize();
 
 			return true;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
             if (base.Equals(obj) &&
-                obj is ThingDefStats stats)
+                obj is ThingDefStats s)
             {
-                if (Util.AreEqual(this.StatModifiers, stats.StatModifiers) &&
-                    Util.AreEqual(this.EquippedStatOffsets, stats.EquippedStatOffsets) &&
-                    Util.AreEqual(this.VerbStats, stats.VerbStats, null) &&
-                    Util.AreEqual(this.Tools, stats.Tools, null))
+                if (Util.AreEqual(this.EquippedStatOffsets, s.EquippedStatOffsets) &&
+                    Util.AreEqual(this.VerbStats, s.VerbStats, null) &&
+                    Util.AreEqual(this.Tools, s.Tools, null) && 
+					object.Equals(this.ingestible, s.ingestible))
                 {
-                    return true;
+					return true;
                 }
-            }
-            return false;
+			}
+			return false;
         }
 
 #region Apply____
-		public virtual void ApplyStats(Def to)
+		public override void ApplyStats(Def to)
         {
 #if DEBUG_THINGDEF
             Log.Warning("ApplyStats for " + this.defName);
 #endif
+			if (this.version > 1)
+				base.ApplyStats(to);
+
             if (to is ThingDef t)
             {
                 try
                 {
-                    this.ApplyStatModifiers(t);
                     this.ApplyVerbStats(t);
                     this.ApplyTools(t);
-                    this.ApplyEquipmentStatOffsets(t);
+					Util.Populate(out t.equippedStatOffsets, this.EquippedStatOffsets, v => new StatModifier() { stat = v.Def, value = v.value });
                 }
                 catch (Exception e)
                 {
@@ -328,18 +317,12 @@ namespace InGameDefEditor.Stats
 					Util.Populate(t.thingSetMakerTags, this.thingSetMakers);
 				}
 
-				if (t.stuffCategories == null && !Util.IsNullEmpty(this.stuffCategories))
-					t.stuffCategories = new List<StuffCategoryDef>();
-				if (t.stuffCategories != null)
-				{
-					t.stuffCategories.Clear();
-					Util.Populate(t.stuffCategories, this.stuffCategories, (d) => d.Def);
-				}
-
 				if (this.apparel != null)
 				{
 					this.apparel.ApplyStats(t.apparel);
 				}
+
+				t.ingestible = this.ingestible?.ToIngestibleProperties();
 #if DEBUG_THINGDEF
             Log.Warning("ApplyStats Done");
 #endif
@@ -347,75 +330,7 @@ namespace InGameDefEditor.Stats
             else
                 Log.Error("ThingDefStat passed none ThingDef!");
         }
-
-        private void ApplyEquipmentStatOffsets(ThingDef d)
-        {
-            if (d.equippedStatOffsets != null)
-                d.equippedStatOffsets.Clear();
-
-            if (this.EquippedStatOffsets == null || this.EquippedStatOffsets.Count == 0)
-                return;
-
-            if (d.equippedStatOffsets == null)
-                d.equippedStatOffsets = new List<StatModifier>(this.EquippedStatOffsets.Count);
-
-            Dictionary<string, StatModifier> lookup = new Dictionary<string, StatModifier>();
-            foreach (StatModifier to in d.equippedStatOffsets)
-                lookup.Add(to.stat.defName, to);
-            
-            foreach (var from in this.EquippedStatOffsets)
-            {
-                if (lookup.TryGetValue(from.DefName, out StatModifier to))
-                {
-                    to.value = ((FloatValueDefStat<StatDef>)from).value;
-                }
-                else
-                {
-                    d.equippedStatOffsets.Add(new StatModifier
-                    {
-                        stat = from.Def,
-                        value = ((FloatValueDefStat<StatDef>)from).value
-                    });
-                }
-            }
-        }
-
-        private void ApplyStatModifiers(ThingDef d)
-        {
-            if (d.statBases != null)
-                d.statBases.Clear();
-
-            if (this.StatModifiers == null || this.StatModifiers.Count == 0)
-                return;
-
-            if (d.statBases == null)
-                d.statBases = new List<StatModifier>(this.StatModifiers.Count);
-
-            Dictionary<string, StatModifier> lookup = new Dictionary<string, StatModifier>();
-            foreach (StatModifier m in d.statBases)
-            {
-                lookup.Add(m.stat.ToString(), m);
-            }
-
-            foreach (var from in this.StatModifiers)
-            {
-                if (lookup.TryGetValue(from.DefName, out StatModifier to))
-                {
-                    to.value = ((FloatValueDefStat<StatDef>)from).value;
-                }
-                else
-                {
-                    d.statBases.Add(new StatModifier
-                    {
-                        stat = from.Def,
-                        value = ((FloatValueDefStat<StatDef>)from).value
-                    });
-                }
-            }
-            lookup.Clear();
-            lookup = null;
-        }
-
+		
         private void ApplyVerbStats(ThingDef d)
         {
             if (d.Verbs == null || d.Verbs.Count == 0)
@@ -476,17 +391,13 @@ namespace InGameDefEditor.Stats
             }
         }
 #endregion
+
 		public override string ToString()
         {
-            StringBuilder sb = new StringBuilder("Stats:");
+			return base.ToString();
+			/*StringBuilder sb = new StringBuilder("Stats:");
             sb.Append(Environment.NewLine);
             sb.AppendLine("    DefName: " + this.defName);
-            sb.AppendLine("    StatModifiers: " + ((this.StatModifiers == null) ? "null" : ""));
-            if (this.StatModifiers != null)
-            {
-                foreach (var s in this.StatModifiers)
-                    sb.AppendLine(s.ToString());
-            }
             sb.AppendLine("    VerbStats: " + ((this.VerbStats == null) ? "null" : ""));
             if (this.VerbStats != null)
             {
@@ -499,14 +410,13 @@ namespace InGameDefEditor.Stats
                 foreach (ToolStats s in this.Tools)
                     sb.AppendLine(s.ToString());
             }
-            sb.AppendLine("    EquippedStatOffsets: " + ((this.EquippedStatOffsets == null) ? "null" : ""));
-            if (this.EquippedStatOffsets != null)
-            {
-                foreach (var s in this.EquippedStatOffsets)
-                    sb.AppendLine(s.ToString());
-            }
-            return sb.ToString();
-        }
+            return sb.ToString();*/
+		}
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
 
 		public static bool GetCanOverlapZones(ThingDef d)
 		{

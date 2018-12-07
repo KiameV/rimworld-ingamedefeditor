@@ -16,6 +16,11 @@ namespace InGameDefEditor.Stats.Misc
 			this.Max = qr.max;
 		}
 
+		public QualityRange ToQualityRange()
+		{
+			return new QualityRange(this.Min, this.Max);
+		}
+
 		public override bool Equals(object obj)
 		{
 			if (obj != null &&

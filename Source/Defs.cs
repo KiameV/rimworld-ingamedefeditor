@@ -1,13 +1,14 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using Verse;
-using System;
 
 namespace InGameDefEditor
 {
     static class Defs
-    {
-        public static readonly SortedDictionary<string, ThingDef> ApparelDefs = new SortedDictionary<string, ThingDef>();
+	{
+		public static readonly SortedDictionary<string, ThingDef> DisabledThingDefs = new SortedDictionary<string, ThingDef>();
+
+		public static readonly SortedDictionary<string, ThingDef> ApparelDefs = new SortedDictionary<string, ThingDef>();
         public static readonly SortedDictionary<string, ThingDef> WeaponDefs = new SortedDictionary<string, ThingDef>();
         public static readonly SortedDictionary<string, ThingDef> ProjectileDefs = new SortedDictionary<string, ThingDef>();
         public static readonly SortedDictionary<string, BiomeDef> BiomeDefs = new SortedDictionary<string, BiomeDef>();
@@ -16,7 +17,7 @@ namespace InGameDefEditor
 		public static readonly SortedDictionary<string, TraitDef> TraitDefs = new SortedDictionary<string, TraitDef>();
 		public static readonly SortedDictionary<string, StorytellerDef> StoryTellerDefs = new SortedDictionary<string, StorytellerDef>();
 		public static readonly SortedDictionary<string, DifficultyDef> DifficultyDefs = new SortedDictionary<string, DifficultyDef>();
-		public static readonly SortedDictionary<string, ThingDef> DisabledThingDefs = new SortedDictionary<string, ThingDef>();
+		public static readonly SortedDictionary<string, ThingDef> IngestibleDefs = new SortedDictionary<string, ThingDef>();
 		private static bool isInit = false;
 
 		public static void Initialize()
@@ -57,6 +58,10 @@ namespace InGameDefEditor
 					{
 						ProjectileDefs[Util.GetDefLabel(d)] = d;
                     }
+					if (d.IsIngestible)
+					{
+						IngestibleDefs[Util.GetDefLabel(d)] = d;
+					}
                 }
 
 				DefDatabase<BiomeDef>.AllDefsListForReading.ForEach(d => BiomeDefs[Util.GetDefLabel(d)] = d);
@@ -107,6 +112,9 @@ namespace InGameDefEditor
 				Backup.ApplyStats(d);
 
 			foreach (DifficultyDef d in Defs.DifficultyDefs.Values)
+				Backup.ApplyStats(d);
+
+			foreach (ThingDef d in Defs.IngestibleDefs.Values)
 				Backup.ApplyStats(d);
 		}
 	}

@@ -37,6 +37,7 @@ namespace InGameDefEditor
 				new ButtonWidget<ThoughtDef>("Thoughts", DefType.Thought, Defs.ThoughtDefs.Values, this.CreateSelected),
 				new ButtonWidget<StorytellerDef>("Story Tellers", DefType.StoryTeller, Defs.StoryTellerDefs.Values, this.CreateSelected),
 				new ButtonWidget<DifficultyDef>("Difficulty", DefType.Difficulty, this.sortDifficultyOptions(Defs.DifficultyDefs.Values), this.CreateSelected),
+				new ButtonWidget<ThingDef>("Ingestible", DefType.Ingestible, Defs.IngestibleDefs.Values, this.CreateSelected),
 			};
 
 			//if (Controller.EnableRecipes)
@@ -195,7 +196,10 @@ namespace InGameDefEditor
 				case DefType.Difficulty:
 					this.selected = new DifficultyDefWidget(d as DifficultyDef, type);
 					break;
-            }
+				case DefType.Ingestible:
+					this.selected = new ThingDefWidget(d as ThingDef, type);
+					break;
+			}
             this.ResetScrolls();
 			IngredientCountWidget.ResetUniqueId();
 		}

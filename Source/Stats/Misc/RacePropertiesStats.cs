@@ -105,10 +105,14 @@ namespace InGameDefEditor.Stats.Misc
 			this.meatMarketValue = p.meatMarketValue;
 
 			this.meatColor = new ColorStats(p.meatColor);
-			this.specialShadowData = new ShadowDataStats(p.specialShadowData);
-			this.soundCallIntervalRange = new MinMaxIntStats(p.soundCallIntervalRange);
-			this.ageGenerationCurve = new SimpleCurveStats(p.ageGenerationCurve);
-			this.litterSizeCurve = new SimpleCurveStats(p.litterSizeCurve);
+			if (p.specialShadowData != null)
+				this.specialShadowData = new ShadowDataStats(p.specialShadowData);
+			if (p.soundCallIntervalRange != null)
+				this.soundCallIntervalRange = new MinMaxIntStats(p.soundCallIntervalRange);
+			if (p.ageGenerationCurve != null)
+				this.ageGenerationCurve = new SimpleCurveStats(p.ageGenerationCurve);
+			if (p.litterSizeCurve != null)
+				this.litterSizeCurve = new SimpleCurveStats(p.litterSizeCurve);
 
 			Util.Populate(out this.wildBiomes, p.wildBiomes, (v) => new FloatValueDefStat<BiomeDef> (v.biome, v.commonality));
 			Util.Populate(out this.lifeStageAges, p.lifeStageAges, (v) => new LifeStageAgeStats(v));

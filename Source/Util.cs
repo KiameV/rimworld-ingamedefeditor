@@ -127,6 +127,21 @@ namespace InGameDefEditor
 			return AreEqual(l, r, v => v.GetHashCode());
 		}
 
+		public static bool AreEqual<D>(IEnumerable<IntValueDefStat<D>> l, IEnumerable<IntValueDefStat<D>> r) where D : Def, new()
+		{
+			if (!ListsRoughlyEqual(l, r))
+				return false;
+
+			if (l == null || r == null)
+				return true;
+
+			Dictionary<Def, IDefStat> lookup = new Dictionary<Def, IDefStat>();
+			foreach (var v in l)
+				lookup[v.BaseDef] = v;
+
+			return AreEqual(l, r, v => v.GetHashCode());
+		}
+
 		public static bool AreEqual<D1, D2>(List<FloatValueDoubleDefStat<D1, D2>> l, IEnumerable<FloatValueDoubleDefStat<D1, D2>> r) where D1 : Def, new() where D2 : Def, new()
 		{
 			if (!ListsRoughlyEqual(l, r))

@@ -11,5 +11,6 @@
 		Thought,
 		StoryTeller,
 		Difficulty,
+		Ingestible,
 	};
 }

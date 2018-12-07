@@ -58,6 +58,8 @@ namespace InGameDefEditor
 					if (Load(DefType.Difficulty, out RootDifficulty dif))
 						dif?.stats.ForEach((d) => Initialize(d));
 
+					if (Load(DefType.Ingestible, out RootIngestible ing))
+						ing?.stats.ForEach((d) => Initialize(d));
 
 					// Do Last
 					if (Load("DisabledDefs", out RootDisabledDefs rdd))
@@ -122,6 +124,9 @@ namespace InGameDefEditor
 
 			Util.Populate(out List<DifficultyDefStat> difficulties, Defs.DifficultyDefs.Values, (v) => HasChanged(new DifficultyDefStat(v)), false);
 			Save(DefType.Difficulty, new RootDifficulty() { stats = difficulties });
+
+			Util.Populate(out List<ThingDefStats> ingestibles, Defs.IngestibleDefs.Values, v => HasChanged(new ThingDefStats(v)), false);
+			Save(DefType.Ingestible, new RootIngestible() { stats = ingestibles });
 		}
 
 		private static string basePath = null;

@@ -26,5 +26,25 @@ namespace InGameDefEditor.Stats.Misc
 		{
 			return new IntVec3(this.x, this.y, this.z);
 		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj != null &&
+				obj is IntVec3Stats s)
+			{
+				return this.x == s.x && this.y == s.y && this.z == s.z;
+			}
+			return false;
+		}
+
+		public override string ToString()
+		{
+			return this.GetType().Name + " x: " + x + " y: " + y + " z: " + z;
+		}
+
+		public override int GetHashCode()
+		{
+			return this.ToString().GetHashCode();
+		}
 	}
 }

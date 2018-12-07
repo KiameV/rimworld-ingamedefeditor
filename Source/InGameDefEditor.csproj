@@ -89,6 +89,7 @@
     <Compile Include="Gui\EditorWidgets\DifficultyDefWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\ACollapsibleWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\EffecterDefWidget.cs" />
+    <Compile Include="Gui\EditorWidgets\Misc\IngestiblePropertiesWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\IngredientCountWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\QualityRangeWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\SimpleCurveWidget.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="Gui\EditorWidgets\Misc\ThingFilterWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\ThoughtStageWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\TraitDegreeDataWidget.cs" />
+    <Compile Include="Gui\EditorWidgets\ABuildableDefWidget.cs" />
     <Compile Include="Gui\EditorWidgets\ThoughtDefWidget.cs" />
     <Compile Include="Gui\EditorWidgets\TraitWidget.cs" />
     <Compile Include="Gui\EditorWidgets\RecipeWidget.cs" />
@@ -116,14 +118,16 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Stats\AllStats.cs" />
     <Compile Include="Stats\BiomDefStats.cs" />
+    <Compile Include="Stats\ABuildableDefStat.cs" />
     <Compile Include="Stats\DifficultyDefStat.cs" />
+    <Compile Include="Stats\Misc\Rot4Stats.cs" />
     <Compile Include="Stats\Misc\StorytellerCompPropertiesStats.cs" />
     <Compile Include="Stats\Misc\ThoughtStageStats.cs" />
     <Compile Include="Stats\Misc\TraitDegreeDataStats.cs" />
     <Compile Include="Stats\StoryTellerDefStats.cs" />
     <Compile Include="Stats\TraitDefStat.cs" />
     <Compile Include="Stats\DefStat\EffecterDefStat.cs" />
-    <Compile Include="Stats\DefStat\HoldOffsetSetStats.cs" />
+    <Compile Include="Stats\Misc\HoldOffsetSetStats.cs" />
     <Compile Include="Stats\DefStat\IntValueDefStat.cs" />
     <Compile Include="Stats\DefStat\MinMaxIntDefStat.cs" />
     <Compile Include="Stats\IParentStat.cs" />

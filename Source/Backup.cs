@@ -52,6 +52,9 @@ namespace InGameDefEditor
 
 				foreach (DifficultyDef d in Defs.DifficultyDefs.Values)
 					backup[d] = new DifficultyDefStat(d);
+
+				foreach (ThingDef d in Defs.IngestibleDefs.Values)
+					backup[d] = new ThingDefStats(d);
 			}
         }
 

@@ -27,5 +27,25 @@ namespace InGameDefEditor.Stats.Misc
 		{
 			return new Vector3(this.x, this.y, this.z);
 		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj != null &&
+				obj is Vector3Stats s)
+			{
+				return this.x == s.x && this.y == s.y && this.z == s.z;
+			}
+			return false;
+		}
+
+		public override string ToString()
+		{
+			return x + " " + y + " " + z;
+		}
+
+		public override int GetHashCode()
+		{
+			return this.ToString().GetHashCode();
+		}
 	}
 }

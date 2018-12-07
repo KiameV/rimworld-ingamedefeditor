@@ -17,7 +17,7 @@ namespace InGameDefEditor.Stats.Misc
 		public ExtraMeleeDamageStats() { }
 		public ExtraMeleeDamageStats(ExtraMeleeDamage d)
 		{
-			this.damageDefStat = new DefStat<DamageDef>(d.def);
+			this.damageDefStat = Util.AssignDefStat(d.def);
 			this.amount = d.amount;
 			this.armorPenetration = d.armorPenetration;
 		}

@@ -28,7 +28,7 @@ namespace InGameDefEditor.Stats.Misc
 		{
 			this.texPath = d.texPath;
 			//this.graphicClass = d.graphicClass;
-			this.shaderType = new DefStat<ShaderTypeDef>(d.shaderType);
+			this.shaderType = Util.AssignDefStat(d.shaderType);
 			this.color = new ColorStats(d.color);
 			this.colorTwo = new ColorStats(d.colorTwo);
 			this.drawSize = new Vector2Stats(d.drawSize);
@@ -36,7 +36,7 @@ namespace InGameDefEditor.Stats.Misc
 			this.drawRotated = d.drawRotated;
 			this.allowFlip = d.allowFlip;
 			this.flipExtraRotation = d.flipExtraRotation;
-			if (d.shaderParameters != null)
+			if (d.shadowData != null)
 				this.shadowData = new ShadowDataStats(d.shadowData);
 			if (d.damageData != null)
 				this.damageData = new DamageGraphicDataStats(d.damageData);

@@ -32,18 +32,7 @@ namespace InGameDefEditor.Stats.Misc
             this.maxFertility = m.maxFertility;
             this.minSize = m.minSize;
 
-            if (m.thresholds != null)
-            {
-                this.thresholds = new List<MinMaxFloatDefStat<TerrainDef>>(m.thresholds.Count);
-                foreach (TerrainThreshold t in m.thresholds)
-                {
-                    this.thresholds.Add(new MinMaxFloatDefStat<TerrainDef>(t.terrain)
-                    {
-                        Min = t.min,
-                        Max = t.max
-                    });
-                }
-            }
+			Util.Populate(out this.thresholds, m.thresholds, v => new MinMaxFloatDefStat<TerrainDef>(v.terrain) { Min = v.min, Max = v.max });
         }
 
         public void ApplyStats(TerrainPatchMaker to)
