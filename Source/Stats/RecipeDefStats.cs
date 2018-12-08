@@ -11,6 +11,8 @@ namespace InGameDefEditor.Stats
 	[Serializable]
 	public class RecipeDefStats : DefStat<RecipeDef>, IParentStat
 	{
+		//private Type ingredientValueGetterClass = typeof(IngredientValueGetter_Volume);
+
 		public float workAmount;
 		public bool allowMixingIngredients;
 		public bool autoStripCorpses;
@@ -25,11 +27,9 @@ namespace InGameDefEditor.Stats
 		public bool anesthetize;
 		public bool dontShowIfAnyIngredientMissing;
 
-		public EffecterDefStat effectWorking;
-
 		public ThingFilterStats fixedIngredientFilter;
 		public ThingFilterStats defaultIngredientFilter;
-
+		
 		public DefStat<ResearchProjectDef> researchPrerequisite;
 		public DefStat<WorkTypeDef> requiredGiverWorkType;
 		public DefStat<ThingDef> unfinishedThingDef;
@@ -41,6 +41,7 @@ namespace InGameDefEditor.Stats
 		public DefStat<HediffDef> addsHediff;
 		public DefStat<HediffDef> removesHediff;
 		public DefStat<SkillDef> workSkill;
+		public DefStat<EffecterDef> effectWorking;
 
 		public List<DefStat<SpecialThingFilterDef>> forceHiddenSpecialFilters;
 		public List<DefStat<ThingDef>> recipeUsers;
@@ -49,14 +50,12 @@ namespace InGameDefEditor.Stats
 		public List<IntValueDefStat<ThingDef>> products;
 		public List<IntValueDefStat<SkillDef>> skillRequirements;
 		public List<IngredientCountStats> ingredients;
-
-		// TODO Needs to be null when empty
-		public List<SpecialProductType> specialProducts;
 		
 		public List<DefStat<ThingDef>> premultipliedSmallIngredients;
 		public List<string> factionPrerequisiteTags;
 
-		//private Type ingredientValueGetterClass = typeof(IngredientValueGetter_Volume);
+		// TODO Needs to be null when empty
+		public List<SpecialProductType> specialProducts;
 
 		public RecipeDefStats() : base() { }
 		public RecipeDefStats(RecipeDef def) : base(def)
@@ -75,9 +74,6 @@ namespace InGameDefEditor.Stats
 			this.anesthetize = def.anesthetize;
 			this.dontShowIfAnyIngredientMissing = def.dontShowIfAnyIngredientMissing;
 
-			if (def.effectWorking != null)
-				this.effectWorking = new EffecterDefStat(def.effectWorking);
-
 			this.fixedIngredientFilter = new ThingFilterStats(def.fixedIngredientFilter);
 			this.defaultIngredientFilter = new ThingFilterStats(def.defaultIngredientFilter);
 
@@ -92,6 +88,7 @@ namespace InGameDefEditor.Stats
 			Util.AssignDefStat(def.addsHediff, out this.addsHediff);
 			Util.AssignDefStat(def.removesHediff, out this.removesHediff);
 			Util.AssignDefStat(def.workSkill, out this.workSkill);
+			Util.AssignDefStat(def.effectWorking, out this.effectWorking);
 
 			Util.Populate(out this.specialProducts, def.specialProducts, true);
 			Util.Populate(out this.forceHiddenSpecialFilters, def.forceHiddenSpecialFilters, v => new DefStat<SpecialThingFilterDef>(v));
@@ -129,12 +126,7 @@ namespace InGameDefEditor.Stats
 				d.targetsBodyPart = this.targetsBodyPart;
 				d.anesthetize = this.anesthetize;
 				d.dontShowIfAnyIngredientMissing = this.dontShowIfAnyIngredientMissing;
-
-				if (d.effectWorking != null)
-				{
-					this.effectWorking?.ApplyStats(d.effectWorking);
-				}
-
+				
 				//d.fixedIngredientFilter = new ThingFilter();
 				//this.fixedIngredientFilter.ApplyStats(d.fixedIngredientFilter);
 
@@ -152,6 +144,7 @@ namespace InGameDefEditor.Stats
 				Util.AssignDef(this.addsHediff, out d.addsHediff);
 				Util.AssignDef(this.removesHediff, out d.removesHediff);
 				Util.AssignDef(this.workSkill, out d.workSkill);
+				Util.AssignDef(this.effectWorking, out d.effectWorking);
 
 				Util.Populate(out d.specialProducts, this.specialProducts, true);
 				Util.Populate(out d.forceHiddenSpecialFilters, this.forceHiddenSpecialFilters, v => v.Def);
@@ -191,6 +184,7 @@ namespace InGameDefEditor.Stats
 			Util.InitializeDefStat(addsHediff);
 			Util.InitializeDefStat(removesHediff);
 			Util.InitializeDefStat(workSkill);
+			Util.InitializeDefStat(effectWorking);
 
             foreach (var v in this.ingredients)
                 v.Initialize();
@@ -227,7 +221,6 @@ namespace InGameDefEditor.Stats
 					this.targetsBodyPart == s.targetsBodyPart &&
 					this.anesthetize == s.anesthetize &&
 					this.dontShowIfAnyIngredientMissing == s.dontShowIfAnyIngredientMissing &&
-					object.Equals(this.effectWorking, s.effectWorking) &&
 					//object.Equals(this.fixedIngredientFilter, s.fixedIngredientFilter) &&
 					//object.Equals(this.defaultIngredientFilter, s.defaultIngredientFilter) &&
 					Util.AreEqual(this.researchPrerequisite, s.researchPrerequisite) &&
@@ -241,6 +234,7 @@ namespace InGameDefEditor.Stats
 					Util.AreEqual(this.addsHediff, s.addsHediff) &&
 					Util.AreEqual(this.removesHediff, s.removesHediff) &&
 					Util.AreEqual(this.workSkill, s.workSkill) &&
+					Util.AreEqual(this.effectWorking, s.effectWorking) &&
 					Util.AreEqual(this.specialProducts, s.specialProducts, v => v.ToString().GetHashCode()) &&
 					Util.AreEqual(this.forceHiddenSpecialFilters, s.forceHiddenSpecialFilters) &&
 					Util.AreEqual(this.appliedOnFixedBodyParts, s.appliedOnFixedBodyParts) &&

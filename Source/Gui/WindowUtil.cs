@@ -78,6 +78,35 @@ namespace InGameDefEditor
             Text.Font = GameFont.Small;
         }
 
+		public static void DrawList<D>(float x, ref float y, float width, string label, IEnumerable<D> items, ref Vector2 scroll, ref float previousY, bool bolded = false) where D : Def, new()
+		{
+			DrawLabel(x, ref y, width, label, 30, bolded);
+			if (previousY > 300)
+			{
+				Widgets.BeginScrollView(
+					new Rect(x + 20, y, width - 16, 300),
+					ref scroll,
+					new Rect(0, 0, width - 32, previousY));
+				previousY = 0;
+
+				foreach (var v in items)
+					DrawLabel(10, ref previousY, width - 10, "- " + Util.GetDefLabel(v));
+
+				Widgets.EndScrollView();
+				y += 332;
+			}
+			else
+			{
+				previousY = 0;
+				foreach (var v in items)
+				{
+					float orig = y;
+					DrawLabel(10, ref y, width - 10, "- " + Util.GetDefLabel(v));
+					previousY += y - orig;
+				}
+			}
+		}
+
         public delegate string GetDisplayName<T>(T t);
         public delegate void OnSelect<T>(T t);
         public delegate IEnumerable<T> UpdateItems<T>();

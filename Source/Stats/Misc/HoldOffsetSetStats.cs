@@ -24,15 +24,32 @@ namespace InGameDefEditor.Stats.Misc
 				this.west = new HoldOffsetStats(s.west);
 		}
 
-		public HoldOffsetSet ToHoldOffsetSet()
+		public void ApplyStats(HoldOffsetSet s)
 		{
-			return new HoldOffsetSet()
+			if (this.northDefault != null)
 			{
-				northDefault = this.northDefault?.ToHoldOffset(),
-				east = this.east?.ToHoldOffset(),
-				south = this.south?.ToHoldOffset(),
-				west = this.west?.ToHoldOffset(),
-			};
+				if (s.northDefault == null)
+					s.northDefault = new HoldOffset();
+				this.northDefault.ApplyStats(s.northDefault);
+			}
+			if (this.east != null)
+			{
+				if (s.east == null)
+					s.east = new HoldOffset();
+				this.east.ApplyStats(s.east);
+			}
+			if (this.south != null)
+			{
+				if (s.south == null)
+					s.south = new HoldOffset();
+				this.south.ApplyStats(s.south);
+			}
+			if (this.west != null)
+			{
+				if (s.west == null)
+					s.west = new HoldOffset();
+				this.west.ApplyStats(s.west);
+			}
 		}
 
 		public override bool Equals(object obj)

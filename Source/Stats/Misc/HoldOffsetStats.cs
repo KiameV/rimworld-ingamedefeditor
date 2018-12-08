@@ -19,16 +19,12 @@ namespace InGameDefEditor.Stats.Misc
 			this.behind = s.behind;
 		}
 
-		public HoldOffset ToHoldOffset()
+		public void ApplyStats(HoldOffset to)
 		{
-			var v = new HoldOffset()
-			{
-				flip = this.flip,
-				behind = this.behind,
-			};
+			to.flip = this.flip;
+			to.behind = this.behind;
 			if (this.offset != null)
-				v.offset = this.offset.ToVector3();
-			return v;
+				to.offset = this.offset.ToVector3();
 		}
 
 		public override bool Equals(object obj)

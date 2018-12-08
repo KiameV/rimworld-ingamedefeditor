@@ -97,7 +97,12 @@ namespace InGameDefEditor.Stats.Misc
 			to.optimalityOffsetHumanlikes = this.optimalityOffsetHumanlikes;
 			to.optimalityOffsetFeedingAnimals = this.optimalityOffsetFeedingAnimals;
 			to.drugCategory = this.drugCategory;
-			to.ingestHoldOffsetStanding = this.ingestHoldOffsetStanding?.ToHoldOffsetSet();
+			if (this.ingestHoldOffsetStanding != null)
+			{
+				if (to.ingestHoldOffsetStanding == null)
+					to.ingestHoldOffsetStanding = new HoldOffsetSet();
+				this.ingestHoldOffsetStanding.ApplyStats(to.ingestHoldOffsetStanding);
+			}
 			//Util.AssignDef(this.parent, out v.parent);
 			Util.AssignDef(this.joyKind, out to.joyKind);
 			Util.AssignDef(this.sourceDef, out to.sourceDef);

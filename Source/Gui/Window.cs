@@ -36,7 +36,7 @@ namespace InGameDefEditor
 				new ButtonWidget<TraitDef>("Traits", DefType.Trait, Defs.TraitDefs.Values, this.CreateSelected),
 				new ButtonWidget<ThoughtDef>("Thoughts", DefType.Thought, Defs.ThoughtDefs.Values, this.CreateSelected),
 				new ButtonWidget<StorytellerDef>("Story Tellers", DefType.StoryTeller, Defs.StoryTellerDefs.Values, this.CreateSelected),
-				new ButtonWidget<DifficultyDef>("Difficulty", DefType.Difficulty, this.sortDifficultyOptions(Defs.DifficultyDefs.Values), this.CreateSelected),
+				new ButtonWidget<DifficultyDef>("Difficulty", DefType.Difficulty, this.SortDifficultyOptions(Defs.DifficultyDefs.Values), this.CreateSelected),
 				new ButtonWidget<ThingDef>("Ingestible", DefType.Ingestible, Defs.IngestibleDefs.Values, this.CreateSelected),
 			};
 
@@ -204,12 +204,23 @@ namespace InGameDefEditor
 			IngredientCountWidget.ResetUniqueId();
 		}
 
-		private IEnumerable<DifficultyDef> sortDifficultyOptions(SortedDictionary<string, DifficultyDef>.ValueCollection values)
+		private IEnumerable<DifficultyDef> SortDifficultyOptions(SortedDictionary<string, DifficultyDef>.ValueCollection values)
 		{
-			SortedDictionary<int, DifficultyDef> d = new SortedDictionary<int, DifficultyDef>();
+			SortedDictionary<int, List<DifficultyDef>> d = new SortedDictionary<int, List<DifficultyDef>>();
 			foreach (var v in values)
-				d.Add(v.difficulty, v);
-			return d.Values;
+			{
+				if (!d.TryGetValue(v.difficulty, out List<DifficultyDef> defs))
+				{
+					defs = new List<DifficultyDef>();
+					d[v.difficulty] = defs;
+				}
+				defs.Add(v);
+			}
+			List<DifficultyDef> result = new List<DifficultyDef>(values.Count);
+			foreach (List<DifficultyDef> defs in d.Values)
+				foreach (DifficultyDef def in defs)
+					result.Add(def);
+			return result;
 		}
 
 		#region ButonWidget

@@ -10,16 +10,16 @@ namespace InGameDefEditor.Stats.Misc
 	[Serializable]
 	public class ThingFilterStats : IStat<ThingFilter>, IInitializable
 	{
-		private FloatRange allowedHitPointsPercents = FloatRange.ZeroToOne;
+		public FloatRange allowedHitPointsPercents = FloatRange.ZeroToOne;
 		public bool allowedHitPointsConfigurable;
 		public bool allowedQualitiesConfigurable;
 		public FoodPreferability disallowWorsePreferability;
 		public bool disallowInedibleByHuman;
 		public float disallowCheaperThan;
 
-		private HashSet<DefStat<ThingDef>> allowedDefs;
+		public List<DefStat<ThingDef>> allowedDefs;
 		public List<DefStat<ThingDef>> disallowedThingDefs;
-		public HashSet<DefStat<ThingDef>> thingDefs;
+		public List<DefStat<ThingDef>> thingDefs;
 		public List<string> categories;
 		public List<string> disallowedCategories;
 		public List<string> specialFiltersToAllow;
@@ -48,7 +48,7 @@ namespace InGameDefEditor.Stats.Misc
 			this.disallowWorsePreferability = GetDisallowWorsePreferability(f);
 			this.disallowInedibleByHuman = GetDisallowInedibleByHuman(f);
 			this.disallowCheaperThan = GetDisallowCheaperThan(f);
-			this.allowedDefs = Util.CreateDefStatHashSet(GetAllowedDefs(f));
+			this.allowedDefs = Util.CreateDefStatList(GetAllowedDefs(f));
 
 			if (GetAllowedQualities(f) != null)
 				this.allowedQualities = new QualityRangeStats(GetAllowedQualities(f));
@@ -57,15 +57,7 @@ namespace InGameDefEditor.Stats.Misc
 			this.allowAllWhoCanMake = Util.CreateDefStatList(GetAllowAllWhoCanMake(f));
 			this.stuffCategoriesToAllow = Util.CreateDefStatList(GetStuffCategoriesToAllow(f));
 			this.disallowedSpecialFilters = Util.CreateDefStatList(GetDisallowedSpecialFilters(f));
-			this.thingDefs = Util.CreateDefStatHashSet(GetThingDefs(f));
-			HashSet<ThingDef> hs = GetAllowedDefs(f);
-			if (hs != null && hs.Count > 0)
-			{
-				if (this.thingDefs == null)
-					this.thingDefs = new HashSet<DefStat<ThingDef>>();
-				foreach (var v in GetAllowedDefs(f))
-					this.thingDefs.Add(new DefStat<ThingDef>(v));
-			}
+			this.thingDefs = Util.CreateDefStatList(GetThingDefs(f));
 			this.categories = Util.CreateList(GetCategories(f));
 			this.tradeTagsToAllow = Util.CreateList(GetTradeTagsToAllow(f));
 			this.tradeTagsToDisallow = Util.CreateList(GetTradeTagsToDisallow(f));

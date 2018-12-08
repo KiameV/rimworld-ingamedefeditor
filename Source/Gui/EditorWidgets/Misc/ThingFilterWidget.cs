@@ -1,11 +1,5 @@
-﻿using InGameDefEditor.Stats.Misc;
-using RimWorld;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using Verse;
-using static InGameDefEditor.WindowUtil;
-using InGameDefEditor.Gui.Dialog;
+﻿using Verse;
+using UnityEngine;
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
@@ -13,6 +7,9 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 	{
 		public readonly ThingFilter ThingFilter;
 		private readonly string label;
+
+		private Vector2 scroll = Vector2.zero;
+		private float previousAllowedThingsY = 0;
 
 		public override string DisplayLabel => label;
 
@@ -24,12 +21,16 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 		public override void ResetBuffers()
 		{
-
+			scroll = Vector2.zero;
 		}
 
 		protected override void DrawInputs(float x, ref float y, float width)
 		{
-
+			var allowedThingDefs = this.ThingFilter.AllowedThingDefs;
+			if (allowedThingDefs != null)
+			{
+				WindowUtil.DrawList(x, ref y, width, "Allowed Defs", allowedThingDefs, ref this.scroll, ref this.previousAllowedThingsY);
+			}
 		}
 	}
 

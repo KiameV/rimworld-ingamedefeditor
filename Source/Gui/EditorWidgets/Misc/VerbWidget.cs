@@ -17,7 +17,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
             if (VerbProperties.defaultProjectile != null)
                 this.projectileWidget = new ProjectileDefWidget(VerbProperties.defaultProjectile, DefType.Projectile);
-
+			
             this.inputWidgets = new List<IInputWidget>()
             {
                 new FloatInputWidget<VerbProperties>(this.VerbProperties, "Warmup Time", (VerbProperties parent) => parent.warmupTime, (VerbProperties parent, float f) => parent.warmupTime = f),

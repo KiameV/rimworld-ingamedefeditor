@@ -295,19 +295,19 @@ namespace InGameDefEditor.Stats
 			if (this.version > 1)
 				base.ApplyStats(to);
 
-            if (to is ThingDef t)
-            {
-                try
-                {
-                    this.ApplyVerbStats(t);
-                    this.ApplyTools(t);
+			if (to is ThingDef t)
+			{
+				try
+				{
+					this.ApplyVerbStats(t);
+					this.ApplyTools(t);
 					Util.Populate(out t.equippedStatOffsets, this.EquippedStatOffsets, v => new StatModifier() { stat = v.Def, value = v.value });
-                }
-                catch (Exception e)
-                {
-                    Log.Warning("Failed to apply stats [" + t.defName + "]\n" + e.Message);
-                }
-				
+				}
+				catch (Exception e)
+				{
+					Log.Warning("Failed to apply stats [" + t.defName + "]\n" + e.Message);
+				}
+
 				if (t.thingSetMakerTags == null && !Util.IsNullEmpty(this.thingSetMakers))
 					t.thingSetMakerTags = new List<string>();
 
@@ -317,19 +317,21 @@ namespace InGameDefEditor.Stats
 					Util.Populate(t.thingSetMakerTags, this.thingSetMakers);
 				}
 
-				if (this.apparel != null)
+				if (this.apparel != null && t.apparel != null)
 				{
 					this.apparel.ApplyStats(t.apparel);
 				}
 
-				if (t.ingestible != null)
+				if (this.ingestible != null && t.ingestible != null)
+				{
 					this.ingestible?.ApplyStats(t.ingestible);
+				}
 #if DEBUG_THINGDEF
             Log.Warning("ApplyStats Done");
 #endif
-			}
-            else
-                Log.Error("ThingDefStat passed none ThingDef!");
+				}
+				else
+					Log.Error("ThingDefStat passed none ThingDef!");
         }
 		
         private void ApplyVerbStats(ThingDef d)

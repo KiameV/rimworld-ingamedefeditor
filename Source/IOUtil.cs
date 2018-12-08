@@ -170,11 +170,20 @@ namespace InGameDefEditor
 			try
 			{
 				fs = new FileStream(path, FileMode.Open);
-				t = (T)serializer.Deserialize(fs);
+				try
+				{
+					t = (T)serializer.Deserialize(fs);
+				}
+				catch (Exception e)
+				{
+					Log.Error("Failed to load settings for Def type " + typeName + Environment.NewLine + e.GetType().Name + Environment.NewLine + e.Message);
+					t = default(T);
+					return false;
+				}
 			}
 			catch (Exception e)
 			{
-				Log.Error("Failed to load settings for Def type " + typeName + Environment.NewLine + e.Message);
+				Log.Error("Failed to open file " + path + Environment.NewLine + e.GetType().Name + Environment.NewLine + e.Message);
 				t = default(T);
 				return false;
 			}
