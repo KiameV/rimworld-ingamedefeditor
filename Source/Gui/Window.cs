@@ -39,10 +39,11 @@ namespace InGameDefEditor
 				new ButtonWidget<DifficultyDef>("Difficulty", DefType.Difficulty, this.SortDifficultyOptions(Defs.DifficultyDefs.Values), this.CreateSelected),
 				new ButtonWidget<ThingDef>("Ingestible", DefType.Ingestible, Defs.IngestibleDefs.Values, this.CreateSelected),
 				new ButtonWidget<ThingDef>("Mineable", DefType.Mineable, Defs.MineableDefs.Values, this.CreateSelected),
+				new ButtonWidget<RecipeDef>("Recipes", DefType.Recipe, Defs.RecipeDefs.Values, this.CreateSelected),
 			};
 
 			//if (Controller.EnableRecipes)
-				buttons.Add(new ButtonWidget<RecipeDef>("Recipes", DefType.Recipe, Defs.RecipeDefs.Values, this.CreateSelected));
+			buttons.Add(new ButtonWidget<ThingDef>("Disabled", DefType.Disabled, Defs.DisabledThingDefs.Values, this.CreateSelected));
         }
 
 		public override void DoWindowContents(Rect rect)
@@ -174,7 +175,10 @@ namespace InGameDefEditor
             {
                 case DefType.Apparel:
                 case DefType.Weapon:
-                    this.selected = new ThingDefWidget(d as ThingDef, type);
+				case DefType.Mineable:
+				case DefType.Ingestible:
+				case DefType.Disabled:
+					this.selected = new ThingDefWidget(d as ThingDef, type);
                     break;
 				case DefType.Projectile:
 					this.selected = new ProjectileDefWidget(d as ThingDef, type);
@@ -196,12 +200,6 @@ namespace InGameDefEditor
 					break;
 				case DefType.Difficulty:
 					this.selected = new DifficultyDefWidget(d as DifficultyDef, type);
-					break;
-				case DefType.Ingestible:
-					this.selected = new ThingDefWidget(d as ThingDef, type);
-					break;
-				case DefType.Mineable:
-					this.selected = new ThingDefWidget(d as ThingDef, type);
 					break;
 			}
             this.ResetScrolls();

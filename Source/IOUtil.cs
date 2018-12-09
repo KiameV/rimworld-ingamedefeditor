@@ -132,7 +132,7 @@ namespace InGameDefEditor
 			Save(DefType.Ingestible, new RootIngestible() { stats = ingestibles });
 
 			Util.Populate(out List<ThingDefStats> mineable, Defs.MineableDefs.Values, v => HasChanged(new ThingDefStats(v)), false);
-			Save(DefType.Mineable, new RootMineable() { stats = ingestibles });
+			Save(DefType.Mineable, new RootMineable() { stats = mineable });
 		}
 
 		private static string basePath = null;

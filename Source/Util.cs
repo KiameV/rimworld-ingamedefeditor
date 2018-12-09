@@ -456,5 +456,10 @@ namespace InGameDefEditor
 				return "None";
 			return d.label ?? d.defName;
 		}
+
+		public static string ToString(object o)
+		{
+			return o == null ? "null" : o.ToString();
+		}
 	}
 }

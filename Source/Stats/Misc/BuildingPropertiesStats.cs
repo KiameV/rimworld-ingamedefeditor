@@ -275,23 +275,23 @@ namespace InGameDefEditor.Stats.Misc
 
 		public bool Initialize()
 		{
-			this.naturalTerrain.Initialize();
-			this.leaveTerrain.Initialize();
-			this.smoothedThing.Initialize();
-			this.unsmoothedThing.Initialize();
-			this.turretGunDef.Initialize();
-			this.defaultPlantToGrow.Initialize();
-			this.mineableThing.Initialize();
-			this.soundDispense.Initialize();
-			this.soundDoorOpenPowered.Initialize();
-			this.soundDoorClosePowered.Initialize();
-			this.soundDoorOpenManual.Initialize();
-			this.soundDoorCloseManual.Initialize();
-			this.soundAmbient.Initialize();
-			this.trapDamageCategory.Initialize();
-			this.joyKind.Initialize();
-			this.spawnedConceptLearnOpportunity.Initialize();
-			this.boughtConceptLearnOpportunity.Initialize();
+			Util.InitializeDefStat(this.naturalTerrain);
+			Util.InitializeDefStat(this.leaveTerrain);
+			Util.InitializeDefStat(this.smoothedThing);
+			Util.InitializeDefStat(this.unsmoothedThing);
+			Util.InitializeDefStat(this.turretGunDef);
+			Util.InitializeDefStat(this.defaultPlantToGrow);
+			Util.InitializeDefStat(this.mineableThing);
+			Util.InitializeDefStat(this.soundDispense);
+			Util.InitializeDefStat(this.soundDoorOpenPowered);
+			Util.InitializeDefStat(this.soundDoorClosePowered);
+			Util.InitializeDefStat(this.soundDoorOpenManual);
+			Util.InitializeDefStat(this.soundDoorCloseManual);
+			Util.InitializeDefStat(this.soundAmbient);
+			Util.InitializeDefStat(this.trapDamageCategory);
+			Util.InitializeDefStat(this.joyKind);
+			Util.InitializeDefStat(this.spawnedConceptLearnOpportunity);
+			Util.InitializeDefStat(this.boughtConceptLearnOpportunity);
 			return true;
 		}
 
@@ -350,29 +350,29 @@ namespace InGameDefEditor.Stats.Misc
 				"\nworkSpeedPenaltyTemperature: " + this.workSpeedPenaltyTemperature +
 				"\nwatchBuildingStandRectWidth: " + this.watchBuildingStandRectWidth +
 				"\nhaulToContainerDuration: " + this.haulToContainerDuration +
-				"\nmineableScatterLumpSizeRange: " + this.mineableScatterLumpSizeRange.ToString() +
-				"\nwatchBuildingStandDistanceRange: " + this.watchBuildingStandDistanceRange.ToString() +
-				"\blueprintGraphicData: " + this.blueprintGraphicData.ToString() +
-				"\ntrapUnarmedGraphicData: " + this.trapUnarmedGraphicData.ToString() +
-				"\nfullGraveGraphicData: " + this.fullGraveGraphicData.ToString() +
-				"\nnaturalTerrain: " + this.naturalTerrain +
-				"\nleaveTerrain: " + this.leaveTerrain +
-				"\nsmoothedThing: " + this.smoothedThing +
-				"\nunsmoothedThing: " + this.unsmoothedThing +
-				"\nturretGunDef: " + this.turretGunDef +
-				"\ndefaultPlantToGrow: " + this.defaultPlantToGrow +
-				"\nmineableThing: " + this.mineableThing +
-				"\nsoundDispense: " + this.soundDispense +
-				"\nsoundDoorOpenPowered: " + this.soundDoorOpenPowered +
-				"\nsoundDoorClosePowered: " + this.soundDoorClosePowered +
-				"\nsoundDoorOpenManual: " + this.soundDoorOpenManual +
-				"\nsoundDoorCloseManual: " + this.soundDoorCloseManual +
-				"\nsoundAmbient: " + this.soundAmbient +
-				"\ntrapDamageCategory: " + this.trapDamageCategory +
-				"\njoyKind: " + this.joyKind +
-				"\nspawnedConceptLearnOpportunity: " + this.spawnedConceptLearnOpportunity +
-				"\nboughtConceptLearnOpportunity: " + this.boughtConceptLearnOpportunity +
-				"\nbuildingTags: " + string.Join(", ", this.buildingTags.ToArray());
+				"\nmineableScatterLumpSizeRange: " + Util.ToString(this.mineableScatterLumpSizeRange) +
+				"\nwatchBuildingStandDistanceRange: " + Util.ToString(this.watchBuildingStandDistanceRange) +
+				"\blueprintGraphicData: " + Util.ToString(this.blueprintGraphicData) +
+				"\ntrapUnarmedGraphicData: " + Util.ToString(this.trapUnarmedGraphicData) +
+				"\nfullGraveGraphicData: " + Util.ToString(this.fullGraveGraphicData) +
+				"\nnaturalTerrain: " + Util.ToString(this.naturalTerrain) +
+				"\nleaveTerrain: " + Util.ToString(this.leaveTerrain) +
+				"\nsmoothedThing: " + Util.ToString(this.smoothedThing) +
+				"\nunsmoothedThing: " + Util.ToString(this.unsmoothedThing) +
+				"\nturretGunDef: " + Util.ToString(this.turretGunDef) +
+				"\ndefaultPlantToGrow: " + Util.ToString(this.defaultPlantToGrow) +
+				"\nmineableThing: " + Util.ToString(this.mineableThing) +
+				"\nsoundDispense: " + Util.ToString(this.soundDispense) +
+				"\nsoundDoorOpenPowered: " + Util.ToString(this.soundDoorOpenPowered) +
+				"\nsoundDoorClosePowered: " + Util.ToString(this.soundDoorClosePowered) +
+				"\nsoundDoorOpenManual: " + Util.ToString(this.soundDoorOpenManual) +
+				"\nsoundDoorCloseManual: " + Util.ToString(this.soundDoorCloseManual) +
+				"\nsoundAmbient: " + Util.ToString(this.soundAmbient) +
+				"\ntrapDamageCategory: " + Util.ToString(this.trapDamageCategory) +
+				"\njoyKind: " + Util.ToString(this.joyKind) +
+				"\nspawnedConceptLearnOpportunity: " + Util.ToString(this.spawnedConceptLearnOpportunity) +
+				"\nboughtConceptLearnOpportunity: " + Util.ToString(this.boughtConceptLearnOpportunity) +
+				"\nbuildingTags: " + ((this.buildingTags != null) ? string.Join(", ", this.buildingTags.ToArray()) : "null");
 		}
 
 		public override int GetHashCode()
@@ -382,7 +382,6 @@ namespace InGameDefEditor.Stats.Misc
 
 		public override bool Equals(object obj)
 		{
-			return false;
 			if (obj != null &&
 				obj is BuildingPropertiesStats s)
 			{

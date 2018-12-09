@@ -13,5 +13,6 @@
 		Difficulty,
 		Ingestible,
 		Mineable,
+		Disabled,
 	};
 }
