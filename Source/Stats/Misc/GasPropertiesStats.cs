@@ -20,15 +20,12 @@ namespace InGameDefEditor.Stats.Misc
 			this.rotationSpeed = p.rotationSpeed;
 		}
 
-		public GasProperties ToGasProperties()
+		public void ApplyStats(GasProperties p)
 		{
-			return new GasProperties()
-			{
-				blockTurretTracking = this.blockTurretTracking,
-				accuracyPenalty = this.accuracyPenalty,
-				expireSeconds = this.expireSeconds.ToFloatRange(),
-				rotationSpeed = this.rotationSpeed,
-			};
+			p.blockTurretTracking = this.blockTurretTracking;
+			p.accuracyPenalty = this.accuracyPenalty;
+			p.expireSeconds = this.expireSeconds.ToFloatRange();
+			p.rotationSpeed = this.rotationSpeed;
 		}
 
 		public override bool Equals(object obj)

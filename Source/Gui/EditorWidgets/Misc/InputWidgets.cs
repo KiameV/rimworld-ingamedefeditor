@@ -121,17 +121,17 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
         }
     }
 
-    class MinMaxInputWidget<P> : IInputWidget
+    class MinMaxInputWidget<P, V> : IInputWidget
     {
         private readonly string label;
-        private readonly FloatInputWidget<P> min;
-        private readonly FloatInputWidget<P> max;
+        private readonly AInputWidget<P, V> min;
+        private readonly AInputWidget<P, V> max;
 
         public P Parent { get { return min.Parent; } }
 
 		public string DisplayLabel => label;
 
-		public MinMaxInputWidget(string label, FloatInputWidget<P> min, FloatInputWidget<P> max)
+		public MinMaxInputWidget(string label, AInputWidget<P, V> min, AInputWidget<P, V> max)
         {
             this.label = label;
             this.min = min;

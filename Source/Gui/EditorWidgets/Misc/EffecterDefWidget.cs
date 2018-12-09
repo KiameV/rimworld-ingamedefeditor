@@ -7,7 +7,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 		public EffecterDef EffecterDef;
 
 		public FloatInputWidget<EffecterDef> positionRadius = null;
-		public MinMaxInputWidget<EffecterDef> offsetTowardsTarget = null;
+		public MinMaxInputWidget<EffecterDef, float> offsetTowardsTarget = null;
 		// TODO public List<SubEffecterDef> children;
 
 		public string DisplayLabel => Util.GetDefLabel(this.EffecterDef);
@@ -18,7 +18,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 			this.positionRadius = new FloatInputWidget<EffecterDef>(
 				this.EffecterDef, "Position Radius", (d) => d.positionRadius, (d, f) => d.positionRadius = f);
-			this.offsetTowardsTarget = new MinMaxInputWidget<EffecterDef>("Offset Towards Target",
+			this.offsetTowardsTarget = new MinMaxInputWidget<EffecterDef, float>("Offset Towards Target",
 				new FloatInputWidget<EffecterDef>(this.EffecterDef, "Min", (d) => d.offsetTowardsTarget.min, (d, f) => d.offsetTowardsTarget.min = f),
 				new FloatInputWidget<EffecterDef>(this.EffecterDef, "Max", (d) => d.offsetTowardsTarget.max, (d, f) => d.offsetTowardsTarget.max = f));
 		}

@@ -18,6 +18,7 @@ namespace InGameDefEditor
 		public static readonly SortedDictionary<string, StorytellerDef> StoryTellerDefs = new SortedDictionary<string, StorytellerDef>();
 		public static readonly SortedDictionary<string, DifficultyDef> DifficultyDefs = new SortedDictionary<string, DifficultyDef>();
 		public static readonly SortedDictionary<string, ThingDef> IngestibleDefs = new SortedDictionary<string, ThingDef>();
+		public static readonly SortedDictionary<string, ThingDef> MineableDefs = new SortedDictionary<string, ThingDef>();
 		private static bool isInit = false;
 
 		public static void Initialize()
@@ -27,6 +28,7 @@ namespace InGameDefEditor
                 int i = 0;
                 foreach (ThingDef d in DefDatabase<ThingDef>.AllDefsListForReading)
                 {
+					string label = Util.GetDefLabel(d);
 					if (d == null)
 					{
 						Log.Warning("Null definition found. Skipping.");
@@ -36,11 +38,12 @@ namespace InGameDefEditor
                     ++i;
                     if (d.IsApparel)
 					{
-						ApparelDefs[Util.GetDefLabel(d)] = d;
+						ApparelDefs[label] = d;
                     }
+
                     if (d.IsWeapon)
 					{
-						WeaponDefs[Util.GetDefLabel(d)] = d;
+						WeaponDefs[label] = d;
 						if (d.IsWeaponUsingProjectiles && d.Verbs != null)
 						{
 							d.Verbs.ForEach(v =>
@@ -52,15 +55,22 @@ namespace InGameDefEditor
 							});
 						}
                     }
+
                     if (d.defName.StartsWith("Arrow_") || 
                         d.defName.StartsWith("Bullet_") || 
                         d.defName.StartsWith("Proj_"))
 					{
-						ProjectileDefs[Util.GetDefLabel(d)] = d;
+						ProjectileDefs[label] = d;
                     }
+
 					if (d.IsIngestible)
 					{
-						IngestibleDefs[Util.GetDefLabel(d)] = d;
+						IngestibleDefs[label] = d;
+					}
+
+					if (d.mineable)
+					{
+						MineableDefs[label] = d;
 					}
                 }
 
@@ -115,6 +125,9 @@ namespace InGameDefEditor
 				Backup.ApplyStats(d);
 
 			foreach (ThingDef d in Defs.IngestibleDefs.Values)
+				Backup.ApplyStats(d);
+
+			foreach (ThingDef d in Defs.MineableDefs.Values)
 				Backup.ApplyStats(d);
 		}
 	}

@@ -38,6 +38,7 @@ namespace InGameDefEditor
 				new ButtonWidget<StorytellerDef>("Story Tellers", DefType.StoryTeller, Defs.StoryTellerDefs.Values, this.CreateSelected),
 				new ButtonWidget<DifficultyDef>("Difficulty", DefType.Difficulty, this.SortDifficultyOptions(Defs.DifficultyDefs.Values), this.CreateSelected),
 				new ButtonWidget<ThingDef>("Ingestible", DefType.Ingestible, Defs.IngestibleDefs.Values, this.CreateSelected),
+				new ButtonWidget<ThingDef>("Mineable", DefType.Mineable, Defs.MineableDefs.Values, this.CreateSelected),
 			};
 
 			//if (Controller.EnableRecipes)
@@ -197,6 +198,9 @@ namespace InGameDefEditor
 					this.selected = new DifficultyDefWidget(d as DifficultyDef, type);
 					break;
 				case DefType.Ingestible:
+					this.selected = new ThingDefWidget(d as ThingDef, type);
+					break;
+				case DefType.Mineable:
 					this.selected = new ThingDefWidget(d as ThingDef, type);
 					break;
 			}

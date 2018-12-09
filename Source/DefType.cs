@@ -12,5 +12,6 @@
 		StoryTeller,
 		Difficulty,
 		Ingestible,
+		Mineable,
 	};
 }

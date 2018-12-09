@@ -61,6 +61,9 @@ namespace InGameDefEditor
 					if (Load(DefType.Ingestible, out RootIngestible ing))
 						ing?.stats.ForEach((d) => Initialize(d));
 
+					if (Load(DefType.Mineable, out RootMineable min))
+						min?.stats.ForEach((d) => Initialize(d));
+
 					// Do Last
 					if (Load("DisabledDefs", out RootDisabledDefs rdd))
 					{
@@ -127,6 +130,9 @@ namespace InGameDefEditor
 
 			Util.Populate(out List<ThingDefStats> ingestibles, Defs.IngestibleDefs.Values, v => HasChanged(new ThingDefStats(v)), false);
 			Save(DefType.Ingestible, new RootIngestible() { stats = ingestibles });
+
+			Util.Populate(out List<ThingDefStats> mineable, Defs.MineableDefs.Values, v => HasChanged(new ThingDefStats(v)), false);
+			Save(DefType.Mineable, new RootMineable() { stats = ingestibles });
 		}
 
 		private static string basePath = null;

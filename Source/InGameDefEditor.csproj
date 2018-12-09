@@ -88,6 +88,7 @@
     <Compile Include="Gui\EditorWidgets\Dialog\Dialog_StoryTellerComponentDialog.cs" />
     <Compile Include="Gui\EditorWidgets\DifficultyDefWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\ACollapsibleWidget.cs" />
+    <Compile Include="Gui\EditorWidgets\Misc\BuildingPropertiesWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\EffecterDefWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\IngestiblePropertiesWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\IngredientCountWidget.cs" />

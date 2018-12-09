@@ -12,6 +12,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
         private List<ToolWidget> ToolWidgets = new List<ToolWidget>();
         private readonly List<FloatInputWidget<StatModifier>> EquipmentModifiers = new List<FloatInputWidget<StatModifier>>();
 		private IngestiblePropertiesWidget ingestiblePropertiesWidget = null;
+		private BuildingPropertiesWidget buildingPropertiesWidget = null;
 
 		public ThingDefWidget(ThingDef def, DefType type) : base(def, type)
         {
@@ -39,6 +40,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 this.DrawTools(x, ref y, width);
             }
 			this.ingestiblePropertiesWidget?.Draw(x, ref y, width);
+			this.buildingPropertiesWidget?.Draw(x, ref y, width);
 		}
 
         public override void DrawRightInput(float x, ref float y, float width)
@@ -80,6 +82,9 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			this.ingestiblePropertiesWidget = null;
 			if (base.Def.ingestible != null)
 				this.ingestiblePropertiesWidget = new IngestiblePropertiesWidget(base.Def.ingestible);
+			this.buildingPropertiesWidget = null;
+			if (base.Def.building != null)
+				this.buildingPropertiesWidget = new BuildingPropertiesWidget(base.Def.building);
 			this.ResetBuffers();
 		}
 
@@ -91,6 +96,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
             this.ToolWidgets.ForEach(v => v.ResetBuffers());
             this.EquipmentModifiers.ForEach(v => v.ResetBuffers());
 			this.ingestiblePropertiesWidget?.ResetBuffers();
+			this.buildingPropertiesWidget?.ResetBuffers();
 		}
 
 		private void DrawVerbs(float x, ref float y, float width)

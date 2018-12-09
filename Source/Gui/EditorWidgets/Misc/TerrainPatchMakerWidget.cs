@@ -15,7 +15,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
         public string DisplayLabel => Parent.perlinFrequency.ToString();
 
         private List<IInputWidget> inputWidgets;
-        private List<MinMaxInputWidget<TerrainThreshold>> thresholds;
+        private List<MinMaxInputWidget<TerrainThreshold, float>> thresholds;
         private PlusMinusArgs<TerrainDef> thresholdsArgs;
 
         public TerrainPatchMakerWidget(TerrainPatchMaker parent)
@@ -34,14 +34,14 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
             if (this.Parent.thresholds != null)
             {
-                this.thresholds = new List<MinMaxInputWidget<TerrainThreshold>>(this.Parent.thresholds.Count);
+                this.thresholds = new List<MinMaxInputWidget<TerrainThreshold, float>>(this.Parent.thresholds.Count);
                 foreach (var v in this.Parent.thresholds)
                 {
                     this.thresholds.Add(this.CreateMinMaxInputWidget(v));
                 }
             }
             else
-                this.thresholds = new List<MinMaxInputWidget<TerrainThreshold>>(0);
+                this.thresholds = new List<MinMaxInputWidget<TerrainThreshold, float>>(0);
 
             this.thresholdsArgs = new PlusMinusArgs<TerrainDef>()
             {
@@ -62,7 +62,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
                 onRemove = delegate (TerrainDef d)
                 {
                     this.Parent.thresholds.RemoveAll((TerrainThreshold tt) => tt.terrain == d);
-                    this.thresholds.RemoveAll((MinMaxInputWidget<TerrainThreshold> mmw) => mmw.Parent.terrain == d);
+                    this.thresholds.RemoveAll((MinMaxInputWidget<TerrainThreshold, float> mmw) => mmw.Parent.terrain == d);
                 },
 				getDisplayName = (TerrainDef def) => def.label
 			};
@@ -90,9 +90,9 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
                 v.ResetBuffers();
         }
 
-        private MinMaxInputWidget<TerrainThreshold> CreateMinMaxInputWidget(TerrainThreshold tt)
+        private MinMaxInputWidget<TerrainThreshold, float> CreateMinMaxInputWidget(TerrainThreshold tt)
         {
-            return new MinMaxInputWidget<TerrainThreshold>(
+            return new MinMaxInputWidget<TerrainThreshold, float>(
                 tt.terrain.label,
                 new FloatInputWidget<TerrainThreshold>(tt, "Min", (TerrainThreshold t) => t.min, (TerrainThreshold t, float f) => t.min = f),
                 new FloatInputWidget<TerrainThreshold>(tt, "Max", (TerrainThreshold t) => t.max, (TerrainThreshold t, float f) => t.max = f));

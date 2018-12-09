@@ -266,6 +266,7 @@ namespace InGameDefEditor.Stats
 
 			this.apparel?.Initialize();
 			this.ingestible?.Initialize();
+			this.building?.Initialize();
 
 			return true;
         }
@@ -275,18 +276,18 @@ namespace InGameDefEditor.Stats
             if (base.Equals(obj) &&
                 obj is ThingDefStats s)
             {
-                if (Util.AreEqual(this.EquippedStatOffsets, s.EquippedStatOffsets) &&
-                    Util.AreEqual(this.VerbStats, s.VerbStats, null) &&
-                    Util.AreEqual(this.Tools, s.Tools, null) && 
-					object.Equals(this.ingestible, s.ingestible))
+				if (Util.AreEqual(this.EquippedStatOffsets, s.EquippedStatOffsets) &&
+					Util.AreEqual(this.VerbStats, s.VerbStats, null) &&
+					Util.AreEqual(this.Tools, s.Tools, null) &&
+					object.Equals(this.ingestible, s.ingestible) &&
+					object.Equals(this.building, s.building))
                 {
 					return true;
                 }
 			}
 			return false;
         }
-
-#region Apply____
+		
 		public override void ApplyStats(Def to)
         {
 #if DEBUG_THINGDEF
@@ -326,6 +327,11 @@ namespace InGameDefEditor.Stats
 				{
 					this.ingestible?.ApplyStats(t.ingestible);
 				}
+
+				if (this.building != null && t.building != null)
+				{
+					this.building?.ApplyStats(t.building);
+				}
 #if DEBUG_THINGDEF
             Log.Warning("ApplyStats Done");
 #endif
@@ -333,67 +339,6 @@ namespace InGameDefEditor.Stats
 				else
 					Log.Error("ThingDefStat passed none ThingDef!");
         }
-		
-        private void ApplyVerbStats(ThingDef d)
-        {
-            if (d.Verbs == null || d.Verbs.Count == 0)
-                return;
-
-            if (this.VerbStats == null || this.VerbStats.Count == 0)
-            {
-                Log.Error("Null or Empty verbs " + this.Def.defName);
-                return;
-            }
-
-            Dictionary<string, VerbProperties> lookup = new Dictionary<string, VerbProperties>();
-            foreach (VerbProperties v in d.Verbs)
-            {
-                lookup.Add(v.label, v);
-            }
-            
-            foreach (VerbStats from in this.VerbStats)
-            {
-                if (lookup.TryGetValue(from.label, out VerbProperties to))
-                {
-                    from.ApplyStats(to);
-                }
-            }
-            lookup.Clear();
-            lookup = null;
-        }
-
-        private void ApplyTools(ThingDef d)
-        {
-            if (d.tools != null)
-                d.tools.Clear();
-
-            if (this.Tools == null || this.Tools.Count == 0)
-                return;
-
-            if (d.tools == null)
-                d.tools = new List<Tool>(this.Tools.Count);
-
-            Dictionary<string, Tool> lookup = new Dictionary<string, Tool>();
-            foreach (Tool to in d.tools)
-            {
-                lookup.Add(to.label, to);
-            }
-
-            foreach (ToolStats from in this.Tools)
-            {
-                if (lookup.TryGetValue(from.label, out Tool to))
-                {
-                    from.ApplyStats(to);
-                }
-                else
-                {
-                    Tool t = new Tool();
-                    from.ApplyStats(t);
-                    d.tools.Add(t);
-                }
-            }
-        }
-#endregion
 
 		public override string ToString()
         {
@@ -429,6 +374,66 @@ namespace InGameDefEditor.Stats
 		public static void SetCanOverlapZones(ThingDef d, bool b)
 		{
 			typeof(ThingDef).GetField("canOverlapZones", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(d, b);
+		}
+
+		private void ApplyTools(ThingDef d)
+		{
+			if (d.tools != null)
+				d.tools.Clear();
+
+			if (this.Tools == null || this.Tools.Count == 0)
+				return;
+
+			if (d.tools == null)
+				d.tools = new List<Tool>(this.Tools.Count);
+
+			Dictionary<string, Tool> lookup = new Dictionary<string, Tool>();
+			foreach (Tool to in d.tools)
+			{
+				lookup.Add(to.label, to);
+			}
+
+			foreach (ToolStats from in this.Tools)
+			{
+				if (lookup.TryGetValue(from.label, out Tool to))
+				{
+					from.ApplyStats(to);
+				}
+				else
+				{
+					Tool t = new Tool();
+					from.ApplyStats(t);
+					d.tools.Add(t);
+				}
+			}
+		}
+
+		private void ApplyVerbStats(ThingDef d)
+		{
+			if (d.Verbs == null || d.Verbs.Count == 0)
+				return;
+
+			if (this.VerbStats == null || this.VerbStats.Count == 0)
+			{
+				Log.Error("Null or Empty verbs " + this.Def.defName);
+				return;
+			}
+
+			Dictionary<string, VerbProperties> lookup = new Dictionary<string, VerbProperties>();
+			foreach (VerbProperties v in d.Verbs)
+			{
+				lookup.Add(v.label, v);
+			}
+
+			foreach (VerbStats from in this.VerbStats)
+			{
+				if (lookup.TryGetValue(from.label, out VerbProperties to))
+				{
+					from.ApplyStats(to);
+				}
+			}
+			lookup.Clear();
+			lookup = null;
 		}
 	}
 }

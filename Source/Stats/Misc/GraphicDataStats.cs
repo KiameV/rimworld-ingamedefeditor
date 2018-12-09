@@ -18,17 +18,18 @@ namespace InGameDefEditor.Stats.Misc
 		public bool drawRotated;
 		public bool allowFlip;
 		public float flipExtraRotation;
-		public ShadowDataStats shadowData;
-		public DamageGraphicDataStats damageData;
 		public LinkDrawerType linkType;
 		public LinkFlags linkFlags;
+
+		public ShadowDataStats shadowData;
+		public DamageGraphicDataStats damageData;
 
 		public GraphicDataStats() { }
 		public GraphicDataStats(GraphicData d)
 		{
 			this.texPath = d.texPath;
 			//this.graphicClass = d.graphicClass;
-			this.shaderType = Util.AssignDefStat(d.shaderType);
+			Util.AssignDefStat(d.shaderType, out this.shaderType);
 			this.color = new ColorStats(d.color);
 			this.colorTwo = new ColorStats(d.colorTwo);
 			this.drawSize = new Vector2Stats(d.drawSize);
@@ -42,6 +43,12 @@ namespace InGameDefEditor.Stats.Misc
 				this.damageData = new DamageGraphicDataStats(d.damageData);
 			this.linkType = d.linkType;
 			this.linkFlags = d.linkFlags;
+		}
+
+		public bool Initialize()
+		{
+			this.shaderType?.Initialize();
+			return true;
 		}
 	}
 }

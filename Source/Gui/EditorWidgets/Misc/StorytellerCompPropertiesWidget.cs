@@ -113,7 +113,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 							ooc, "Apply Raid Beacon Thread Mean Time Between Factor", c => c.applyRaidBeaconThreatMtbFactor, (c, v) => c.applyRaidBeaconThreatMtbFactor = v));
 						this.inputWidgets.Add(new FloatInputWidget<StorytellerCompProperties_OnOffCycle>(
 							ooc, "Force Raid Enemy Before Days Passed", c => c.forceRaidEnemyBeforeDaysPassed, (c, v) => c.forceRaidEnemyBeforeDaysPassed = v));
-						this.inputWidgets.Add(new MinMaxInputWidget<StorytellerCompProperties_OnOffCycle>(
+						this.inputWidgets.Add(new MinMaxInputWidget<StorytellerCompProperties_OnOffCycle, float>(
 							"Num Incidents range",
 							new FloatInputWidget<StorytellerCompProperties_OnOffCycle>(
 								ooc, "Min", c => c.numIncidentsRange.min, (c, v) => c.numIncidentsRange.min = v),
@@ -130,7 +130,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 							rm, "Max Threat Big Interval Days", c => c.maxThreatBigIntervalDays, (c, v) => c.maxThreatBigIntervalDays = v));
 						this.inputWidgets.Add(new BoolInputWidget<StorytellerCompProperties_RandomMain>(
 							rm, "Skip Threat Big If Raid Beacon", c => c.skipThreatBigIfRaidBeacon, (c, v) => c.skipThreatBigIfRaidBeacon = v));
-						this.inputWidgets.Add(new MinMaxInputWidget<StorytellerCompProperties_RandomMain>(
+						this.inputWidgets.Add(new MinMaxInputWidget<StorytellerCompProperties_RandomMain, float>(
 							"Random Points Factor Range",
 							new FloatInputWidget<StorytellerCompProperties_RandomMain>(
 								rm, "Min", c => c.randomPointsFactorRange.min, (c, v) => c.randomPointsFactorRange.min = v),

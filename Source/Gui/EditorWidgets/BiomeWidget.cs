@@ -13,7 +13,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
         private readonly List<IInputWidget> inputWidgets;
 
         private List<FloatInputWidget<WeatherCommonalityRecord>> weatherCommonalityRecords = new List<FloatInputWidget<WeatherCommonalityRecord>>();
-        private List<MinMaxInputWidget<TerrainThreshold>> terrainsByFertility = new List<MinMaxInputWidget<TerrainThreshold>>();
+        private List<MinMaxInputWidget<TerrainThreshold, float>> terrainsByFertility = new List<MinMaxInputWidget<TerrainThreshold, float>>();
         private List<SoundDef> soundsAmbient = new List<SoundDef>();
         private List<TerrainPatchMakerWidget> terrainPatchMakers = new List<TerrainPatchMakerWidget>();
         private List<FloatInputWidget<BiomePlantRecord>> wildPlants = new List<FloatInputWidget<BiomePlantRecord>>();
@@ -88,7 +88,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
             this.terrainFertilityPlusMinusArgs = new PlusMinusArgs<TerrainDef>()
 			{
 				allItems = DefDatabase<TerrainDef>.AllDefsListForReading,
-                beingUsed = () => Util.ConvertItems(this.terrainsByFertility, (MinMaxInputWidget<TerrainThreshold> w) => w.Parent.terrain),
+                beingUsed = () => Util.ConvertItems(this.terrainsByFertility, (MinMaxInputWidget<TerrainThreshold, float> w) => w.Parent.terrain),
                 onAdd = delegate(TerrainDef td)
                 {
                     TerrainThreshold tt = new TerrainThreshold() { terrain = td };
@@ -97,7 +97,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 },
                 onRemove = delegate(TerrainDef td)
                 {
-                    this.terrainsByFertility.RemoveAll((MinMaxInputWidget<TerrainThreshold> w) => w.Parent.terrain == td);
+                    this.terrainsByFertility.RemoveAll((MinMaxInputWidget<TerrainThreshold, float> w) => w.Parent.terrain == td);
                     base.Def.terrainsByFertility.RemoveAll((TerrainThreshold tt) => tt.terrain == td);
 				},
 				getDisplayName = (TerrainDef def) => def.label,
@@ -390,9 +390,9 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 r, r.diseaseInc.label, (BiomeDiseaseRecord w) => w.commonality, (BiomeDiseaseRecord w, float f) => w.commonality = f);
         }
 
-        private MinMaxInputWidget<TerrainThreshold> CreateThresholdWidget(TerrainThreshold tt)
+        private MinMaxInputWidget<TerrainThreshold, float> CreateThresholdWidget(TerrainThreshold tt)
         {
-            return new MinMaxInputWidget<TerrainThreshold>(
+            return new MinMaxInputWidget<TerrainThreshold, float>(
                 tt.terrain.label,
                 new FloatInputWidget<TerrainThreshold>(tt, "Min", (TerrainThreshold t) => t.min, (TerrainThreshold t, float f) => t.min = f),
                 new FloatInputWidget<TerrainThreshold>(tt, "Max", (TerrainThreshold t) => t.max, (TerrainThreshold t, float f) => t.max = f));

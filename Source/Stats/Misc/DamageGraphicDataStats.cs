@@ -13,7 +13,6 @@ namespace InGameDefEditor.Stats.Misc
 		public RectStats rectS;
 		public RectStats rectW;
 		public RectStats rect;
-		public List<string> scratches;
 		public string cornerTL;
 		public string cornerTR;
 		public string cornerBL;
@@ -22,6 +21,7 @@ namespace InGameDefEditor.Stats.Misc
 		public string edgeRight;
 		public string edgeTop;
 		public string edgeBot;
+		public List<string> scratches;
 
 		public DamageGraphicDataStats() { }
 		public DamageGraphicDataStats(DamageGraphicData d)

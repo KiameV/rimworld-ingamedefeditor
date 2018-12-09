@@ -16,9 +16,9 @@ namespace InGameDefEditor.Stats.Misc
 		//public StorageSettings fixedStorageSettings;
 		//public StorageSettings defaultStorageSettings;
 		//public Graphic trapUnarmedGraphic;
+		//public string turretTopGraphicPath;
 
 		public bool isEdifice;
-		public List<string> buildingTags;
 		public bool isInert;
 		public bool deconstructible;
 		public bool alwaysDeconstructible;
@@ -52,7 +52,6 @@ namespace InGameDefEditor.Stats.Misc
 		public float nutritionCostPerDispense;
 		public float turretBurstWarmupTime;
 		public float turretBurstCooldownTime;
-		//public string turretTopGraphicPath;
 		public float turretTopDrawSize;
 		public Vector2Stats turretTopOffset;
 		public bool ai_combatDangerous;
@@ -96,6 +95,8 @@ namespace InGameDefEditor.Stats.Misc
 		public DefStat<ConceptDef> spawnedConceptLearnOpportunity;
 		public DefStat<ConceptDef> boughtConceptLearnOpportunity;
 
+		public List<string> buildingTags;
+
 		public BuildingPropertiesStats() { }
 		public BuildingPropertiesStats(BuildingProperties p)
 		{
@@ -133,7 +134,6 @@ namespace InGameDefEditor.Stats.Misc
 			this.nutritionCostPerDispense = p.nutritionCostPerDispense;
 			this.turretBurstWarmupTime = p.turretBurstWarmupTime;
 			this.turretBurstCooldownTime = p.turretBurstCooldownTime;
-			//this.turretTopGraphicPath = p.turretTopGraphicPath;
 			this.turretTopDrawSize = p.turretTopDrawSize;
 			this.turretTopOffset = new Vector2Stats(p.turretTopOffset);
 			this.ai_combatDangerous = p.ai_combatDangerous;
@@ -183,6 +183,287 @@ namespace InGameDefEditor.Stats.Misc
 			Util.AssignDefStat(p.boughtConceptLearnOpportunity, out this.boughtConceptLearnOpportunity);
 
 			Util.Populate(out this.buildingTags, p.buildingTags);
+		}
+
+		public void ApplyStats(BuildingProperties p)
+		{
+			p.isEdifice = this.isEdifice;
+			p.isInert = this.isInert;
+			SetDeconstructible(p, this.deconstructible);
+			p.alwaysDeconstructible = this.alwaysDeconstructible;
+			p.claimable = this.claimable;
+			p.isSittable = this.isSittable;
+			p.expandHomeArea = this.expandHomeArea;
+			p.uninstallWork = this.uninstallWork;
+			p.wantsHopperAdjacent = this.wantsHopperAdjacent;
+			p.allowWireConnection = this.allowWireConnection;
+			p.shipPart = this.shipPart;
+			p.canPlaceOverImpassablePlant = this.canPlaceOverImpassablePlant;
+			p.heatPerTickWhileWorking = this.heatPerTickWhileWorking;
+			p.canBuildNonEdificesUnder = this.canBuildNonEdificesUnder;
+			p.canPlaceOverWall = this.canPlaceOverImpassablePlant;
+			p.allowAutoroof = this.allowAutoroof;
+			p.preventDeteriorationOnTop = this.preventDeteriorationOnTop;
+			p.preventDeteriorationInside = this.preventDeteriorationInside;
+			p.isMealSource = this.isMealSource;
+			p.isNaturalRock = this.isNaturalRock;
+			p.isResourceRock = this.isResourceRock;
+			p.repairable = this.repairable;
+			p.roofCollapseDamageMultiplier = this.roofCollapseDamageMultiplier;
+			p.hasFuelingPort = this.hasFuelingPort;
+			p.isPlayerEjectable = this.isPlayerEjectable;
+			p.bed_healPerDay = this.bed_healPerDay;
+			p.bed_defaultMedical = this.bed_defaultMedical;
+			p.bed_showSleeperBody = this.bed_showSleeperBody;
+			p.bed_humanlike = this.bed_humanlike;
+			p.bed_maxBodySize = this.bed_maxBodySize;
+			p.bed_caravansCanUse = this.bed_caravansCanUse;
+			p.nutritionCostPerDispense = this.nutritionCostPerDispense;
+			p.turretBurstWarmupTime = this.turretBurstWarmupTime;
+			p.turretBurstCooldownTime = this.turretBurstCooldownTime;
+			p.turretTopDrawSize = this.turretTopDrawSize;
+			p.turretTopOffset = this.turretTopOffset.ToVector2();
+			p.ai_combatDangerous = this.ai_combatDangerous;
+			p.ai_chillDestination = this.ai_chillDestination;
+			p.mineableYield = this.mineableYield;
+			p.mineableNonMinedEfficiency = this.mineableNonMinedEfficiency;
+			p.mineableDropChance = this.mineableDropChance;
+			p.mineableYieldWasteable = this.mineableYieldWasteable;
+			p.mineableScatterCommonality = this.mineableScatterCommonality;
+			p.ignoreStoredThingsBeauty = this.ignoreStoredThingsBeauty;
+			p.isTrap = this.isTrap;
+			p.trapDestroyOnSpring = this.trapDestroyOnSpring;
+			p.trapPeacefulWildAnimalsSpringChanceFactor = this.trapPeacefulWildAnimalsSpringChanceFactor;
+			p.unpoweredWorkTableWorkSpeedFactor = this.unpoweredWorkTableWorkSpeedFactor;
+			p.workSpeedPenaltyOutdoors = this.workSpeedPenaltyOutdoors;
+			p.workSpeedPenaltyTemperature = this.workSpeedPenaltyTemperature;
+			p.watchBuildingStandRectWidth = this.watchBuildingStandRectWidth;
+			p.haulToContainerDuration = this.haulToContainerDuration;
+
+			if (this.mineableScatterLumpSizeRange != null && p.mineableScatterLumpSizeRange != null)
+				p.mineableScatterLumpSizeRange = this.mineableScatterLumpSizeRange.ToIntRange();
+			if (this.watchBuildingStandDistanceRange != null && p.watchBuildingStandDistanceRange != null)
+				p.watchBuildingStandDistanceRange = this.watchBuildingStandDistanceRange.ToIntRange();
+			// TODO
+			//if (this.blueprintGraphicData != null && p.blueprintGraphicData != null)
+			//this.blueprintGraphicData = this.blueprintGraphicData.app
+			//if (this.trapUnarmedGraphicData != null && p.trapUnarmedGraphicData != null)
+			//	this.trapUnarmedGraphicData = new GraphicDataStats(p.trapUnarmedGraphicData);
+			//if (this.fullGraveGraphicData != null && p.fullGraveGraphicData != null)
+			//	this.fullGraveGraphicData = new GraphicDataStats(p.fullGraveGraphicData);
+
+			Util.AssignDef(this.naturalTerrain, out p.naturalTerrain);
+			Util.AssignDef(this.leaveTerrain, out p.leaveTerrain);
+			Util.AssignDef(this.smoothedThing, out p.smoothedThing);
+			Util.AssignDef(this.unsmoothedThing, out p.unsmoothedThing);
+			Util.AssignDef(this.turretGunDef, out p.turretGunDef);
+			Util.AssignDef(this.defaultPlantToGrow, out p.defaultPlantToGrow);
+			Util.AssignDef(this.mineableThing, out p.mineableThing);
+			Util.AssignDef(this.soundDispense, out p.soundDispense);
+			Util.AssignDef(this.soundDoorOpenPowered, out p.soundDoorOpenPowered);
+			Util.AssignDef(this.soundDoorClosePowered, out p.soundDoorClosePowered);
+			Util.AssignDef(this.soundDoorOpenManual, out p.soundDoorOpenManual);
+			Util.AssignDef(this.soundDoorCloseManual, out p.soundDoorCloseManual);
+			Util.AssignDef(this.soundAmbient, out p.soundAmbient);
+			Util.AssignDef(this.trapDamageCategory, out p.trapDamageCategory);
+			Util.AssignDef(this.joyKind, out p.joyKind);
+			Util.AssignDef(this.spawnedConceptLearnOpportunity, out p.spawnedConceptLearnOpportunity);
+			Util.AssignDef(this.boughtConceptLearnOpportunity, out p.boughtConceptLearnOpportunity);
+
+			Util.Populate(out p.buildingTags, this.buildingTags);
+		}
+
+		public bool Initialize()
+		{
+			this.naturalTerrain.Initialize();
+			this.leaveTerrain.Initialize();
+			this.smoothedThing.Initialize();
+			this.unsmoothedThing.Initialize();
+			this.turretGunDef.Initialize();
+			this.defaultPlantToGrow.Initialize();
+			this.mineableThing.Initialize();
+			this.soundDispense.Initialize();
+			this.soundDoorOpenPowered.Initialize();
+			this.soundDoorClosePowered.Initialize();
+			this.soundDoorOpenManual.Initialize();
+			this.soundDoorCloseManual.Initialize();
+			this.soundAmbient.Initialize();
+			this.trapDamageCategory.Initialize();
+			this.joyKind.Initialize();
+			this.spawnedConceptLearnOpportunity.Initialize();
+			this.boughtConceptLearnOpportunity.Initialize();
+			return true;
+		}
+
+		public override string ToString()
+		{
+			return
+				"\nisEdifice: " + this.isEdifice +
+				"\nisInert: " + this.isInert +
+				"\ndeconstructible: " + this.deconstructible +
+				"\nalwaysDeconstructible: " + this.alwaysDeconstructible +
+				"\nclaimable: " + this.claimable +
+				"\nisSittable: " + this.isSittable +
+				"\nexpandHomeArea: " + this.expandHomeArea +
+				"\nuninstallWork: " + this.uninstallWork +
+				"\nwantsHopperAdjacent: " + this.wantsHopperAdjacent +
+				"\nallowWireConnection: " + this.allowWireConnection +
+				"\nshipPart: " + this.shipPart +
+				"\ncanPlaceOverImpassablePlant: " + this.canPlaceOverImpassablePlant +
+				"\nheatPerTickWhileWorking: " + this.heatPerTickWhileWorking +
+				"\ncanBuildNonEdificesUnder: " + this.canBuildNonEdificesUnder +
+				"\ncanPlaceOverWall: " + this.canPlaceOverImpassablePlant +
+				"\nallowAutoroof: " + this.allowAutoroof +
+				"\npreventDeteriorationOnTop: " + this.preventDeteriorationOnTop +
+				"\npreventDeteriorationInside: " + this.preventDeteriorationInside +
+				"\nisMealSource: " + this.isMealSource +
+				"\nisNaturalRock: " + this.isNaturalRock +
+				"\nisResourceRock: " + this.isResourceRock +
+				"\nrepairable: " + this.repairable +
+				"\nroofCollapseDamageMultiplier: " + this.roofCollapseDamageMultiplier +
+				"\nhasFuelingPort: " + this.hasFuelingPort +
+				"\nisPlayerEjectable: " + this.isPlayerEjectable +
+				"\nbed_healPerDay: " + this.bed_healPerDay +
+				"\nbed_defaultMedical: " + this.bed_defaultMedical +
+				"\nbed_showSleeperBody: " + this.bed_showSleeperBody +
+				"\nbed_humanlike: " + this.bed_humanlike +
+				"\nbed_maxBodySize: " + this.bed_maxBodySize +
+				"\nbed_caravansCanUse: " + this.bed_caravansCanUse +
+				"\nnutritionCostPerDispense: " + this.nutritionCostPerDispense +
+				"\nturretBurstWarmupTime: " + this.turretBurstWarmupTime +
+				"\nturretBurstCooldownTime: " + this.turretBurstCooldownTime +
+				"\nturretTopDrawSize: " + this.turretTopDrawSize +
+				"\nturretTopOffset: " + this.turretTopOffset.ToString() +
+				"\nai_combatDangerous: " + this.ai_combatDangerous +
+				"\nai_chillDestination: " + this.ai_chillDestination +
+				"\nmineableYield: " + this.mineableYield +
+				"\nmineableNonMinedEfficiency: " + this.mineableNonMinedEfficiency +
+				"\nmineableDropChance: " + this.mineableDropChance +
+				"\nmineableYieldWasteable: " + this.mineableYieldWasteable +
+				"\nmineableScatterCommonality: " + this.mineableScatterCommonality +
+				"\nignoreStoredThingsBeauty: " + this.ignoreStoredThingsBeauty +
+				"\nisTrap: " + this.isTrap +
+				"\ntrapDestroyOnSpring: " + this.trapDestroyOnSpring +
+				"\ntrapPeacefulWildAnimalsSpringChanceFactor: " + this.trapPeacefulWildAnimalsSpringChanceFactor +
+				"\nunpoweredWorkTableWorkSpeedFactor: " + this.unpoweredWorkTableWorkSpeedFactor +
+				"\nworkSpeedPenaltyOutdoors: " + this.workSpeedPenaltyOutdoors +
+				"\nworkSpeedPenaltyTemperature: " + this.workSpeedPenaltyTemperature +
+				"\nwatchBuildingStandRectWidth: " + this.watchBuildingStandRectWidth +
+				"\nhaulToContainerDuration: " + this.haulToContainerDuration +
+				"\nmineableScatterLumpSizeRange: " + this.mineableScatterLumpSizeRange.ToString() +
+				"\nwatchBuildingStandDistanceRange: " + this.watchBuildingStandDistanceRange.ToString() +
+				"\blueprintGraphicData: " + this.blueprintGraphicData.ToString() +
+				"\ntrapUnarmedGraphicData: " + this.trapUnarmedGraphicData.ToString() +
+				"\nfullGraveGraphicData: " + this.fullGraveGraphicData.ToString() +
+				"\nnaturalTerrain: " + this.naturalTerrain +
+				"\nleaveTerrain: " + this.leaveTerrain +
+				"\nsmoothedThing: " + this.smoothedThing +
+				"\nunsmoothedThing: " + this.unsmoothedThing +
+				"\nturretGunDef: " + this.turretGunDef +
+				"\ndefaultPlantToGrow: " + this.defaultPlantToGrow +
+				"\nmineableThing: " + this.mineableThing +
+				"\nsoundDispense: " + this.soundDispense +
+				"\nsoundDoorOpenPowered: " + this.soundDoorOpenPowered +
+				"\nsoundDoorClosePowered: " + this.soundDoorClosePowered +
+				"\nsoundDoorOpenManual: " + this.soundDoorOpenManual +
+				"\nsoundDoorCloseManual: " + this.soundDoorCloseManual +
+				"\nsoundAmbient: " + this.soundAmbient +
+				"\ntrapDamageCategory: " + this.trapDamageCategory +
+				"\njoyKind: " + this.joyKind +
+				"\nspawnedConceptLearnOpportunity: " + this.spawnedConceptLearnOpportunity +
+				"\nboughtConceptLearnOpportunity: " + this.boughtConceptLearnOpportunity +
+				"\nbuildingTags: " + string.Join(", ", this.buildingTags.ToArray());
+		}
+
+		public override int GetHashCode()
+		{
+			return this.ToString().GetHashCode();
+		}
+
+		public override bool Equals(object obj)
+		{
+			return false;
+			if (obj != null &&
+				obj is BuildingPropertiesStats s)
+			{
+				return
+					this.isEdifice == s.isEdifice &&
+					this.isInert == s.isInert &&
+					this.deconstructible == s.deconstructible &&
+					this.alwaysDeconstructible == s.alwaysDeconstructible &&
+					this.claimable == s.claimable &&
+					this.isSittable == s.isSittable &&
+					this.expandHomeArea == s.expandHomeArea &&
+					this.uninstallWork == s.uninstallWork &&
+					this.wantsHopperAdjacent == s.wantsHopperAdjacent &&
+					this.allowWireConnection == s.allowWireConnection &&
+					this.shipPart == s.shipPart &&
+					this.canPlaceOverImpassablePlant == s.canPlaceOverImpassablePlant &&
+					this.heatPerTickWhileWorking == s.heatPerTickWhileWorking &&
+					this.canBuildNonEdificesUnder == s.canBuildNonEdificesUnder &&
+					this.canPlaceOverWall == s.canPlaceOverImpassablePlant &&
+					this.allowAutoroof == s.allowAutoroof &&
+					this.preventDeteriorationOnTop == s.preventDeteriorationOnTop &&
+					this.preventDeteriorationInside == s.preventDeteriorationInside &&
+					this.isMealSource == s.isMealSource &&
+					this.isNaturalRock == s.isNaturalRock &&
+					this.isResourceRock == s.isResourceRock &&
+					this.repairable == s.repairable &&
+					this.roofCollapseDamageMultiplier == s.roofCollapseDamageMultiplier &&
+					this.hasFuelingPort == s.hasFuelingPort &&
+					this.isPlayerEjectable == s.isPlayerEjectable &&
+					this.bed_healPerDay == s.bed_healPerDay &&
+					this.bed_defaultMedical == s.bed_defaultMedical &&
+					this.bed_showSleeperBody == s.bed_showSleeperBody &&
+					this.bed_humanlike == s.bed_humanlike &&
+					this.bed_maxBodySize == s.bed_maxBodySize &&
+					this.bed_caravansCanUse == s.bed_caravansCanUse &&
+					this.nutritionCostPerDispense == s.nutritionCostPerDispense &&
+					this.turretBurstWarmupTime == s.turretBurstWarmupTime &&
+					this.turretBurstCooldownTime == s.turretBurstCooldownTime &&
+					this.turretTopDrawSize == s.turretTopDrawSize &&
+					object.Equals(this.turretTopOffset, s.turretTopOffset) &&
+					this.ai_combatDangerous == s.ai_combatDangerous &&
+					this.ai_chillDestination == s.ai_chillDestination &&
+					this.mineableYield == s.mineableYield &&
+					this.mineableNonMinedEfficiency == s.mineableNonMinedEfficiency &&
+					this.mineableDropChance == s.mineableDropChance &&
+					this.mineableYieldWasteable == s.mineableYieldWasteable &&
+					this.mineableScatterCommonality == s.mineableScatterCommonality &&
+					this.ignoreStoredThingsBeauty == s.ignoreStoredThingsBeauty &&
+					this.isTrap == s.isTrap &&
+					this.trapDestroyOnSpring == s.trapDestroyOnSpring &&
+					this.trapPeacefulWildAnimalsSpringChanceFactor == s.trapPeacefulWildAnimalsSpringChanceFactor &&
+					this.unpoweredWorkTableWorkSpeedFactor == s.unpoweredWorkTableWorkSpeedFactor &&
+					this.workSpeedPenaltyOutdoors == s.workSpeedPenaltyOutdoors &&
+					this.workSpeedPenaltyTemperature == s.workSpeedPenaltyTemperature &&
+					this.watchBuildingStandRectWidth == s.watchBuildingStandRectWidth &&
+					this.haulToContainerDuration == s.haulToContainerDuration &&
+					object.Equals(this.mineableScatterLumpSizeRange, s.mineableScatterLumpSizeRange) &&
+					object.Equals(this.watchBuildingStandDistanceRange, s.watchBuildingStandDistanceRange) &&
+					object.Equals(this.blueprintGraphicData, s.blueprintGraphicData) &&
+					object.Equals(this.trapUnarmedGraphicData, s.trapUnarmedGraphicData) &&
+					object.Equals(this.fullGraveGraphicData, s.fullGraveGraphicData) &&
+					object.Equals(this.naturalTerrain, s.naturalTerrain) &&
+					object.Equals(this.leaveTerrain, s.leaveTerrain) &&
+					object.Equals(this.smoothedThing, s.smoothedThing) &&
+					object.Equals(this.unsmoothedThing, s.unsmoothedThing) &&
+					object.Equals(this.turretGunDef, s.turretGunDef) &&
+					object.Equals(this.defaultPlantToGrow, s.defaultPlantToGrow) &&
+					object.Equals(this.mineableThing, s.mineableThing) &&
+					object.Equals(this.soundDispense, s.soundDispense) &&
+					object.Equals(this.soundDoorOpenPowered, s.soundDoorOpenPowered) &&
+					object.Equals(this.soundDoorClosePowered, s.soundDoorClosePowered) &&
+					object.Equals(this.soundDoorOpenManual, s.soundDoorOpenManual) &&
+					object.Equals(this.soundDoorCloseManual, s.soundDoorCloseManual) &&
+					object.Equals(this.soundAmbient, s.soundAmbient) &&
+					object.Equals(this.trapDamageCategory, s.trapDamageCategory) &&
+					object.Equals(this.joyKind, s.joyKind) &&
+					object.Equals(this.spawnedConceptLearnOpportunity, s.spawnedConceptLearnOpportunity) &&
+					object.Equals(this.boughtConceptLearnOpportunity, s.boughtConceptLearnOpportunity) &&
+					Util.AreEqual(this.buildingTags, s.buildingTags, v => v.GetHashCode());
+			}
+			return false;
 		}
 
 		public static bool GetDeconstructible(BuildingProperties p)

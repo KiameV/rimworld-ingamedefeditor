@@ -15,7 +15,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 		private float innerY = float.MaxValue;
 
 		private List<MinMaxFloatStats> points = new List<MinMaxFloatStats>();
-		private List<MinMaxInputWidget<MinMaxFloatStats>> pointsInputs = new List<MinMaxInputWidget<MinMaxFloatStats>>();
+		private List<MinMaxInputWidget<MinMaxFloatStats, float>> pointsInputs = new List<MinMaxInputWidget<MinMaxFloatStats, float>>();
 
 		private FloatOptionsArgs<MinMaxFloatStats> pointsArgs;
 
@@ -93,9 +93,9 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			this.scroll = Vector2.zero;
 		}
 
-		private MinMaxInputWidget<MinMaxFloatStats> CreateFloatInput(MinMaxFloatStats m)
+		private MinMaxInputWidget<MinMaxFloatStats, float> CreateFloatInput(MinMaxFloatStats m)
 		{
-			return new MinMaxInputWidget<MinMaxFloatStats>(
+			return new MinMaxInputWidget<MinMaxFloatStats, float>(
 				"Point",
 				new FloatInputWidget<MinMaxFloatStats>(m, "X", p => p.Min, (p, v) =>
 				{

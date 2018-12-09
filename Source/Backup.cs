@@ -55,6 +55,9 @@ namespace InGameDefEditor
 
 				foreach (ThingDef d in Defs.IngestibleDefs.Values)
 					backup[d] = new ThingDefStats(d);
+
+				foreach (ThingDef d in Defs.MineableDefs.Values)
+					backup[d] = new ThingDefStats(d);
 			}
         }
 
