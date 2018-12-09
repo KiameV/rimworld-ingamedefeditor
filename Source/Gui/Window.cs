@@ -252,16 +252,16 @@ namespace InGameDefEditor
 			List<IEditableDefType> defTypes = new List<IEditableDefType>()
 			{
 				new EditableDefType<ThingDef>("Apparel", DefType.Apparel, Defs.ApparelDefs.Values),
-				new EditableDefType<ThingDef>("Weapons", DefType.Weapon, Defs.WeaponDefs.Values),
-				new EditableDefType<ThingDef>("Projectiles", DefType.Projectile, Defs.ProjectileDefs.Values),
 				new EditableDefType<BiomeDef>("Biomes", DefType.Biome, Defs.BiomeDefs.Values),
-				new EditableDefType<TraitDef>("Traits", DefType.Trait, Defs.TraitDefs.Values),
-				new EditableDefType<ThoughtDef>("Thoughts", DefType.Thought, Defs.ThoughtDefs.Values),
-				new EditableDefType<StorytellerDef>("Story Tellers", DefType.StoryTeller, Defs.StoryTellerDefs.Values),
 				new EditableDefType<DifficultyDef>("Difficulty", DefType.Difficulty, this.SortDifficultyOptions(Defs.DifficultyDefs.Values)),
 				new EditableDefType<ThingDef>("Ingestible", DefType.Ingestible, Defs.IngestibleDefs.Values),
 				new EditableDefType<ThingDef>("Mineable", DefType.Mineable, Defs.MineableDefs.Values),
+				new EditableDefType<ThingDef>("Projectiles", DefType.Projectile, Defs.ProjectileDefs.Values),
 				new EditableDefType<RecipeDef>("Recipes", DefType.Recipe, Defs.RecipeDefs.Values),
+				new EditableDefType<StorytellerDef>("Story Tellers", DefType.StoryTeller, Defs.StoryTellerDefs.Values),
+				new EditableDefType<ThoughtDef>("Thoughts", DefType.Thought, Defs.ThoughtDefs.Values),
+				new EditableDefType<TraitDef>("Traits", DefType.Trait, Defs.TraitDefs.Values),
+				new EditableDefType<ThingDef>("Weapons", DefType.Weapon, Defs.WeaponDefs.Values),
 			};
 
 			if (includeDisabled && Defs.DisabledThingDefs.Count > 0)
