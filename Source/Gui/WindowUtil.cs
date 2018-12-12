@@ -81,6 +81,11 @@ namespace InGameDefEditor
 		public static void DrawList<D>(float x, ref float y, float width, string label, IEnumerable<D> items, ref Vector2 scroll, ref float previousY, bool bolded = false) where D : Def, new()
 		{
 			DrawLabel(x, ref y, width, label, 30, bolded);
+			DrawList(x, ref y, width, items, ref scroll, ref previousY, bolded);
+		}
+
+		public static void DrawList<D>(float x, ref float y, float width, IEnumerable<D> items, ref Vector2 scroll, ref float previousY, bool bolded = false) where D : Def, new()
+		{
 			if (previousY > 300)
 			{
 				Widgets.BeginScrollView(
@@ -107,7 +112,19 @@ namespace InGameDefEditor
 			}
 		}
 
-        public delegate string GetDisplayName<T>(T t);
+		public static void DrawList<D>(float x, ref float y, float width, string label, IEnumerable<D> items, bool bolded = false) where D : Def, new()
+		{
+			DrawLabel(x, ref y, width, label, 30, bolded);
+			DrawList(x, ref y, width, items, bolded);
+		}
+
+		public static void DrawList<D>(float x, ref float y, float width, IEnumerable<D> items, bool bolded = false) where D : Def, new()
+		{
+			foreach (var v in items)
+				DrawLabel(10, ref y, width - 10, "- " + Util.GetDefLabel(v));
+		}
+
+		public delegate string GetDisplayName<T>(T t);
         public delegate void OnSelect<T>(T t);
         public delegate IEnumerable<T> UpdateItems<T>();
 		public delegate void OnCustomOption();
@@ -122,7 +139,7 @@ namespace InGameDefEditor
         }
         public static void DrawFloatingOptions<T>(FloatOptionsArgs<T> args)
         {
-            if (args.items == null || args.items.Count() == 0)
+            if (args == null || args.items == null || args.items.Count() == 0)
                 return;
 
             List<FloatMenuOption> options = new List<FloatMenuOption>();
@@ -147,8 +164,22 @@ namespace InGameDefEditor
 			if (options == null || options.Count > 0)
 				Find.WindowStack.Add(new FloatMenu(options));
         }
-        
-        public static void PlusMinusLabel(
+
+		internal static void DrawFlagList<E>(float x, ref float y, float width, List<E> enums, int flag, Predicate<E> exclude = null) where E : struct, IConvertible
+		{
+			foreach (var e in enums)
+			{
+				if (exclude != null && exclude(e))
+					continue;
+
+				var v = (int)(object)e;
+				if ((flag & v) == v)
+
+					WindowUtil.DrawLabel(x + 20, ref y, width, "- " + e.ToString(), 30);
+			}
+		}
+
+		public static void PlusMinusLabel(
             float x, ref float y, float width, string label, Action add, Action subtract)
         {
             DrawLabel(x, y, width - 80, label, true);

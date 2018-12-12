@@ -9,7 +9,7 @@ using static InGameDefEditor.WindowUtil;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
-	class TraitWidget : AParentStatWidget<TraitDef>
+	class TraitWidget : AParentDefStatWidget<TraitDef>
 	{
 		private readonly List<IInputWidget> inputWidgets;
 		private readonly List<WorkTags> workTags;
@@ -68,7 +68,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 			this.disabledWorkTypes = new PlusMinusArgs<WorkTypeDef>()
 			{
-				allItems = DefDatabase<WorkTypeDef>.AllDefsListForReading,
+				allItems = DefDatabase<WorkTypeDef>.AllDefs,
 				beingUsed = () => base.Def.disabledWorkTypes,
 				onAdd = v =>
 				{
@@ -81,7 +81,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 			this.requiredWorkTypes = new PlusMinusArgs<WorkTypeDef>()
 			{
-				allItems = DefDatabase<WorkTypeDef>.AllDefsListForReading,
+				allItems = DefDatabase<WorkTypeDef>.AllDefs,
 				beingUsed = () => base.Def.requiredWorkTypes,
 				onAdd = v =>
 				{
@@ -94,7 +94,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 			this.conflictingTraits = new PlusMinusArgs<TraitDef>()
 			{
-				allItems = DefDatabase<TraitDef>.AllDefsListForReading,
+				allItems = DefDatabase<TraitDef>.AllDefs,
 				beingUsed = () => base.Def.conflictingTraits,
 				onAdd = v => base.Def.conflictingTraits = Util.AddTo(base.Def.conflictingTraits, v),
 				onRemove = v => base.Def.conflictingTraits = Util.RemoveFrom(base.Def.conflictingTraits, v),

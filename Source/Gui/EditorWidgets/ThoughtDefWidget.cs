@@ -6,7 +6,7 @@ using static InGameDefEditor.WindowUtil;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
-	class ThoughtDefWidget : AParentStatWidget<ThoughtDef>
+	class ThoughtDefWidget : AParentDefStatWidget<ThoughtDef>
 	{
 		private readonly List<IInputWidget> inputWidgets;
 
@@ -61,7 +61,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 			this.nullifyingOwnTales = new PlusMinusArgs<TaleDef>()
 			{
-				allItems = DefDatabase<TaleDef>.AllDefsListForReading,
+				allItems = DefDatabase<TaleDef>.AllDefs,
 				beingUsed = () => base.Def.nullifyingOwnTales,
 				onAdd = v => base.Def.nullifyingOwnTales = Util.AddTo(base.Def.nullifyingOwnTales, v),
 				onRemove = v => base.Def.nullifyingOwnTales = Util.RemoveFrom(base.Def.nullifyingOwnTales, v),
@@ -70,7 +70,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 			this.requiredTraits = new PlusMinusArgs<TraitDef>()
 			{
-				allItems = DefDatabase<TraitDef>.AllDefsListForReading,
+				allItems = DefDatabase<TraitDef>.AllDefs,
 				beingUsed = () => base.Def?.requiredTraits,
 				onAdd = v =>
 				{
@@ -83,7 +83,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 			this.nullifyingTraits = new PlusMinusArgs<TraitDef>()
 			{
-				allItems = DefDatabase<TraitDef>.AllDefsListForReading,
+				allItems = DefDatabase<TraitDef>.AllDefs,
 				beingUsed = () => base.Def.nullifyingTraits,
 				onAdd = v =>
 				{

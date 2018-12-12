@@ -5,6 +5,7 @@ using RimWorld;
 using System.Collections.Generic;
 using InGameDefEditor.Gui.EditorWidgets.Misc;
 using System;
+using System.Linq;
 
 namespace InGameDefEditor
 {
@@ -50,13 +51,26 @@ namespace InGameDefEditor
 
 			if (this.selectedDefType != null)
 			{
-				if (Widgets.ButtonText(new Rect(220, outerY, 200, 30), ((this.selectedDef == null) ? this.selectedDefType.Label + " Def" : Util.GetDefLabel(this.selectedDef.BaseDef))))
+				if (Widgets.ButtonText(new Rect(220, outerY, 200, 30), ((this.selectedDef == null) ? this.selectedDefType.Label + " Def" : this.selectedDef.DisplayLabel)))
 				{
-					WindowUtil.DrawFloatingOptions(new WindowUtil.FloatOptionsArgs<Def>()
+					WindowUtil.DrawFloatingOptions(new WindowUtil.FloatOptionsArgs<object>()
 					{
 						items = this.selectedDefType.GetDefs(),
-						getDisplayName = def => Util.GetDefLabel(def),
-						onSelect = def => CreateSelected(def, this.selectedDefType.Type)
+						getDisplayName = i =>
+						{
+							if (i is Def def)
+								return Util.GetDefLabel(def);
+							else if (i is Backstory b)
+								return b.title;
+							return i.ToString();
+						},
+						onSelect = i =>
+						{
+							if (i is Def def)
+								this.CreateSelected(def, this.selectedDefType.Type);
+							else if (i is Backstory b)
+								this.CreateSelected(b, this.selectedDefType.Type);
+						}
 					});
 				}
 			}
@@ -99,14 +113,15 @@ namespace InGameDefEditor
                 this.previousYMaxRight = y;
 
                 Widgets.EndScrollView();
+			}
 
-                if (Widgets.ButtonText(new Rect(rect.xMax - 340, rect.yMax - 32, 100, 32), "Reset".Translate()))
-                {
-                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("Reset " + this.selectedDef.DisplayLabel + "?", delegate { this.ResetSelected(); }));
-                }
-            }
+			if (this.selectedDefType != null && 
+				Widgets.ButtonText(new Rect(rect.xMax - 340, rect.yMax - 32, 100, 32), "Reset".Translate()))
+			{
+				Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("Reset " + this.selectedDef.DisplayLabel + "?", delegate { this.ResetSelected(); }));
+			}
 
-            if (Widgets.ButtonText(new Rect(100, rect.yMax - 32, 100, 32), "Close".Translate()))
+			if (Widgets.ButtonText(new Rect(100, rect.yMax - 32, 100, 32), "Close".Translate()))
             {
                 Find.WindowStack.TryRemove(typeof(InGameDefEditorWindow), true);
             }
@@ -114,7 +129,11 @@ namespace InGameDefEditor
 			if (this.selectedDef != null &&
 				Widgets.ButtonText(new Rect(rect.xMax - 230, rect.yMax - 32, 120, 32), "Reset".Translate() + " " + this.selectedDef.Type))
 			{
-				Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("Reset".Translate() + " " + this.selectedDef.Type + "?", () => { this.selectedDefType.ResetTypeDefs(); this.selectedDef?.ResetBuffers(); }));
+				Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("Reset".Translate() + " " + this.selectedDef.Type + "?", () =>
+				{
+					this.selectedDefType.ResetTypeDefs();
+					this.selectedDef?.ResetBuffers();
+				}));
 			}
 
             if (Widgets.ButtonText(new Rect(rect.xMax - 100, rect.yMax - 32, 100, 32), "InGameDefEditor.ResetAll".Translate()))
@@ -135,7 +154,7 @@ namespace InGameDefEditor
 		{
 			if (this.selectedDef != null)
 			{
-				Backup.ApplyStats(this.selectedDef.BaseDef);
+				this.selectedDef.ResetParent();
 				this.selectedDef.Rebuild();
 			}
 		}
@@ -149,9 +168,16 @@ namespace InGameDefEditor
         {
             base.PostClose();
             IOUtil.SaveData();
-        }
+		}
 
-        private void CreateSelected(Def d, DefType type)
+		private void CreateSelected(Backstory b, DefType type)
+		{
+			this.selectedDef = new BackstoryWidget(b, type);
+			this.ResetScrolls();
+			IngredientCountWidget.ResetUniqueId();
+		}
+
+		private void CreateSelected(Def d, DefType type)
         {
             switch (type)
             {
@@ -213,9 +239,41 @@ namespace InGameDefEditor
 			DefType Type { get; }
 			string Label { get; }
 
-			IEnumerable<Def> GetDefs();
+			IEnumerable<object> GetDefs();
 			void ResetTypeDefs();
 		}
+
+		private struct EditableBackstoryType : IEditableDefType
+		{
+			private readonly string label;
+			public readonly DefType type;
+			public readonly IEnumerable<Backstory> items;
+
+			public string Label => this.label;
+			public DefType Type => this.type;
+
+			public EditableBackstoryType(string label, DefType type, IEnumerable<Backstory> items)
+			{
+				this.label = label;
+				this.type = type;
+				this.items = items;
+			}
+
+			public IEnumerable<object> GetDefs()
+			{
+				List<object> l = new List<object>(this.items.Count());
+				foreach (var b in this.items)
+					l.Add(b);
+				return l;
+			}
+
+			public void ResetTypeDefs()
+			{
+				foreach (var v in this.items)
+					Backup.ApplyStats(v);
+			}
+		}
+
 		private struct EditableDefType<D> : IEditableDefType where D : Def, new()
 		{
 			private readonly string label;
@@ -232,9 +290,9 @@ namespace InGameDefEditor
 				this.Defs = defs;
 			}
 
-			public IEnumerable<Def> GetDefs()
+			public IEnumerable<object> GetDefs()
 			{
-				List<Def> l = new List<Def>();
+				List<object> l = new List<object>(this.Defs.Count());
 				foreach (Def d in this.Defs)
 					l.Add(d);
 				return l;
@@ -252,6 +310,7 @@ namespace InGameDefEditor
 			List<IEditableDefType> defTypes = new List<IEditableDefType>()
 			{
 				new EditableDefType<ThingDef>("Apparel", DefType.Apparel, Defs.ApparelDefs.Values),
+				new EditableBackstoryType("Backstories", DefType.Backstory, Defs.Backstories.Values),
 				new EditableDefType<BiomeDef>("Biomes", DefType.Biome, Defs.BiomeDefs.Values),
 				new EditableDefType<DifficultyDef>("Difficulty", DefType.Difficulty, this.SortDifficultyOptions(Defs.DifficultyDefs.Values)),
 				new EditableDefType<ThingDef>("Ingestible", DefType.Ingestible, Defs.IngestibleDefs.Values),

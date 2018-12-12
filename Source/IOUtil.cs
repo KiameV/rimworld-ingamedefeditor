@@ -64,6 +64,9 @@ namespace InGameDefEditor
 					if (Load(DefType.Mineable, out RootMineable min))
 						min?.stats.ForEach((d) => Initialize(d));
 
+					if (Load(DefType.Backstory, out RootBackstory back))
+						back?.stats.ForEach((d) => Initialize(d));
+
 					// Do Last
 					if (Load("DisabledDefs", out RootDisabledDefs rdd))
 					{
@@ -133,6 +136,9 @@ namespace InGameDefEditor
 
 			Util.Populate(out List<ThingDefStats> mineable, Defs.MineableDefs.Values, v => HasChanged(new ThingDefStats(v)), false);
 			Save(DefType.Mineable, new RootMineable() { stats = mineable });
+
+			Util.Populate(out List<BackstoryStats> backstories, Defs.Backstories.Values, v => HasChanged(new BackstoryStats(v)), false);
+			Save(DefType.Backstory, new RootBackstory() { stats = backstories });
 		}
 
 		private static string basePath = null;
@@ -229,6 +235,35 @@ namespace InGameDefEditor
 			return true;
 		}
 
+		private static void Initialize(BackstoryStats b)
+		{
+			if (b != null)
+			{
+				try
+				{
+					if (b.Initialize())
+					{
+						try
+						{
+							b.ApplyStats(b.Backstory);
+						}
+						catch (Exception e)
+						{
+							Log.Error("Failed to apply settings to Backstory [" + b.identifier + "] due to " + e.Message);
+						}
+					}
+					else
+					{
+						Log.Warning("Unable to initialize Backstory " + b.identifier);
+					}
+				}
+				catch (Exception e)
+				{
+					Log.Error("Failed to load Backstory [" + b.identifier + "] due to " + e.Message);
+				}
+			}
+		}
+
 		private static void Initialize<D>(DefStat<D> s) where D : Def, new()
 		{
 			if (s != null)
@@ -244,17 +279,17 @@ namespace InGameDefEditor
 						}
 						catch (Exception e)
 						{
-							Log.Error("Failed to apply settings to " + s.defName + " due to " + e.Message);
+							Log.Error("Failed to apply settings to Def [" + s.defName + "] due to " + e.Message);
 						}
 					}
 					else
 					{
-						Log.Warning("Unable to apply settings to " + s.defName);
+						Log.Warning("Unable to initialize Def " + s.defName);
 					}
 				}
 				catch (Exception e)
 				{
-					Log.Error("Failed to load " + s.defName + " due to " + e.Message);
+					Log.Error("Failed to load Def [" + s.defName + "] due to " + e.Message);
 				}
 			}
 		}

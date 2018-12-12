@@ -51,7 +51,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			this.skillGainsArgs = new WindowUtil.PlusMinusArgs<SkillDef>()
 			{
 				getDisplayName = v => v.label,
-				allItems = DefDatabase<SkillDef>.AllDefsListForReading,
+				allItems = DefDatabase<SkillDef>.AllDefs,
 				beingUsed = () =>
 				{
 					List<SkillDef> l = new List<SkillDef>();
@@ -75,7 +75,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			this.statOffsetsArgs = new WindowUtil.PlusMinusArgs<StatDef>()
 			{
 				getDisplayName = v => v.label,
-				allItems = DefDatabase<StatDef>.AllDefsListForReading,
+				allItems = DefDatabase<StatDef>.AllDefs,
 				beingUsed = () =>
 				{
 					List<StatDef> l = new List<StatDef>();
@@ -100,7 +100,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			this.statFactorsArgs = new WindowUtil.PlusMinusArgs<StatDef>()
 			{
 				getDisplayName = v => v.label,
-				allItems = DefDatabase<StatDef>.AllDefsListForReading,
+				allItems = DefDatabase<StatDef>.AllDefs,
 				beingUsed = () =>
 				{
 					List<StatDef> l = new List<StatDef>();

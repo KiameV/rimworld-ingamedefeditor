@@ -13,7 +13,9 @@ namespace InGameDefEditor.Stats
         public float armorPenetration;
         public float speed;
 
-        public ProjectileDefStats() { }
+		public string UniqueKey => base.defName;
+
+		public ProjectileDefStats() { }
         public ProjectileDefStats(ThingDef d) : base(d)
         {
             this.damage = GetDamage(d.projectile);
@@ -22,7 +24,7 @@ namespace InGameDefEditor.Stats
             this.speed = d.projectile.speed;
         }
 
-        public void ApplyStats(Def to)
+        public void ApplyStats(object to)
         {
             if (to is ThingDef t)
             {

@@ -7,7 +7,7 @@ using InGameDefEditor.Gui.EditorWidgets.Dialog;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
-	class StoryTellerDefWidget : AParentStatWidget<StorytellerDef>
+	class StoryTellerDefWidget : AParentDefStatWidget<StorytellerDef>
 	{
 		private readonly List<IInputWidget> inputWidgets;
 		

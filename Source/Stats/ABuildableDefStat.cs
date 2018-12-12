@@ -49,7 +49,9 @@ namespace InGameDefEditor.Stats
 		public List<DefStat<ResearchProjectDef>> researchPrerequisites;
 		public List<FloatValueDefStat<StatDef>> statBases = null;
 		public List<IntValueDefStat<ThingDef>> costList;
-		
+
+		public string UniqueKey => base.defName;
+
 		public ABuildableDefStat() { }
 		public ABuildableDefStat(D d) : base(d)
 		{
@@ -86,7 +88,7 @@ namespace InGameDefEditor.Stats
 			Util.Populate(out this.costList, d.costList, v => new IntValueDefStat<ThingDef>(v.thingDef, v.count));
 		}
 
-		public virtual void ApplyStats(Def t)
+		public virtual void ApplyStats(object t)
 		{
 			if (t is BuildableDef to)
 			{

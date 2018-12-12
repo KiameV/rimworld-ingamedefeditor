@@ -29,7 +29,7 @@ namespace InGameDefEditor
 			if (!defDic.TryGetValue(name, out Dictionary<string, Def> dic))
 			{
 				dic = new Dictionary<string, Def>();
-				foreach (var v in DefDatabase<D>.AllDefsListForReading)
+				foreach (var v in DefDatabase<D>.AllDefs)
 					dic.Add(v.defName, v);
 				defDic[name] = dic;
 			}

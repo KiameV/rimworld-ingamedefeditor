@@ -45,7 +45,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
             this.thresholdsArgs = new PlusMinusArgs<TerrainDef>()
             {
-                allItems = DefDatabase<TerrainDef>.AllDefsListForReading,
+                allItems = DefDatabase<TerrainDef>.AllDefs,
                 beingUsed = delegate ()
                 {
                     List<TerrainDef> l = new List<TerrainDef>();

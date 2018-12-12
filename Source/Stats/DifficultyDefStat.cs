@@ -35,6 +35,8 @@ namespace InGameDefEditor.Stats
 		public float adaptationGrowthRateFactorOverZero;
 		public float adaptationEffectFactor;
 
+		public string UniqueKey => base.defName;
+
 		public DifficultyDefStat() { }
 		public DifficultyDefStat(DifficultyDef d) : base(d)
 		{
@@ -65,7 +67,7 @@ namespace InGameDefEditor.Stats
 			this.adaptationEffectFactor = d.adaptationEffectFactor;
 		}
 
-		public void ApplyStats(Def def)
+		public void ApplyStats(object def)
 		{
 			if (def is DifficultyDef to)
 			{

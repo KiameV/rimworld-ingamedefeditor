@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Verse;
 using static InGameDefEditor.WindowUtil;
 
@@ -27,10 +28,12 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
         protected readonly GetValue getValue;
         protected readonly SetValue setValue;
 		protected readonly ShouldDrawInput shouldDrawInput;
+		
+		public string ToolTip = null;
 
 		protected string buffer = "";
 
-		public string DisplayLabel => "";
+		public string DisplayLabel => label;
 
 		public AInputWidget(P parent, string label, GetValue getValue, SetValue setValue, ShouldDrawInput shouldDrawInput = null)
         {
@@ -44,7 +47,32 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 		public void Draw(float x, ref float y, float width)
 		{
 			if (this.shouldDrawInput == null)
+			{
 				this.DrawInput(x, ref y, width);
+				if (this.ToolTip != null)
+				{
+					if (Mouse.IsOver(new Rect(x, y - 32, width, 32)))
+					{
+						Vector2 vector = Text.CalcSize(ToolTip);
+						if (vector.x > 260f)
+						{
+							vector.x = 260f;
+							vector.y = Text.CalcHeight(ToolTip, vector.x);
+						}
+						Rect rect = new Rect(0, 0, vector.x, vector.y);
+						rect = rect.ContractedBy(-4f);
+						Rect rect2 = new Rect(UI.MousePositionOnUI.x, UI.MousePositionOnUIInverted.y + 20, rect.width, rect.height);
+
+						Text.Font = GameFont.Small;
+						Find.WindowStack.ImmediateWindow(ToolTip.GetHashCode(), rect2, WindowLayer.Super, delegate
+						{
+							Widgets.DrawAtlas(rect, ActiveTip.TooltipBGAtlas);
+							Text.Font = GameFont.Small;
+							Widgets.Label(rect.ContractedBy(4f), ToolTip);
+						}, false, false, 1f);
+					}
+				}
+			}
 			else
 			{
 				ShouldDrawInputResult result = this.shouldDrawInput(this.Parent);
@@ -82,6 +110,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
     class IntInputWidget<P> : AInputWidget<P, int>
     {
         private int value;
+		public Predicate<int> IsValid = null;
 
         public IntInputWidget(P parent, string label, GetValue getValue, SetValue setValue, ShouldDrawInput shouldDrawInput = null) : base(parent, label, getValue, setValue, shouldDrawInput)
 		{
@@ -91,7 +120,11 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
         protected override void DrawInput(float x, ref float y, float width)
 		{
-			this.buffer = WindowUtil.DrawInput(x, ref y, width, this.label, this.value, delegate (int i) { base.setValue(this.Parent, i); }, this.buffer);
+			this.buffer = WindowUtil.DrawInput(x, ref y, width, this.label, this.value, delegate (int i)
+			{
+				if (IsValid == null || IsValid(i))
+					base.setValue(this.Parent, i);
+			}, this.buffer);
         }
 
         public override void ResetBuffers()
@@ -184,13 +217,13 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 		private readonly float labelWidth;
 		private WindowUtil.FloatOptionsArgs<D> args;
 
-		public DefInputWidget(P parent, string label, float labelWidth, GetValue getValue, SetValue setValue, bool includeNullOption, ShouldDrawInput shouldDrawInput = null) : base(parent, label, getValue, setValue, shouldDrawInput)
+		public DefInputWidget(P parent, string label, float labelWidth, GetValue getValue, SetValue setValue, bool includeNullOption, Predicate<D> exclude = null, ShouldDrawInput shouldDrawInput = null) : base(parent, label, getValue, setValue, shouldDrawInput)
 		{
 			this.labelWidth = labelWidth;
 			args = new FloatOptionsArgs<D>()
 			{
 				getDisplayName = def => Util.GetDefLabel(def),
-				items = Util.SortedDefList<D>(),
+				items = Util.SortedDefList<D>(exclude),
 				onSelect = def => base.setValue(base.Parent, def),
 				includeNullOption = includeNullOption
 			};
@@ -220,7 +253,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			args = new PlusMinusArgs<D>()
 			{
 				getDisplayName = def => Util.GetDefLabel(def),
-				allItems = DefDatabase<D>.AllDefsListForReading,
+				allItems = DefDatabase<D>.AllDefs,
 				onAdd = def => Util.AddTo(this.items, def),
 				onRemove = def => Util.RemoveFrom(this.items, def),
 				beingUsed = () => this.items

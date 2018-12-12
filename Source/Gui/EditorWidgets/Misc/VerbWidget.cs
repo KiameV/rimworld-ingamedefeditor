@@ -62,7 +62,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
             WindowUtil.DrawInput(x, ref y, width, "InGameDefEditor.SoundCast".Translate(), 100, (VerbProperties.soundCast != null) ? VerbProperties.soundCast.defName : "None",
                 new WindowUtil.FloatOptionsArgs<SoundDef>()
                 {
-                    items = DefLookupUtil.GetSortedDefs(DefDatabase<SoundDef>.AllDefsListForReading),
+                    items = DefLookupUtil.GetSortedDefs(DefDatabase<SoundDef>.AllDefs),
                     getDisplayName = delegate (SoundDef d) { return d.defName; },
                     onSelect = delegate (SoundDef d) { VerbProperties.soundCast = d; },
                     includeNullOption = true
@@ -70,7 +70,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
             WindowUtil.DrawInput(x, ref y, width, "InGameDefEditor.SoundCastTail".Translate(), 100, (VerbProperties.soundCastTail != null) ? VerbProperties.soundCastTail.defName : "None",
                 new WindowUtil.FloatOptionsArgs<SoundDef>()
                 {
-                    items = DefLookupUtil.GetSortedDefs(DefDatabase<SoundDef>.AllDefsListForReading),
+                    items = DefLookupUtil.GetSortedDefs(DefDatabase<SoundDef>.AllDefs),
                     getDisplayName = delegate (SoundDef d) { return d.defName; },
                     onSelect = delegate (SoundDef d) { VerbProperties.soundCastTail = d; },
                     includeNullOption = true

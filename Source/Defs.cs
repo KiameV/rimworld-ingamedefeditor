@@ -19,14 +19,15 @@ namespace InGameDefEditor
 		public static readonly SortedDictionary<string, DifficultyDef> DifficultyDefs = new SortedDictionary<string, DifficultyDef>();
 		public static readonly SortedDictionary<string, ThingDef> IngestibleDefs = new SortedDictionary<string, ThingDef>();
 		public static readonly SortedDictionary<string, ThingDef> MineableDefs = new SortedDictionary<string, ThingDef>();
+		public static readonly SortedDictionary<string, Backstory> Backstories = new SortedDictionary<string, Backstory>();
 		private static bool isInit = false;
-
+		
 		public static void Initialize()
         {
             if (!isInit)
             {
                 int i = 0;
-                foreach (ThingDef d in DefDatabase<ThingDef>.AllDefsListForReading)
+                foreach (ThingDef d in DefDatabase<ThingDef>.AllDefs)
                 {
 					string label = Util.GetDefLabel(d);
 					if (d == null)
@@ -74,16 +75,29 @@ namespace InGameDefEditor
 					}
                 }
 
-				DefDatabase<BiomeDef>.AllDefsListForReading.ForEach(d => BiomeDefs[Util.GetDefLabel(d)] = d);
-				DefDatabase<ThoughtDef>.AllDefsListForReading.ForEach(d => ThoughtDefs[Util.GetDefLabel(d)] = d);
-				DefDatabase<RecipeDef>.AllDefsListForReading.ForEach(d =>
+				foreach (var d in DefDatabase<BiomeDef>.AllDefs)
+					BiomeDefs[Util.GetDefLabel(d)] = d;
+
+				foreach (var d in DefDatabase<ThoughtDef>.AllDefs)
+					ThoughtDefs[Util.GetDefLabel(d)] = d;
+
+				foreach (var d in DefDatabase<RecipeDef>.AllDefs)
 				{
 					if (!d.defName.StartsWith("OCD_MineDeep"))
 						RecipeDefs[Util.GetDefLabel(d)] = d;
-				});
-				DefDatabase<TraitDef>.AllDefsListForReading.ForEach(d => TraitDefs[Util.GetDefLabel(d)] = d);
-				DefDatabase<StorytellerDef>.AllDefsListForReading.ForEach(d => StoryTellerDefs[Util.GetDefLabel(d)] = d);
-				DefDatabase<DifficultyDef>.AllDefsListForReading.ForEach(d => DifficultyDefs[Util.GetDefLabel(d)] = d);
+				}
+
+				foreach (var d in DefDatabase<TraitDef>.AllDefs)
+					TraitDefs[Util.GetDefLabel(d)] = d;
+
+				foreach (var d in DefDatabase<StorytellerDef>.AllDefs)
+					StoryTellerDefs[Util.GetDefLabel(d)] = d;
+
+				foreach (var d in DefDatabase<DifficultyDef>.AllDefs)
+					DifficultyDefs[Util.GetDefLabel(d)] = d;
+				
+				foreach (var b in BackstoryDatabase.allBackstories.Values)
+					Backstories[b.title] = b;
 
 				if (i > 0)
                 {
@@ -129,6 +143,9 @@ namespace InGameDefEditor
 
 			foreach (ThingDef d in Defs.MineableDefs.Values)
 				Backup.ApplyStats(d);
+
+			foreach (Backstory b in Defs.Backstories.Values)
+				Backup.ApplyStats(b);
 		}
 	}
 }

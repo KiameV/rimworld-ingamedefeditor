@@ -8,7 +8,7 @@ using static InGameDefEditor.WindowUtil;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
-    class BiomeWidget : AParentStatWidget<BiomeDef>
+    class BiomeWidget : AParentDefStatWidget<BiomeDef>
     {
         private readonly List<IInputWidget> inputWidgets;
 
@@ -69,7 +69,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
             this.weatherPlusMinusArgs = new PlusMinusArgs<WeatherDef>()
             {
-				allItems = DefDatabase<WeatherDef>.AllDefsListForReading,
+				allItems = DefDatabase<WeatherDef>.AllDefs,
                 beingUsed = () => Util.ConvertItems(this.weatherCommonalityRecords, (FloatInputWidget<WeatherCommonalityRecord> w) => w.Parent.weather),
                 onAdd = delegate (WeatherDef wd)
                 {
@@ -87,7 +87,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
             this.terrainFertilityPlusMinusArgs = new PlusMinusArgs<TerrainDef>()
 			{
-				allItems = DefDatabase<TerrainDef>.AllDefsListForReading,
+				allItems = DefDatabase<TerrainDef>.AllDefs,
                 beingUsed = () => Util.ConvertItems(this.terrainsByFertility, (MinMaxInputWidget<TerrainThreshold, float> w) => w.Parent.terrain),
                 onAdd = delegate(TerrainDef td)
                 {
@@ -105,7 +105,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
             this.ambientSoundPlusMinusArgs = new PlusMinusArgs<SoundDef>()
             {
-                allItems = DefDatabase<SoundDef>.AllDefsListForReading,
+                allItems = DefDatabase<SoundDef>.AllDefs,
                 beingUsed = () => this.soundsAmbient,
                 onAdd = delegate (SoundDef sd)
                 {
@@ -122,7 +122,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
             this.diseasesPlusMinusArgs = new PlusMinusArgs<IncidentDef>()
             {
-                allItems = DefDatabase<IncidentDef>.AllDefsListForReading.FindAll((IncidentDef id) => id.defName.StartsWith("Disease_")),
+                allItems = Util.FindAll(DefDatabase<IncidentDef>.AllDefs, id => id.defName.StartsWith("Disease_")),
                 beingUsed = () => Util.ConvertItems(this.diseases, (FloatInputWidget<BiomeDiseaseRecord> w) => w.Parent.diseaseInc),
                 onAdd = delegate (IncidentDef id)
                 {
@@ -140,7 +140,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
             this.wildPlantPlusMinusArgs = new PlusMinusArgs<ThingDef>()
             {
-                allItems = DefDatabase<ThingDef>.AllDefsListForReading.FindAll((ThingDef td) => td.plant != null),
+                allItems = Util.FindAll(DefDatabase<ThingDef>.AllDefs, td => td.plant != null),
                 beingUsed = () => Util.ConvertItems(this.wildPlants, (FloatInputWidget<BiomePlantRecord> w) => w.Parent.plant),
                 onAdd = delegate (ThingDef td)
                 {
@@ -158,7 +158,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
             this.wildAnimalPlusMinusArgs = new PlusMinusArgs<PawnKindDef>()
             {
-                allItems = DefDatabase<PawnKindDef>.AllDefsListForReading.FindAll((PawnKindDef pdk) => pdk.race.race.thinkTreeMain.defName.Equals("Animal")),
+                allItems = Util.FindAll(DefDatabase<PawnKindDef>.AllDefs, pdk => pdk.race.race.thinkTreeMain.defName.Equals("Animal")),
                 beingUsed = () => Util.ConvertItems(this.wildAnimals, (FloatInputWidget<BiomeAnimalRecord> w) => w.Parent.animal),
                 onAdd = delegate (PawnKindDef td)
                 {
@@ -176,7 +176,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
             this.allowedPackAnimalsPlusMinusArgs = new PlusMinusArgs<ThingDef>()
             {
-                allItems = DefDatabase<ThingDef>.AllDefsListForReading.FindAll((ThingDef td) => td.race != null && td.race.herdAnimal),
+                allItems = Util.FindAll(DefDatabase<ThingDef>.AllDefs, td => td.race != null && td.race.herdAnimal),
                 beingUsed = () => this.allowedPackAnimals,
                 onAdd = delegate (ThingDef td)
                 {
@@ -202,7 +202,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
             WindowUtil.DrawInput(x, ref y, width, "Foraged Food", 100, (this.Def.foragedFood != null) ? this.Def.foragedFood.defName : "None",
                 new WindowUtil.FloatOptionsArgs<ThingDef>()
                 {
-                    items = DefLookupUtil.GetSortedDefs(DefDatabase<ThingDef>.AllDefsListForReading),
+                    items = DefLookupUtil.GetSortedDefs(DefDatabase<ThingDef>.AllDefs),
                     getDisplayName = delegate (ThingDef d) { return d.defName; },
                     onSelect = delegate (ThingDef d) { this.Def.foragedFood = d; },
                     includeNullOption = true

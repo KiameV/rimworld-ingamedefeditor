@@ -262,9 +262,11 @@ namespace InGameDefEditor
 
 		public delegate U Convert<T, U>(T t);
 
-		internal static IEnumerable<D> SortedDefList<D>() where D : Def, new()
+		internal static IEnumerable<D> SortedDefList<D>(Predicate<D> exclude = null) where D : Def, new()
 		{
-			List<D> list = DefDatabase<D>.AllDefsListForReading;
+			List<D> list = new List<D>(DefDatabase<D>.AllDefs);
+			if (exclude != null)
+				list.RemoveAll(exclude);
 			list.Sort((l, r) => Util.GetDefLabel(l).CompareTo(Util.GetDefLabel(r)));
 			return list;
 		}
@@ -272,8 +274,9 @@ namespace InGameDefEditor
 		public static IEnumerable<U> ConvertItems<T, U>(IEnumerable<T> t, Convert<T, U> convert)
 		{
 			List<U> u = new List<U>();
-			foreach (var v in t)
-				u.Add(convert(v));
+			if (t != null)
+				foreach (var v in t)
+					u.Add(convert(v));
 			return u;
 		}
 
@@ -354,6 +357,13 @@ namespace InGameDefEditor
 						isInitialized = false;
 					}
 			return isInitialized;
+		}
+
+		public static IEnumerable<T> FindAll<T>(IEnumerable<T> items, Predicate<T> p)
+		{
+			foreach (T t in items)
+				if (p(t))
+					yield return t;
 		}
 
 		public static List<T> CreateList<T>(IEnumerable<T> from)

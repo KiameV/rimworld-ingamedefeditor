@@ -70,6 +70,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				v.Draw(x, ref y, width);
 
 			WindowUtil.PlusMinusLabel(x, ref y, width, "Food Type Flags", this.foodTypePlusMinus);
+			WindowUtil.DrawFlagList(x, ref y, width, this.foodTypeSortedFlags, (int)this.Parent.foodType, v => v == FoodTypeFlags.None);
 		}
 
 		public void ResetBuffers()

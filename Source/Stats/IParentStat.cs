@@ -3,9 +3,10 @@ using Verse;
 
 namespace InGameDefEditor.Stats
 {
-	public interface IParentStat : IDefStat
-    {
-        void ApplyStats(Def to);
+	public interface IParentStat
+	{
+		string UniqueKey { get; }
+		void ApplyStats(object to);
 	}
 
 	public interface IInitializable

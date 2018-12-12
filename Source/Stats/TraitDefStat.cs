@@ -21,6 +21,8 @@ namespace InGameDefEditor.Stats
 
 		public List<TraitDegreeDataStats> degreeDatas;
 
+		public string UniqueKey => base.defName;
+
 		public TraitDefStat() : base() { }
 		public TraitDefStat(TraitDef d) : base(d)
 		{
@@ -51,7 +53,7 @@ namespace InGameDefEditor.Stats
 			return true;
 		}
 
-		public void ApplyStats(Def to)
+		public void ApplyStats(object to)
 		{
 			if (to is TraitDef d)
 			{

@@ -13,6 +13,8 @@ namespace InGameDefEditor.Stats
 		public WorkTags disablingWorkTags;
 		public float listOrder;
 
+		public string UniqueKey => base.defName;
+
 		public SkillDefStats(SkillDef def) : base(def)
 		{
 			this.skillLabel = def.skillLabel;
@@ -22,7 +24,7 @@ namespace InGameDefEditor.Stats
 			this.listOrder = def.listOrder;
 		}
 
-		public void ApplyStats(Def to)
+		public void ApplyStats(object to)
 		{
 			if (to is SkillDef t)
 			{

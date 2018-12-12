@@ -40,7 +40,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 			this.allowedTargetTags = new PlusMinusArgs<IncidentTargetTagDef>()
 			{
-				allItems = DefDatabase<IncidentTargetTagDef>.AllDefsListForReading,
+				allItems = DefDatabase<IncidentTargetTagDef>.AllDefs,
 				getDisplayName = v => Util.GetDefLabel(v),
 				beingUsed = () => this.Props.allowedTargetTags,
 				onAdd = v =>
@@ -53,7 +53,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 			this.disallowedTargetTags = new PlusMinusArgs<IncidentTargetTagDef>()
 			{
-				allItems = DefDatabase<IncidentTargetTagDef>.AllDefsListForReading,
+				allItems = DefDatabase<IncidentTargetTagDef>.AllDefs,
 				getDisplayName = v => Util.GetDefLabel(v),
 				beingUsed = () => this.Props.disallowedTargetTags,
 				onAdd = v =>
@@ -139,7 +139,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 						this.categoryWeightArgs = new PlusMinusArgs<IncidentCategoryDef>()
 						{
-							allItems = DefDatabase<IncidentCategoryDef>.AllDefsListForReading,
+							allItems = DefDatabase<IncidentCategoryDef>.AllDefs,
 							isBeingUsed = d =>
 							{
 								foreach (var input in this.categoryWeights)

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
-	class DifficultyDefWidget : AParentStatWidget<DifficultyDef>
+	class DifficultyDefWidget : AParentDefStatWidget<DifficultyDef>
 	{
 		private readonly List<IInputWidget> leftInputWidgets;
 		private readonly List<IInputWidget> midddleInputWidgets;

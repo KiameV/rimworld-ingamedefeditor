@@ -136,7 +136,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 
 		SortedDictionary<string, object> categoryByDefName = new SortedDictionary<string, object>();
-		foreach (var v in DefDatabase<ThingCategoryDef>.AllDefsListForReading)
+		foreach (var v in DefDatabase<ThingCategoryDef>.AllDefs)
 			categoryByDefName.Add(v.defName, null);
 
 		this.categories = new PlusMinusArgs<string>()
@@ -385,7 +385,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 	private IEnumerable<ThingDef> GetThingDefsSorted()
 	{
 		SortedDictionary<string, ThingDef> d = new SortedDictionary<string, ThingDef>();
-		foreach (var v in DefDatabase<ThingDef>.AllDefsListForReading)
+		foreach (var v in DefDatabase<ThingDef>.AllDefs)
 			d[v.label] = v;
 		return d.Values;
 	}

@@ -12,7 +12,6 @@ namespace InGameDefEditor.Gui.EditorWidgets
 	interface IParentStatWidget
 	{
 		DefType Type { get; }
-		Def BaseDef { get; }
 		string DisplayLabel { get; }
 
 		void DrawLeft(float x, ref float y, float width);
@@ -20,14 +19,15 @@ namespace InGameDefEditor.Gui.EditorWidgets
 		void DrawRight(float x, ref float y, float width);
 		void Rebuild();
 		void ResetBuffers();
+		void ResetParent();
 	}
 
-	public abstract class AParentStatWidget<D> : IParentStatWidget where D : Def, new()
+	public abstract class AParentDefStatWidget<D> : IParentStatWidget where D : Def, new()
     {
         public readonly D Def;
         private readonly DefType type;
 
-        protected AParentStatWidget(D def, DefType type)
+        protected AParentDefStatWidget(D def, DefType type)
         {
             this.Def = def;
             this.type = type;
@@ -43,5 +43,10 @@ namespace InGameDefEditor.Gui.EditorWidgets
         public abstract void DrawRight(float x, ref float y, float width);
         public abstract void Rebuild();
         public abstract void ResetBuffers();
+
+		public void ResetParent()
+		{
+			Backup.ApplyStats(this.Def);
+		}
     }
 }

@@ -5,7 +5,7 @@ using Verse;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
-    class ProjectileDefWidget : AParentStatWidget<ThingDef>, IInputWidget
+    class ProjectileDefWidget : AParentDefStatWidget<ThingDef>, IInputWidget
 	{
         public readonly ThingDef ProjectileDef;
 

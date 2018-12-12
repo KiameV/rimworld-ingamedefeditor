@@ -7,17 +7,17 @@ namespace InGameDefEditor
 {
     class Backup
     {
-        private readonly static Dictionary<Def, IParentStat> backup = new Dictionary<Def, IParentStat>();
+        private readonly static Dictionary<string, IParentStat> backup = new Dictionary<string, IParentStat>();
 
-        public static bool HasChanged<T>(T t) where T : IParentStat
+		public static bool HasChanged<T>(T t) where T : IParentStat
         {
             if (t == null)
                 return false;
 
-            if (backup.TryGetValue(t.BaseDef, out IParentStat found))
+            if (backup.TryGetValue(t.UniqueKey, out IParentStat found))
                 return !t.Equals(found);
 
-            Log.Message(t.BaseDef.defName + " not found in backup");
+            Log.Message(t.UniqueKey + " not found in backup");
 
             return true;
         }
@@ -27,46 +27,57 @@ namespace InGameDefEditor
             if (backup == null || backup.Count == 0)
             {
                 foreach (ThingDef d in Defs.ApparelDefs.Values)
-                    backup[d] = new ThingDefStats(d);
+                    backup[d.defName] = new ThingDefStats(d);
 
                 foreach (ThingDef d in Defs.WeaponDefs.Values)
-                    backup[d] = new ThingDefStats(d);
+                    backup[d.defName] = new ThingDefStats(d);
 
                 foreach (ThingDef d in Defs.ProjectileDefs.Values)
-                    backup[d] = new ProjectileDefStats(d);
+                    backup[d.defName] = new ProjectileDefStats(d);
 
                 foreach (BiomeDef d in Defs.BiomeDefs.Values)
-                    backup[d] = new BiomeDefStats(d);
+                    backup[d.defName] = new BiomeDefStats(d);
 
                 foreach (ThoughtDef d in Defs.ThoughtDefs.Values)
-                    backup[d] = new ThoughtDefStats(d);
+                    backup[d.defName] = new ThoughtDefStats(d);
 
 				foreach (RecipeDef d in Defs.RecipeDefs.Values)
-					backup[d] = new RecipeDefStats(d);
+					backup[d.defName] = new RecipeDefStats(d);
 
 				foreach (TraitDef d in Defs.TraitDefs.Values)
-					backup[d] = new TraitDefStat(d);
+					backup[d.defName] = new TraitDefStat(d);
 
 				foreach (StorytellerDef d in Defs.StoryTellerDefs.Values)
-					backup[d] = new StoryTellerDefStats(d);
+					backup[d.defName] = new StoryTellerDefStats(d);
 
 				foreach (DifficultyDef d in Defs.DifficultyDefs.Values)
-					backup[d] = new DifficultyDefStat(d);
+					backup[d.defName] = new DifficultyDefStat(d);
 
 				foreach (ThingDef d in Defs.IngestibleDefs.Values)
-					backup[d] = new ThingDefStats(d);
+					backup[d.defName] = new ThingDefStats(d);
 
 				foreach (ThingDef d in Defs.MineableDefs.Values)
-					backup[d] = new ThingDefStats(d);
+					backup[d.defName] = new ThingDefStats(d);
+
+				foreach (Backstory b in Defs.Backstories.Values)
+					backup[b.identifier] = new BackstoryStats(b);
 			}
         }
 
-        public static void ApplyStats(Def def)
+        public static void ApplyStats(Backstory b)
         {
-            if (backup.TryGetValue(def, out IParentStat s))
-                s.ApplyStats(def);
+            if (backup.TryGetValue(b.identifier, out IParentStat s))
+                s.ApplyStats(b);
             else
-                Log.Warning("Unable to find backup for " + def.defName);
-        }
-    }
+                Log.Warning("Unable to find backup for Backstory " + b.identifier);
+		}
+
+		public static void ApplyStats(Def def)
+		{
+			if (backup.TryGetValue(def.defName, out IParentStat s))
+				s.ApplyStats(def);
+			else
+				Log.Warning("Unable to find backup for Def " + def.defName);
+		}
+	}
 }

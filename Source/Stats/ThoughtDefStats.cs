@@ -35,7 +35,9 @@ namespace InGameDefEditor.Stats
 
         public List<ThoughtStageStats> stages = new List<ThoughtStageStats>();
 
-        public ThoughtDefStats() : base() { }
+		public string UniqueKey => base.defName;
+
+		public ThoughtDefStats() : base() { }
         public ThoughtDefStats(ThoughtDef d) : base(d)
         {
             this.stackLimit = d.stackLimit;
@@ -74,7 +76,7 @@ namespace InGameDefEditor.Stats
             d.stages.ForEach((ThoughtStage ts) => this.stages.Add(new ThoughtStageStats(ts)));
         }
 
-        public void ApplyStats(Def def)
+        public void ApplyStats(object def)
         {
             if (def is ThoughtDef to)
             {

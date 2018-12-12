@@ -57,6 +57,8 @@ namespace InGameDefEditor.Stats
 		// TODO Needs to be null when empty
 		public List<SpecialProductType> specialProducts;
 
+		public string UniqueKey => base.defName;
+
 		public RecipeDefStats() : base() { }
 		public RecipeDefStats(RecipeDef def) : base(def)
 		{
@@ -109,7 +111,7 @@ namespace InGameDefEditor.Stats
 			//	v.ResolveReferences();
 		}
 
-		public void ApplyStats(Def def)
+		public void ApplyStats(object def)
 		{
 			if (def is RecipeDef d)
 			{

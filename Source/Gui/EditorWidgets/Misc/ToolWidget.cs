@@ -52,7 +52,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
                         if (this.Tool.capacities != null)
                             this.Tool.capacities.ForEach((ToolCapacityDef d) => lookup.Add(d));
 
-                        IEnumerable<ToolCapacityDef> defs = DefDatabase<ToolCapacityDef>.AllDefsListForReading;
+                        IEnumerable<ToolCapacityDef> defs = DefDatabase<ToolCapacityDef>.AllDefs;
                         List<ToolCapacityDef> list = new List<ToolCapacityDef>(defs.Count());
                         foreach (var tool in defs)
                             if (!lookup.Contains(tool))

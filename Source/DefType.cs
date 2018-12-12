@@ -14,5 +14,6 @@
 		Ingestible,
 		Mineable,
 		Disabled,
+		Backstory,
 	};
 }

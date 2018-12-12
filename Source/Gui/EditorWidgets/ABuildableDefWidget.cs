@@ -7,7 +7,7 @@ using Verse;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
-    abstract class ABuildableDefWidget<D> : AParentStatWidget<D> where D : BuildableDef, new()
+    abstract class ABuildableDefWidget<D> : AParentDefStatWidget<D> where D : BuildableDef, new()
 	{
 		private enum Direction { North, South, East, West }
 
@@ -117,7 +117,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 			this.statBasesPlusMinus = new WindowUtil.PlusMinusArgs<StatDef>()
 			{
-				allItems = DefDatabase<StatDef>.AllDefsListForReading,
+				allItems = DefDatabase<StatDef>.AllDefs,
 				beingUsed = () =>
 				{
 					List<StatDef> l = new List<StatDef>(base.Def.statBases.Count);
@@ -191,7 +191,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
             }
 
             SortedDictionary<string, StatDef> sorted = new SortedDictionary<string, StatDef>();
-            foreach (StatDef d in DefDatabase<StatDef>.AllDefsListForReading)
+            foreach (StatDef d in DefDatabase<StatDef>.AllDefs)
                 if (!lookup.Contains(d.defName))
                     sorted[d.label] = d;
 

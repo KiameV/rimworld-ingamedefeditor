@@ -10,7 +10,7 @@ using InGameDefEditor.Stats.Misc;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
-	class RecipeWidget : AParentStatWidget<RecipeDef>
+	class RecipeWidget : AParentDefStatWidget<RecipeDef>
 	{
 		private readonly List<IInputWidget> inputWidgets;
 
@@ -83,7 +83,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 			this.forceHiddenSpecialFilters = new PlusMinusArgs<SpecialThingFilterDef>()
 			{
-				allItems = DefDatabase<SpecialThingFilterDef>.AllDefsListForReading,
+				allItems = DefDatabase<SpecialThingFilterDef>.AllDefs,
 				beingUsed = () => base.Def.forceHiddenSpecialFilters,
 				onAdd = (def) => base.Def.forceHiddenSpecialFilters = Util.AddTo(base.Def.forceHiddenSpecialFilters, def),
 				onRemove = (def) => base.Def.forceHiddenSpecialFilters = Util.RemoveFrom(base.Def.forceHiddenSpecialFilters, def, false),
@@ -92,7 +92,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 			this.recipeUsers = new PlusMinusArgs<ThingDef>()
 			{
-				allItems = DefDatabase<ThingDef>.AllDefsListForReading,
+				allItems = DefDatabase<ThingDef>.AllDefs,
 				beingUsed = () => base.Def.recipeUsers,
 				onAdd = (def) => base.Def.recipeUsers.Add(def),
 				onRemove = (def) => base.Def.recipeUsers.Remove(def),
@@ -101,7 +101,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 			this.appliedOnFixedBodyParts = new PlusMinusArgs<BodyPartDef>()
 			{
-				allItems = DefDatabase<BodyPartDef>.AllDefsListForReading,
+				allItems = DefDatabase<BodyPartDef>.AllDefs,
 				beingUsed = () => base.Def.appliedOnFixedBodyParts,
 				onAdd = (def) => base.Def.appliedOnFixedBodyParts = Util.AddTo(base.Def.appliedOnFixedBodyParts, def),
 				onRemove = (def) => base.Def.appliedOnFixedBodyParts = Util.RemoveFrom(base.Def.appliedOnFixedBodyParts, def, false),
@@ -110,7 +110,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 			this.skillRequirementsPlusMinusArgs = new PlusMinusArgs<SkillDef>()
 			{
-				allItems = DefDatabase<SkillDef>.AllDefsListForReading,
+				allItems = DefDatabase<SkillDef>.AllDefs,
 				isBeingUsed = delegate (SkillDef sd)
 				{
 					foreach (var v in base.Def.skillRequirements)
@@ -135,7 +135,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 			/*this.productsPlusMinusArgs = new PlusMinusArgs<ThingDef>()
 			{
-				allItems = DefDatabase<ThingDef>.AllDefsListForReading,
+				allItems = DefDatabase<ThingDef>.AllDefs,
 				isBeingUsed = delegate (ThingDef td)
 				{
 					foreach (var v in base.Def.products)

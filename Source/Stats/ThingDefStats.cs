@@ -288,7 +288,7 @@ namespace InGameDefEditor.Stats
 			return false;
         }
 		
-		public override void ApplyStats(Def to)
+		public override void ApplyStats(object to)
         {
 #if DEBUG_THINGDEF
             Log.Warning("ApplyStats for " + this.defName);
