@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using InGameDefEditor.Gui.EditorWidgets.Misc;
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace InGameDefEditor
 {
@@ -182,10 +183,11 @@ namespace InGameDefEditor
             switch (type)
             {
                 case DefType.Apparel:
-                case DefType.Weapon:
-				case DefType.Mineable:
-				case DefType.Ingestible:
+				case DefType.Building:
 				case DefType.Disabled:
+				case DefType.Ingestible:
+				case DefType.Mineable:
+				case DefType.Weapon:
 					this.selectedDef = new ThingDefWidget(d as ThingDef, type);
                     break;
 				case DefType.Projectile:
@@ -312,6 +314,7 @@ namespace InGameDefEditor
 				new EditableDefType<ThingDef>("Apparel", DefType.Apparel, Defs.ApparelDefs.Values),
 				new EditableBackstoryType("Backstories", DefType.Backstory, Defs.Backstories.Values),
 				new EditableDefType<BiomeDef>("Biomes", DefType.Biome, Defs.BiomeDefs.Values),
+				new EditableDefType<ThingDef>("Buildings", DefType.Building, Defs.BuildingDefs.Values),
 				new EditableDefType<DifficultyDef>("Difficulty", DefType.Difficulty, this.SortDifficultyOptions(Defs.DifficultyDefs.Values)),
 				new EditableDefType<ThingDef>("Ingestible", DefType.Ingestible, Defs.IngestibleDefs.Values),
 				new EditableDefType<ThingDef>("Mineable", DefType.Mineable, Defs.MineableDefs.Values),

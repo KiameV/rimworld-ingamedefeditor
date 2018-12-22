@@ -11,7 +11,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 		private readonly List<IInputWidget> inputWidgets;
 
-		public string DisplayLabel => stage.label;
+		public string DisplayLabel => stage?.label;
 		
 		public ThoughtStageWidget(ThoughtStage stage)
 		{
@@ -27,8 +27,14 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 		public void Draw(float x, ref float y, float width)
 		{
-			Widgets.Label(new Rect(x, y, width, 42), this.stage.description);
-			y += 45;
+			WindowUtil.DrawLabel(x, ref y, width, this.stage.label, 32, true);
+			x += 20;
+			width -= 20;
+			if (this.stage.description != null)
+			{
+				Widgets.Label(new Rect(x, y, width, 42), this.stage.description);
+				y += 45;
+			}
 			foreach (var v in this.inputWidgets)
 				v.Draw(x, ref y, width);
 		}

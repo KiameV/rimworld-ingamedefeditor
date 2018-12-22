@@ -5,8 +5,6 @@ using System.Linq;
 using Verse;
 using System;
 using static InGameDefEditor.WindowUtil;
-using static InGameDefEditor.Gui.EditorWidgets.Misc.ThingFilterWidget;
-using InGameDefEditor.Stats.Misc;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {

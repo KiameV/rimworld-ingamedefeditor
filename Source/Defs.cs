@@ -20,6 +20,7 @@ namespace InGameDefEditor
 		public static readonly SortedDictionary<string, ThingDef> IngestibleDefs = new SortedDictionary<string, ThingDef>();
 		public static readonly SortedDictionary<string, ThingDef> MineableDefs = new SortedDictionary<string, ThingDef>();
 		public static readonly SortedDictionary<string, Backstory> Backstories = new SortedDictionary<string, Backstory>();
+		public static readonly SortedDictionary<string, ThingDef> BuildingDefs = new SortedDictionary<string, ThingDef>();
 		private static bool isInit = false;
 		
 		public static void Initialize()
@@ -51,8 +52,14 @@ namespace InGameDefEditor
 							{
 								if (v.defaultProjectile != null)
 									ProjectileDefs[Util.GetDefLabel(v.defaultProjectile)] = v.defaultProjectile;
-								else
-									Log.Warning("No projectiles defined for " + d.defName);
+								/*else
+								{
+									if (d.building == null ||
+										(!d.building.IsTurret && !d.building.IsMortar))
+									{
+										Log.Warning("No projectiles defined for " + d.defName);
+									}
+								}*/
 							});
 						}
                     }
@@ -72,6 +79,11 @@ namespace InGameDefEditor
 					if (d.mineable)
 					{
 						MineableDefs[label] = d;
+					}
+
+					if (d.building != null)
+					{
+						BuildingDefs[label] = d;
 					}
                 }
 
@@ -146,6 +158,9 @@ namespace InGameDefEditor
 
 			foreach (Backstory b in Defs.Backstories.Values)
 				Backup.ApplyStats(b);
+
+			foreach (ThingDef d in Defs.BuildingDefs.Values)
+				Backup.ApplyStats(d);
 		}
 	}
 }

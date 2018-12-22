@@ -82,4 +82,10 @@ namespace InGameDefEditor.Stats
 	{
 		public List<BackstoryStats> stats;
 	}
+
+	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
+	public class RootBuilding
+	{
+		public List<ThingDefStats> stats;
+	}
 }

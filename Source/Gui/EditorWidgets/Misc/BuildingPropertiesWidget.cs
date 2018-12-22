@@ -3,6 +3,7 @@ using RimWorld;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
+using System;
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
@@ -12,12 +13,11 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 		private readonly List<IInputWidget> inputWidgets;
 
-		public string DisplayLabel => throw new System.NotImplementedException();
+		public string DisplayLabel => "Building Properties";
 
 		public BuildingPropertiesWidget(BuildingProperties props)
 		{
 			this.props = props;
-
 			this.inputWidgets = new List<IInputWidget>();
 			if (props.mineableThing != null)
 			{
@@ -31,22 +31,13 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 					new IntInputWidget<BuildingProperties>(this.props, "Min", p => p.mineableScatterLumpSizeRange.min, (p, v) => p.mineableScatterLumpSizeRange.min = v),
 					new IntInputWidget<BuildingProperties>(this.props, "Max", p => p.mineableScatterLumpSizeRange.max, (p, v) => p.mineableScatterLumpSizeRange.max = v)));
 			}
-			else if (props.turretGunDef != null)
-			{
-				this.inputWidgets.Add(new FloatInputWidget<BuildingProperties>(this.props, "Turret - Burst Warmup Time", p => p.turretBurstWarmupTime, (p, v) => p.turretBurstWarmupTime = v));
-				this.inputWidgets.Add(new FloatInputWidget<BuildingProperties>(this.props, "Turret - Burst Cooldown Time", p => p.turretBurstCooldownTime, (p, v) => p.turretBurstCooldownTime = v));
-				this.inputWidgets.Add(new FloatInputWidget<BuildingProperties>(this.props, "Turret - Top Draw Size", p => p.turretTopDrawSize, (p, v) => p.turretTopDrawSize = v));
-				this.inputWidgets.Add(new MinMaxInputWidget<BuildingProperties, float>("Turret - Top Offset",
-					new FloatInputWidget<BuildingProperties>(this.props, "X", p => p.turretTopOffset.x, (p, v) => p.turretTopOffset.x = v),
-					new FloatInputWidget<BuildingProperties>(this.props, "Y", p => p.turretTopOffset.y, (p, v) => p.turretTopOffset.y = v)));
-				this.inputWidgets.Add(new DefInputWidget<BuildingProperties, ThingDef>(this.props, "Turret - Gun Def", 200, p => p.turretGunDef, (p, v) => p.turretGunDef = v, true));
-			}
-			else if (props.isTrap || props.trapDamageCategory != null)
+			else if (props.isTrap)
 			{
 				this.inputWidgets.Add(new BoolInputWidget<BuildingProperties>(this.props, "Is Trap", p => p.isTrap, (p, v) => p.isTrap = v));
 				this.inputWidgets.Add(new BoolInputWidget<BuildingProperties>(this.props, "Trap - Destroy On Spring", p => p.trapDestroyOnSpring, (p, v) => p.trapDestroyOnSpring = v));
 				this.inputWidgets.Add(new FloatInputWidget<BuildingProperties>(this.props, "Trap - Peaceful Wild Animals Spring Chance Factor", p => p.trapPeacefulWildAnimalsSpringChanceFactor, (p, v) => p.trapPeacefulWildAnimalsSpringChanceFactor = v));
-				this.inputWidgets.Add(new DefInputWidget<BuildingProperties, DamageArmorCategoryDef>(this.props, "Trap - Damage Category", 200, p => p.trapDamageCategory, (p, v) => p.trapDamageCategory = v, true));
+				if (props.trapDamageCategory != null)
+					this.inputWidgets.Add(new DefInputWidget<BuildingProperties, DamageArmorCategoryDef>(this.props, "Trap - Damage Category", 200, p => p.trapDamageCategory, (p, v) => p.trapDamageCategory = v, true));
 			}
 
 			this.inputWidgets.Add(new BoolInputWidget<BuildingProperties>(this.props, "Is Edifice", p => p.isEdifice, (p, v) => p.isEdifice = v));
@@ -88,6 +79,14 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			this.inputWidgets.Add(new BoolInputWidget<BuildingProperties>(this.props, "Work Speed Penalty Outdoors", p => p.workSpeedPenaltyOutdoors, (p, v) => p.workSpeedPenaltyOutdoors = v));
 			this.inputWidgets.Add(new BoolInputWidget<BuildingProperties>(this.props, "Work Speed Penalty Temperature", p => p.workSpeedPenaltyTemperature, (p, v) => p.workSpeedPenaltyTemperature = v));
 			this.inputWidgets.Add(new IntInputWidget<BuildingProperties>(this.props, "Watch Building Stand Rect Width", p => p.watchBuildingStandRectWidth, (p, v) => p.watchBuildingStandRectWidth = v));
+			this.inputWidgets.Add(new FloatInputWidget<BuildingProperties>(this.props, "Turret - Burst Warmup Time", p => p.turretBurstWarmupTime, (p, v) => p.turretBurstWarmupTime = v));
+			this.inputWidgets.Add(new FloatInputWidget<BuildingProperties>(this.props, "Turret - Burst Cooldown Time", p => p.turretBurstCooldownTime, (p, v) => p.turretBurstCooldownTime = v));
+			this.inputWidgets.Add(new FloatInputWidget<BuildingProperties>(this.props, "Turret - Top Draw Size", p => p.turretTopDrawSize, (p, v) => p.turretTopDrawSize = v));
+			this.inputWidgets.Add(new MinMaxInputWidget<BuildingProperties, float>("Turret - Top Offset",
+				new FloatInputWidget<BuildingProperties>(this.props, "X", p => p.turretTopOffset.x, (p, v) => p.turretTopOffset.x = v),
+				new FloatInputWidget<BuildingProperties>(this.props, "Y", p => p.turretTopOffset.y, (p, v) => p.turretTopOffset.y = v)));
+			if (props.turretGunDef != null)
+				this.inputWidgets.Add(new DefInputWidget<BuildingProperties, ThingDef>(this.props, "Turret - Gun Def", 200, p => p.turretGunDef, (p, v) => p.turretGunDef = v, true));
 			this.inputWidgets.Add(new IntInputWidget<BuildingProperties>(this.props, "Haul To Container Duration", p => p.haulToContainerDuration, (p, v) => p.haulToContainerDuration = v));
 			this.inputWidgets.Add(new DefInputWidget<BuildingProperties, TerrainDef>(this.props, "Natural Terrain", 200, p => p.naturalTerrain, (p, v) => p.naturalTerrain = v, true));
 			this.inputWidgets.Add(new DefInputWidget<BuildingProperties, TerrainDef>(this.props, "Leave Terrain", 200, p => p.leaveTerrain, (p, v) => p.leaveTerrain = v, true));

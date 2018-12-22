@@ -167,8 +167,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			{
 				if (v != null)
 				{
-					WindowUtil.DrawLabel(x, ref y, width, v.DisplayLabel, 32, true);
-					v.Draw(x + 20, ref y, width);
+					v.Draw(x, ref y, width);
 				}
 			}
 		}

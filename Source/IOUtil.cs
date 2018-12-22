@@ -67,6 +67,9 @@ namespace InGameDefEditor
 					if (Load(DefType.Backstory, out RootBackstory back))
 						back?.stats.ForEach((d) => Initialize(d));
 
+					if (Load(DefType.Building, out RootBuilding building))
+						building?.stats.ForEach((d) => Initialize(d));
+
 					// Do Last
 					if (Load("DisabledDefs", out RootDisabledDefs rdd))
 					{
@@ -139,6 +142,9 @@ namespace InGameDefEditor
 
 			Util.Populate(out List<BackstoryStats> backstories, Defs.Backstories.Values, v => HasChanged(new BackstoryStats(v)), false);
 			Save(DefType.Backstory, new RootBackstory() { stats = backstories });
+
+			Util.Populate(out List<ThingDefStats> buildings, Defs.BuildingDefs.Values, v => HasChanged(new ThingDefStats(v)), false);
+			Save(DefType.Building, new RootBuilding() { stats = buildings });
 		}
 
 		private static string basePath = null;

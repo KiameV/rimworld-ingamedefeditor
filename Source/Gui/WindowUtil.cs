@@ -63,6 +63,9 @@ namespace InGameDefEditor
 
 		public static void DrawLabel(float x, float y, float width, string label, bool bolded = false)
         {
+			if (label == null)
+				return;
+
             // 0.14 is about the size of each character
             if (label.Length > width * 0.137)
             {

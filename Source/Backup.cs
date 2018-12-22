@@ -7,14 +7,23 @@ namespace InGameDefEditor
 {
     class Backup
     {
-        private readonly static Dictionary<string, IParentStat> backup = new Dictionary<string, IParentStat>();
+		private const string THOUGHT_KEY = "thought";
+		private const string TRAIT_KEY = "trait";
+
+		private readonly static Dictionary<string, IParentStat> backup = new Dictionary<string, IParentStat>();
 
 		public static bool HasChanged<T>(T t) where T : IParentStat
         {
             if (t == null)
                 return false;
 
-            if (backup.TryGetValue(t.UniqueKey, out IParentStat found))
+			string key = t.UniqueKey;
+			if (t is ThoughtDefStats)
+				key += THOUGHT_KEY;
+			else if (t is TraitDefStat)
+				key += TRAIT_KEY;
+
+			if (backup.TryGetValue(key, out IParentStat found))
                 return !t.Equals(found);
 
             Log.Message(t.UniqueKey + " not found in backup");
@@ -39,13 +48,13 @@ namespace InGameDefEditor
                     backup[d.defName] = new BiomeDefStats(d);
 
                 foreach (ThoughtDef d in Defs.ThoughtDefs.Values)
-                    backup[d.defName] = new ThoughtDefStats(d);
+                    backup[d.defName + THOUGHT_KEY] = new ThoughtDefStats(d);
 
 				foreach (RecipeDef d in Defs.RecipeDefs.Values)
 					backup[d.defName] = new RecipeDefStats(d);
 
 				foreach (TraitDef d in Defs.TraitDefs.Values)
-					backup[d.defName] = new TraitDefStat(d);
+					backup[d.defName + TRAIT_KEY] = new TraitDefStat(d);
 
 				foreach (StorytellerDef d in Defs.StoryTellerDefs.Values)
 					backup[d.defName] = new StoryTellerDefStats(d);
@@ -61,6 +70,9 @@ namespace InGameDefEditor
 
 				foreach (Backstory b in Defs.Backstories.Values)
 					backup[b.identifier] = new BackstoryStats(b);
+
+				foreach (ThingDef d in Defs.BuildingDefs.Values)
+					backup[d.defName] = new ThingDefStats(d);
 			}
         }
 
@@ -74,7 +86,13 @@ namespace InGameDefEditor
 
 		public static void ApplyStats(Def def)
 		{
-			if (backup.TryGetValue(def.defName, out IParentStat s))
+			string key = def.defName;
+			if (def is ThoughtDef)
+				key += THOUGHT_KEY;
+			else if (def is TraitDef)
+				key += TRAIT_KEY;
+
+			if (backup.TryGetValue(key, out IParentStat s))
 				s.ApplyStats(def);
 			else
 				Log.Warning("Unable to find backup for Def " + def.defName);

@@ -15,5 +15,6 @@
 		Mineable,
 		Disabled,
 		Backstory,
+		Building,
 	};
 }

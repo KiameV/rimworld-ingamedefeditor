@@ -440,9 +440,10 @@ namespace InGameDefEditor.Stats.Misc
 					this.haulToContainerDuration == s.haulToContainerDuration &&
 					object.Equals(this.mineableScatterLumpSizeRange, s.mineableScatterLumpSizeRange) &&
 					object.Equals(this.watchBuildingStandDistanceRange, s.watchBuildingStandDistanceRange) &&
-					object.Equals(this.blueprintGraphicData, s.blueprintGraphicData) &&
-					object.Equals(this.trapUnarmedGraphicData, s.trapUnarmedGraphicData) &&
-					object.Equals(this.fullGraveGraphicData, s.fullGraveGraphicData) &&
+					// TODO
+					//object.Equals(this.blueprintGraphicData, s.blueprintGraphicData) &&
+					//object.Equals(this.trapUnarmedGraphicData, s.trapUnarmedGraphicData) &&
+					//object.Equals(this.fullGraveGraphicData, s.fullGraveGraphicData) &&
 					object.Equals(this.naturalTerrain, s.naturalTerrain) &&
 					object.Equals(this.leaveTerrain, s.leaveTerrain) &&
 					object.Equals(this.smoothedThing, s.smoothedThing) &&

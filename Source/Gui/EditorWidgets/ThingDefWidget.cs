@@ -13,11 +13,15 @@ namespace InGameDefEditor.Gui.EditorWidgets
         private readonly List<FloatInputWidget<StatModifier>> EquipmentModifiers = new List<FloatInputWidget<StatModifier>>();
 		private IngestiblePropertiesWidget ingestiblePropertiesWidget = null;
 		private BuildingPropertiesWidget buildingPropertiesWidget = null;
+		private ApparelPropertiesWidget apparelWidget = null;
 
 		public ThingDefWidget(ThingDef def, DefType type) : base(def, type)
         {
             if (base.Def.equippedStatOffsets == null)
                 base.Def.equippedStatOffsets = new List<StatModifier>();
+
+			if (base.Def.apparel != null)
+				this.apparelWidget = new ApparelPropertiesWidget(base.Def.apparel);
 
 			this.Rebuild();
         }
@@ -32,6 +36,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			if (base.Type == DefType.Apparel)
             {
                 this.DrawEquipmentStatOffsets(x, ref y, width);
+				this.apparelWidget?.Draw(x, ref y, width);
             }
             else if (base.Type == DefType.Weapon)
             {

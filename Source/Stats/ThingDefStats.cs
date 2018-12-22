@@ -275,7 +275,7 @@ namespace InGameDefEditor.Stats
         {
             if (base.Equals(obj) &&
                 obj is ThingDefStats s)
-            {
+			{
 				if (Util.AreEqual(this.EquippedStatOffsets, s.EquippedStatOffsets) &&
 					Util.AreEqual(this.VerbStats, s.VerbStats, null) &&
 					Util.AreEqual(this.Tools, s.Tools, null) &&
