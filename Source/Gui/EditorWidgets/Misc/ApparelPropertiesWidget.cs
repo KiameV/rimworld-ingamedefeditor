@@ -20,11 +20,17 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 			this.inputWidgets = new List<IInputWidget>()
 			{
-				new FloatInputWidget<ApparelProperties>(this.apparelProperties, "Wear Per Day", s => s.wearPerDay, (s, v) => s.wearPerDay = v),
+                // this.useWornGraphicMask == s.useWornGraphicMask &&
+                //    this.canBeGeneratedToSatisfyWarmth == s.canBeGeneratedToSatisfyWarmth &&
+                //    this.gender == s.gender &&
+                new FloatInputWidget<ApparelProperties>(this.apparelProperties, "Wear Per Day", s => s.wearPerDay, (s, v) => s.wearPerDay = v),
 				new BoolInputWidget<ApparelProperties>(this.apparelProperties, "Care If Worn By Corpse", s => s.careIfWornByCorpse, (s, v) => s.careIfWornByCorpse = v),
 				new BoolInputWidget<ApparelProperties>(this.apparelProperties, "Hat Rendered Front OfFace", s => s.hatRenderedFrontOfFace, (s, v) => s.hatRenderedFrontOfFace = v),
 				new BoolInputWidget<ApparelProperties>(this.apparelProperties, "Use Deflect Metal Effect", s => s.useDeflectMetalEffect, (s, v) => s.useDeflectMetalEffect = v),
-			};
+                new BoolInputWidget<ApparelProperties>(this.apparelProperties, "Use Worn Graphic Mask", s => s.useWornGraphicMask, (s, b) => s.useWornGraphicMask = b),
+                new BoolInputWidget<ApparelProperties>(this.apparelProperties, "Can Be Generated for Warmth", s => s.canBeGeneratedToSatisfyWarmth, (s, b) => s.canBeGeneratedToSatisfyWarmth = b),
+                new EnumInputWidget<ApparelProperties, Gender>(this.apparelProperties, "Gender", 100f, s => s.gender, (s, v) => s.gender = v),
+            };
 
 			this.bodyPartGroupArgs = new WindowUtil.PlusMinusArgs<BodyPartGroupDef>()
 			{

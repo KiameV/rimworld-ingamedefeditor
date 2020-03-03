@@ -76,9 +76,9 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			this.inputWidgets.Add(new BoolInputWidget<BuildingProperties>(this.props, "AI - Chill Destination", p => p.ai_chillDestination, (p, v) => p.ai_chillDestination = v));
 			this.inputWidgets.Add(new BoolInputWidget<BuildingProperties>(this.props, "Ignore Stored Things Beauty", p => p.ignoreStoredThingsBeauty, (p, v) => p.ignoreStoredThingsBeauty = v));
 			this.inputWidgets.Add(new FloatInputWidget<BuildingProperties>(this.props, "Unpowered Work Table Work Speed Factor", p => p.unpoweredWorkTableWorkSpeedFactor, (p, v) => p.unpoweredWorkTableWorkSpeedFactor = v));
-			this.inputWidgets.Add(new BoolInputWidget<BuildingProperties>(this.props, "Work Speed Penalty Outdoors", p => p.workSpeedPenaltyOutdoors, (p, v) => p.workSpeedPenaltyOutdoors = v));
-			this.inputWidgets.Add(new BoolInputWidget<BuildingProperties>(this.props, "Work Speed Penalty Temperature", p => p.workSpeedPenaltyTemperature, (p, v) => p.workSpeedPenaltyTemperature = v));
-			this.inputWidgets.Add(new IntInputWidget<BuildingProperties>(this.props, "Watch Building Stand Rect Width", p => p.watchBuildingStandRectWidth, (p, v) => p.watchBuildingStandRectWidth = v));
+            // TODO this.inputWidgets.Add(new BoolInputWidget<BuildingProperties>(this.props, "Work Speed Penalty Outdoors", p => p.workSpeedPenaltyOutdoors, (p, v) => p.workSpeedPenaltyOutdoors = v));
+            // TODO this.inputWidgets.Add(new BoolInputWidget<BuildingProperties>(this.props, "Work Speed Penalty Temperature", p => p.workSpeedPenaltyTemperature, (p, v) => p.workSpeedPenaltyTemperature = v));
+            this.inputWidgets.Add(new IntInputWidget<BuildingProperties>(this.props, "Watch Building Stand Rect Width", p => p.watchBuildingStandRectWidth, (p, v) => p.watchBuildingStandRectWidth = v));
 			this.inputWidgets.Add(new FloatInputWidget<BuildingProperties>(this.props, "Turret - Burst Warmup Time", p => p.turretBurstWarmupTime, (p, v) => p.turretBurstWarmupTime = v));
 			this.inputWidgets.Add(new FloatInputWidget<BuildingProperties>(this.props, "Turret - Burst Cooldown Time", p => p.turretBurstCooldownTime, (p, v) => p.turretBurstCooldownTime = v));
 			this.inputWidgets.Add(new FloatInputWidget<BuildingProperties>(this.props, "Turret - Top Draw Size", p => p.turretTopDrawSize, (p, v) => p.turretTopDrawSize = v));

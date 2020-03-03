@@ -12,12 +12,13 @@ namespace InGameDefEditor
 {
     class InGameDefEditorWindow : Window
 	{
-		private IEditableDefType selectedDefType = null;
-		private IParentStatWidget selectedDef = null;
+		private static IEditableDefType selectedDefType = null;
+		private static IParentStatWidget selectedDef = null;
 
-        private Vector2 leftScroll = Vector2.zero,
-                        middleScroll = Vector2.zero,
-                        rightScroll = Vector2.zero;
+        private static Vector2 
+			leftScroll = Vector2.zero,
+			middleScroll = Vector2.zero,
+			rightScroll = Vector2.zero;
 
         private float previousYMaxLeft = 0,
                       previousYMaxMiddle = 0,
@@ -35,7 +36,7 @@ namespace InGameDefEditor
             Text.Font = GameFont.Small;
             float outerY = 10;
 
-			if (Widgets.ButtonText(new Rect(10, outerY, 200, 30), ((this.selectedDefType == null) ? "Def Type" : this.selectedDefType.Label)))
+			if (Widgets.ButtonText(new Rect(10, outerY, 200, 30), ((selectedDefType == null) ? "Def Type" : selectedDefType.Label)))
 			{
 				WindowUtil.DrawFloatingOptions(
                         new WindowUtil.FloatOptionsArgs<IEditableDefType>()
@@ -44,19 +45,19 @@ namespace InGameDefEditor
                             getDisplayName = dt => dt.Label,
 							onSelect = dt =>
 							{
-								this.selectedDefType = dt;
-								this.selectedDef = null;
+								selectedDefType = dt;
+								selectedDef = null;
 							}
 						});
 			}
 
-			if (this.selectedDefType != null)
+			if (selectedDefType != null)
 			{
-				if (Widgets.ButtonText(new Rect(220, outerY, 200, 30), ((this.selectedDef == null) ? this.selectedDefType.Label + " Def" : this.selectedDef.DisplayLabel)))
+				if (Widgets.ButtonText(new Rect(220, outerY, 200, 30), ((selectedDef == null) ? selectedDefType.Label + " Def" : selectedDef.DisplayLabel)))
 				{
 					WindowUtil.DrawFloatingOptions(new WindowUtil.FloatOptionsArgs<object>()
 					{
-						items = this.selectedDefType.GetDefs(),
+						items = selectedDefType.GetDefs(),
 						getDisplayName = i =>
 						{
 							if (i is Def def)
@@ -68,17 +69,16 @@ namespace InGameDefEditor
 						onSelect = i =>
 						{
 							if (i is Def def)
-								this.CreateSelected(def, this.selectedDefType.Type);
+								this.CreateSelected(def, selectedDefType.Type);
 							else if (i is Backstory b)
-								this.CreateSelected(b, this.selectedDefType.Type);
+								this.CreateSelected(b, selectedDefType.Type);
 						}
 					});
 				}
 			}
-            
-            outerY += 60;
+			outerY += 60;
 
-            if (this.selectedDef != null)
+            if (selectedDef != null)
             {
 				float x = 0;
 				float y = 0;
@@ -86,10 +86,10 @@ namespace InGameDefEditor
                 // Left column
                 Widgets.BeginScrollView(
                     new Rect(0, outerY, 370, rect.height - outerY - 120),
-                    ref this.leftScroll,
+                    ref leftScroll,
                     new Rect(0, 0, 354, this.previousYMaxLeft));
 
-                this.selectedDef.DrawLeft(x, ref y, 354);
+                selectedDef.DrawLeft(x, ref y, 354);
                 this.previousYMaxLeft = y;
 
                 Widgets.EndScrollView();
@@ -97,29 +97,29 @@ namespace InGameDefEditor
                 // Middle Column
                 Widgets.BeginScrollView(
                     new Rect(380, outerY, 370, rect.height - outerY - 120),
-                    ref this.middleScroll,
+                    ref middleScroll,
                     new Rect(0, 0, 354, this.previousYMaxMiddle));
                 y = 0;
-                this.selectedDef.DrawMiddle(x, ref y, 354);
+                selectedDef.DrawMiddle(x, ref y, 354);
                 this.previousYMaxMiddle = y;
                 Widgets.EndScrollView();
 
                 // Right Column
                 Widgets.BeginScrollView(
                     new Rect(760, outerY, 370, rect.height - outerY - 120),
-                    ref this.rightScroll,
+                    ref rightScroll,
                     new Rect(0, 0, 354, this.previousYMaxRight));
                 y = 0;
-                this.selectedDef.DrawRight(x, ref y, 354);
+                selectedDef.DrawRight(x, ref y, 354);
                 this.previousYMaxRight = y;
 
                 Widgets.EndScrollView();
 			}
 
-			if (this.selectedDefType != null && 
+			if (selectedDefType != null && 
 				Widgets.ButtonText(new Rect(rect.xMax - 340, rect.yMax - 32, 100, 32), "Reset".Translate()))
 			{
-				Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("Reset " + this.selectedDef.DisplayLabel + "?", delegate { this.ResetSelected(); }));
+				Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("Reset " + selectedDef.DisplayLabel + "?", delegate { this.ResetSelected(); }));
 			}
 
 			if (Widgets.ButtonText(new Rect(100, rect.yMax - 32, 100, 32), "Close".Translate()))
@@ -127,13 +127,13 @@ namespace InGameDefEditor
                 Find.WindowStack.TryRemove(typeof(InGameDefEditorWindow), true);
             }
 
-			if (this.selectedDef != null &&
-				Widgets.ButtonText(new Rect(rect.xMax - 230, rect.yMax - 32, 120, 32), "Reset".Translate() + " " + this.selectedDef.Type))
+			if (selectedDef != null &&
+				Widgets.ButtonText(new Rect(rect.xMax - 230, rect.yMax - 32, 120, 32), "Reset".Translate() + " " + selectedDef.Type))
 			{
-				Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("Reset".Translate() + " " + this.selectedDef.Type + "?", () =>
+				Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("Reset".Translate() + " " + selectedDef.Type + "?", () =>
 				{
-					this.selectedDefType.ResetTypeDefs();
-					this.selectedDef?.ResetBuffers();
+					selectedDefType.ResetTypeDefs();
+					ResetSelected();
 				}));
 			}
 
@@ -142,27 +142,30 @@ namespace InGameDefEditor
                 Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
                     "Reset everything to the original game's settings?",
                     delegate
-                    {
+					{
+						Defs.DisabledThingDefs.Clear();
+						Defs.ApplyStatsAutoThingDefs.Clear();
 						foreach (var v in this.GetDefTypes(false))
 							v.ResetTypeDefs();
-						if (this.selectedDef != null)
-							this.selectedDef.Rebuild();
+						if (selectedDef != null)
+							ResetSelected();
 					}));
             }
         }
 
 		private void ResetSelected()
 		{
-			if (this.selectedDef != null)
+			if (selectedDef != null)
 			{
-				this.selectedDef.ResetParent();
-				this.selectedDef.Rebuild();
+				selectedDef.DisableAutoDeploy();
+				selectedDef.ResetParent();
+				selectedDef.Rebuild();
 			}
 		}
 
 		public void ResetScrolls()
         {
-            this.leftScroll = this.middleScroll = this.rightScroll = Vector2.zero;
+            leftScroll = middleScroll = rightScroll = Vector2.zero;
         }
 
         public override void PostClose()
@@ -173,7 +176,7 @@ namespace InGameDefEditor
 
 		private void CreateSelected(Backstory b, DefType type)
 		{
-			this.selectedDef = new BackstoryWidget(b, type);
+			selectedDef = new BackstoryWidget(b, type);
 			this.ResetScrolls();
 			IngredientCountWidget.ResetUniqueId();
 		}
@@ -188,28 +191,28 @@ namespace InGameDefEditor
 				case DefType.Ingestible:
 				case DefType.Mineable:
 				case DefType.Weapon:
-					this.selectedDef = new ThingDefWidget(d as ThingDef, type);
+					selectedDef = new ThingDefWidget(d as ThingDef, type);
                     break;
 				case DefType.Projectile:
-					this.selectedDef = new ProjectileDefWidget(d as ThingDef, type);
+					selectedDef = new ProjectileDefWidget(d as ThingDef, type);
 					break;
 				case DefType.Biome:
-                    this.selectedDef = new BiomeWidget(d as BiomeDef, type);
+                    selectedDef = new BiomeWidget(d as BiomeDef, type);
                     break;
 				case DefType.Recipe:
-					this.selectedDef = new RecipeWidget(d as RecipeDef, type);
+					selectedDef = new RecipeWidget(d as RecipeDef, type);
 					break;
 				case DefType.Trait:
-					this.selectedDef = new TraitWidget(d as TraitDef, type);
+					selectedDef = new TraitWidget(d as TraitDef, type);
 					break;
 				case DefType.Thought:
-					this.selectedDef = new ThoughtDefWidget(d as ThoughtDef, type);
+					selectedDef = new ThoughtDefWidget(d as ThoughtDef, type);
 					break;
 				case DefType.StoryTeller:
-					this.selectedDef = new StoryTellerDefWidget(d as StorytellerDef, type);
+					selectedDef = new StoryTellerDefWidget(d as StorytellerDef, type);
 					break;
 				case DefType.Difficulty:
-					this.selectedDef = new DifficultyDefWidget(d as DifficultyDef, type);
+					selectedDef = new DifficultyDefWidget(d as DifficultyDef, type);
 					break;
 			}
             this.ResetScrolls();
@@ -272,7 +275,11 @@ namespace InGameDefEditor
 			public void ResetTypeDefs()
 			{
 				foreach (var v in this.items)
+				{
 					Backup.ApplyStats(v);
+					Defs.ApplyStatsAutoThingDefs.Remove(v.identifier);
+					Defs.DisabledThingDefs.Remove(v.identifier);
+				}
 			}
 		}
 

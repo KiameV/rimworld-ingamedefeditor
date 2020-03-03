@@ -16,12 +16,17 @@ namespace InGameDefEditor.Stats.Misc
 		DeepDrillInfestation,
 		Disease,
 		FactionInteraction,
-		JourneyOffer,
+		//JourneyOffer,
 		OnOffCycle,
 		RandomMain,
 		ShipChunkDrop,
 		SingleMTB,
 		Triggered,
+
+        RandomQuest,
+        RefiringUniqueQuest,
+        SingleOnceFixed,
+        ThreatsGenerator,
 	}
 
 	[Serializable]
@@ -73,7 +78,13 @@ namespace InGameDefEditor.Stats.Misc
 		// StorytellerCompProperties_Triggered : StorytellerCompProperties
 		public int delayTicks;
 
-		public StorytellerCompPropertiesStats() { }
+        // StorytellerCompProperties_RefiringUniqueQuest
+        public float refireEveryDays;
+
+        // StorytellerCompProperties_SingleOnceFixed
+        public int fireAfterDaysPassed;
+
+        public StorytellerCompPropertiesStats() { }
 		public StorytellerCompPropertiesStats(StorytellerCompProperties p)
 		{
 			this.compClass = p.compClass.FullName;
@@ -134,8 +145,8 @@ namespace InGameDefEditor.Stats.Misc
 						this.acceptFractionByDaysPassedCurve = Util.Assign(ooc.acceptFractionByDaysPassedCurve, v => new SimpleCurveStats(v));
 						this.acceptPercentFactorPerThreatPointsCurve = Util.Assign(ooc.acceptPercentFactorPerThreatPointsCurve, v => new SimpleCurveStats(v));
 						this.incident = Util.AssignDefStat(ooc.incident);
-						this.applyRaidBeaconThreatMtbFactor = ooc.applyRaidBeaconThreatMtbFactor;
-						this.forceRaidEnemyBeforeDaysPassed = ooc.forceRaidEnemyBeforeDaysPassed;
+                        // TODO this.applyRaidBeaconThreatMtbFactor = ooc.applyRaidBeaconThreatMtbFactor;
+                        this.forceRaidEnemyBeforeDaysPassed = ooc.forceRaidEnemyBeforeDaysPassed;
 					}
 					break;
 				case "RimWorld.StorytellerComp_RandomMain":
@@ -162,9 +173,28 @@ namespace InGameDefEditor.Stats.Misc
 						this.delayTicks = t.delayTicks;
 					}
 					break;
-				case "RimWorld.StorytellerComp_ClassicIntro":
+                case "RimWorld.StorytellerCompProperties_RefiringUniqueQuest":
+                    if (p is StorytellerCompProperties_RefiringUniqueQuest ruq)
+                    {
+                        this.incident = Util.AssignDefStat(ruq.incident);
+                        this.refireEveryDays = ruq.refireEveryDays;
+                    }
+                    break;
+                case "RimWorld.StorytellerCompProperties_SingleOnceFixed":
+                    if (p is StorytellerCompProperties_SingleOnceFixed sof)
+                    {
+                        this.incident = Util.AssignDefStat(sof.incident);
+                        this.fireAfterDaysPassed = sof.fireAfterDaysPassed;
+                    }
+                    break;
+
+                case "RimWorld.StorytellerComp_ClassicIntro":
 				case "RimWorld.StorytellerComp_ShipChunkDrop":
-				case "RimWorld.StorytellerComp_JourneyOffer":
+				case "RimWorld.StorytellerCompProperties_RandomQuest":
+				case "RimWorld.StorytellerComp_SingleOnceFixed":
+				case "RimWorld.StorytellerComp_RefiringUniqueQuest":
+				case "RimWorld.StorytellerComp_ThreatsGenerator":
+				case "RimWorld.StorytellerComp_RandomQuest":
 					// Do nothing
 					break;
 				default:
@@ -241,8 +271,8 @@ namespace InGameDefEditor.Stats.Misc
 						this.acceptFractionByDaysPassedCurve?.ApplyStats(ooc.acceptFractionByDaysPassedCurve);
 						this.acceptPercentFactorPerThreatPointsCurve?.ApplyStats(ooc.acceptPercentFactorPerThreatPointsCurve);
 						ooc.incident = Util.AssignDef(this.incident);
-						ooc.applyRaidBeaconThreatMtbFactor = this.applyRaidBeaconThreatMtbFactor;
-						ooc.forceRaidEnemyBeforeDaysPassed = this.forceRaidEnemyBeforeDaysPassed;
+                        // TODO ooc.applyRaidBeaconThreatMtbFactor = this.applyRaidBeaconThreatMtbFactor;
+                        ooc.forceRaidEnemyBeforeDaysPassed = this.forceRaidEnemyBeforeDaysPassed;
 					}
 					break;
 				case "RimWorld.StorytellerComp_RandomMain":
@@ -271,9 +301,23 @@ namespace InGameDefEditor.Stats.Misc
 					{
 						tr.incident = Util.AssignDef(this.incident);
 						tr.delayTicks = this.delayTicks;
-					}
-					break;
-			}
+                    }
+                    break;
+                case "RimWorld.StorytellerCompProperties_RefiringUniqueQuest":
+                    if (to is StorytellerCompProperties_RefiringUniqueQuest ruq)
+                    {
+                        ruq.incident = Util.AssignDef(this.incident);
+                        ruq.refireEveryDays = this.refireEveryDays;
+                    }
+                    break;
+                case "RimWorld.StorytellerCompProperties_SingleOnceFixed":
+                    if (to is StorytellerCompProperties_SingleOnceFixed sof)
+                    {
+                        sof.incident = Util.AssignDef(this.incident);
+                        sof.fireAfterDaysPassed = this.fireAfterDaysPassed;
+                    }
+                    break;
+            }
 		}
 
 		public override bool Equals(object obj)
@@ -281,12 +325,22 @@ namespace InGameDefEditor.Stats.Misc
 			if (obj != null &&
 				obj is StorytellerCompPropertiesStats d)
 			{
+                var compClass = this.compClass;
+                if (compClass == d.compClass &&
+                    compClass == "RimWorld.StorytellerCompProperties_RandomQuest" ||
+                    compClass == "RimWorld.StorytellerComp_ClassicIntro" || 
+                    compClass == "RimWorld.StorytellerComp_ShipChunkDrop" || 
+                    compClass == "RimWorld.StorytellerCompProperties_RandomQuest")
+                {
+                    return true;
+                }
+
 				if (this.minDaysPassed == d.minDaysPassed &&
 					this.minIncChancePopulationIntentFactor == d.minIncChancePopulationIntentFactor &&
 					Util.AreEqual(this.allowedTargetTags, d.allowedTargetTags) &&
 					Util.AreEqual(this.disallowedTargetTags, d.disallowedTargetTags))
 				{
-					switch (this.compClass)
+					switch (compClass)
 					{
 						case "RimWorld.StorytellerComp_CategoryIndividualMTBByBiome":
 							return
@@ -335,7 +389,14 @@ namespace InGameDefEditor.Stats.Misc
 							return
 								object.Equals(this.incident, d.incident) &&
 								this.delayTicks == d.delayTicks;
-					}
+                        case "StorytellerCompProperties_RefiringUniqueQuest":
+                            return object.Equals(this.incident, d.incident) &&
+                                this.refireEveryDays == d.refireEveryDays;
+                        case "RimWorld.StorytellerCompProperties_SingleOnceFixed":
+                            return object.Equals(this.incident, d.incident) &&
+                                this.fireAfterDaysPassed == d.fireAfterDaysPassed;
+
+                    }
 					return true;
 				}
 			}
@@ -387,7 +448,9 @@ namespace InGameDefEditor.Stats.Misc
 			sb.AppendLine("    randomPointsFactorRange: " + this.randomPointsFactorRange);
 			sb.AppendLine("    skipThreatBigIfRaidBeacon: " + this.skipThreatBigIfRaidBeacon);
 			sb.AppendLine("    delayTicks: " + this.delayTicks);
-			return sb.ToString();
+            sb.AppendLine("    refireEveryDays: " + this.refireEveryDays);
+            sb.AppendLine("    fireAfterDaysPassed: " + this.fireAfterDaysPassed);
+            return sb.ToString();
 		}
 
 		public override int GetHashCode()
@@ -411,8 +474,8 @@ namespace InGameDefEditor.Stats.Misc
 					return new StorytellerCompProperties_Disease();
 				case StoryTellerCompPropertyTypes.FactionInteraction:
 					return new StorytellerCompProperties_FactionInteraction();
-				case StoryTellerCompPropertyTypes.JourneyOffer:
-					return new StorytellerCompProperties_JourneyOffer();
+				// TODO case StoryTellerCompPropertyTypes.JourneyOffer:
+				//	return new  StorytellerCompProperties_JourneyOffer();
 				case StoryTellerCompPropertyTypes.OnOffCycle:
 					return new StorytellerCompProperties_OnOffCycle();
 				case StoryTellerCompPropertyTypes.RandomMain:
@@ -423,7 +486,15 @@ namespace InGameDefEditor.Stats.Misc
 					return new StorytellerCompProperties_SingleMTB();
 				case StoryTellerCompPropertyTypes.Triggered:
 					return new StorytellerCompProperties_Triggered();
-			}
+                case StoryTellerCompPropertyTypes.RandomQuest:
+                    return new StorytellerCompProperties_RandomQuest();
+                case StoryTellerCompPropertyTypes.RefiringUniqueQuest:
+                    return new StorytellerCompProperties_RefiringUniqueQuest();
+                case StoryTellerCompPropertyTypes.SingleOnceFixed:
+                    return new StorytellerCompProperties_SingleOnceFixed();
+                case StoryTellerCompPropertyTypes.ThreatsGenerator:
+                    return new StorytellerCompProperties_ThreatsGenerator();
+            }
 			return null;
 		}
 
@@ -519,7 +590,9 @@ namespace InGameDefEditor.Stats.Misc
 				p is StorytellerCompProperties_FactionInteraction ||
 				p is StorytellerCompProperties_SingleMTB ||
 				p is StorytellerCompProperties_Triggered ||
-				p is StorytellerCompProperties_OnOffCycle;
+				p is StorytellerCompProperties_OnOffCycle || 
+                p is StorytellerCompProperties_RefiringUniqueQuest ||
+                p is StorytellerCompProperties_SingleOnceFixed;
 		}
 
 		public static IncidentCategoryDef GetCategory(StorytellerCompProperties p)
@@ -557,7 +630,11 @@ namespace InGameDefEditor.Stats.Misc
 				return t.incident;
 			if (p is StorytellerCompProperties_OnOffCycle o)
 				return o.incident;
-			return null;
+            if (p is StorytellerCompProperties_RefiringUniqueQuest ruq)
+                return ruq.incident;
+            if (p is StorytellerCompProperties_SingleOnceFixed sof)
+                return sof.incident;
+            return null;
 		}
 
 		public static void SetIncident(StorytellerCompProperties p, IncidentDef d)
@@ -570,6 +647,10 @@ namespace InGameDefEditor.Stats.Misc
 				t.incident = d;
 			else if (p is StorytellerCompProperties_OnOffCycle o)
 				o.incident = d;
-		}
+            if (p is StorytellerCompProperties_RefiringUniqueQuest ruq)
+                ruq.incident = d;
+            if (p is StorytellerCompProperties_SingleOnceFixed sof)
+                sof.incident = d;
+        }
 	}
 }

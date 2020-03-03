@@ -109,8 +109,8 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 							ooc, "Off Days", c => c.offDays, (c, v) => c.offDays = v));
 						this.inputWidgets.Add(new FloatInputWidget<StorytellerCompProperties_OnOffCycle>(
 							ooc, "Min Spacing Days", c => c.minSpacingDays, (c, v) => c.minSpacingDays = v));
-						this.inputWidgets.Add(new BoolInputWidget<StorytellerCompProperties_OnOffCycle>(
-							ooc, "Apply Raid Beacon Thread Mean Time Between Factor", c => c.applyRaidBeaconThreatMtbFactor, (c, v) => c.applyRaidBeaconThreatMtbFactor = v));
+                        // TODO this.inputWidgets.Add(new BoolInputWidget<StorytellerCompProperties_OnOffCycle>(
+                        //ooc, "Apply Raid Beacon Thread Mean Time Between Factor", c => c.applyRaidBeaconThreatMtbFactor, (c, v) => c.applyRaidBeaconThreatMtbFactor = v));
 						this.inputWidgets.Add(new FloatInputWidget<StorytellerCompProperties_OnOffCycle>(
 							ooc, "Force Raid Enemy Before Days Passed", c => c.forceRaidEnemyBeforeDaysPassed, (c, v) => c.forceRaidEnemyBeforeDaysPassed = v));
 						this.inputWidgets.Add(new MinMaxInputWidget<StorytellerCompProperties_OnOffCycle, float>(

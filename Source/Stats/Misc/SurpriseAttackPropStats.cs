@@ -8,14 +8,14 @@ namespace InGameDefEditor.Stats.Misc
 	[Serializable]
 	public class SurpriseAttackPropStats : IInitializable
 	{
-		public List<ExtraMeleeDamageStats> extraMeleeDamages;
+		public List<ExtraDamageStats> extraMeleeDamages;
 
 		public string Label => "SurpriseAttackPropStats";
 
 		public SurpriseAttackPropStats() { }
 		public SurpriseAttackPropStats(SurpriseAttackProps p)
 		{
-			Util.Populate(out this.extraMeleeDamages, p.extraMeleeDamages, (v) => new ExtraMeleeDamageStats(v));
+			Util.Populate(out this.extraMeleeDamages, p.extraMeleeDamages, (v) => new ExtraDamageStats(v));
 		}
 
 		public bool Initialize()

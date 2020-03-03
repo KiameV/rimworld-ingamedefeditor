@@ -36,6 +36,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
 		public string DisplayLabel => this.Backstory.title;
 		public DefType Type => this.type;
 
+		private BoolInputWidget<Backstory> autoApplySettingsInput;
+
 		public BackstoryWidget(Backstory backstory, DefType type)
 		{
 			if (backstory.skillGainsResolved == null)
@@ -139,11 +141,31 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				getDisplayName = v => Util.GetDefLabel(v),
 			};
 
+			this.autoApplySettingsInput = new BoolInputWidget<Backstory>(
+				backstory, "Auto Apply Settings",
+				b =>
+				{
+					if (Defs.ApplyStatsAutoThingDefs.TryGetValue(b.identifier, out bool autoApply))
+						return autoApply;
+					return false;
+				},
+				(b, applyAuto) =>
+				{
+					Defs.ApplyStatsAutoThingDefs[b.identifier] = applyAuto;
+				});
+
 			this.Rebuild();
+		}
+
+		public void DisableAutoDeploy()
+		{
+			Defs.ApplyStatsAutoThingDefs.Remove(this.Backstory.identifier);
 		}
 
 		public void DrawLeft(float x, ref float y, float width)
 		{
+			this.autoApplySettingsInput.Draw(x, ref y, width);
+
 			foreach (var v in this.inputWidgets)
 				v.Draw(x, ref y, width);
 		}

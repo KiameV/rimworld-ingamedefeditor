@@ -27,13 +27,15 @@ namespace InGameDefEditor.Gui.EditorWidgets
         }
 
         public void Draw(float x, ref float y, float width)
-        {
-            foreach (var w in this.inputWidgets)
+		{
+			foreach (var w in this.inputWidgets)
                 w.Draw(x, ref y, width);
         }
 
 		public override void DrawLeft(float x, ref float y, float width)
 		{
+			base.DrawLeft(x, ref y, width);
+
 			foreach (var w in this.inputWidgets)
 				w.Draw(x, ref y, width);
 		}

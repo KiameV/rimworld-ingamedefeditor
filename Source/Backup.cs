@@ -1,5 +1,6 @@
 ﻿using InGameDefEditor.Stats;
 using RimWorld;
+using System;
 using System.Collections.Generic;
 using Verse;
 
@@ -17,18 +18,23 @@ namespace InGameDefEditor
             if (t == null)
                 return false;
 
-			string key = t.UniqueKey;
-			if (t is ThoughtDefStats)
+            if (Defs.ApplyStatsAutoThingDefs.TryGetValue(t.UniqueKey, out bool b) && b)
+                return b;
+            return false;
+            /*string key = t.UniqueKey;
+            if (t is ThoughtDefStats)
 				key += THOUGHT_KEY;
 			else if (t is TraitDefStat)
 				key += TRAIT_KEY;
 
-			if (backup.TryGetValue(key, out IParentStat found))
+            if (backup.TryGetValue(key, out IParentStat found))
+            {
                 return !t.Equals(found);
+            }
 
             Log.Message(t.UniqueKey + " not found in backup");
 
-            return true;
+            return true;*/
         }
 
         public static void Initialize()
@@ -36,43 +42,173 @@ namespace InGameDefEditor
             if (backup == null || backup.Count == 0)
             {
                 foreach (ThingDef d in Defs.ApparelDefs.Values)
-                    backup[d.defName] = new ThingDefStats(d);
+                {
+                    try
+                    {
+                        backup[d.defName] = new ThingDefStats(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
 
                 foreach (ThingDef d in Defs.WeaponDefs.Values)
-                    backup[d.defName] = new ThingDefStats(d);
+                {
+                    try
+                    {
+                        backup[d.defName] = new ThingDefStats(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
 
                 foreach (ThingDef d in Defs.ProjectileDefs.Values)
-                    backup[d.defName] = new ProjectileDefStats(d);
+                {
+                    try
+                    {
+                        backup[d.defName] = new ProjectileDefStats(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
 
                 foreach (BiomeDef d in Defs.BiomeDefs.Values)
-                    backup[d.defName] = new BiomeDefStats(d);
+                {
+                    try
+                    {
+                        backup[d.defName] = new BiomeDefStats(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
 
                 foreach (ThoughtDef d in Defs.ThoughtDefs.Values)
-                    backup[d.defName + THOUGHT_KEY] = new ThoughtDefStats(d);
+                {
+                    try
+                    {
+                        backup[d.defName + THOUGHT_KEY] = new ThoughtDefStats(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
 
-				foreach (RecipeDef d in Defs.RecipeDefs.Values)
-					backup[d.defName] = new RecipeDefStats(d);
+                foreach (RecipeDef d in Defs.RecipeDefs.Values)
+                {
+                    try
+                    {
+                        backup[d.defName] = new RecipeDefStats(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Message("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
 
 				foreach (TraitDef d in Defs.TraitDefs.Values)
-					backup[d.defName + TRAIT_KEY] = new TraitDefStat(d);
+                {
+                    try
+                    {
+                        backup[d.defName + TRAIT_KEY] = new TraitDefStat(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
 
 				foreach (StorytellerDef d in Defs.StoryTellerDefs.Values)
-					backup[d.defName] = new StoryTellerDefStats(d);
+                {
+                    try
+                    {
+                        backup[d.defName] = new StoryTellerDefStats(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
 
 				foreach (DifficultyDef d in Defs.DifficultyDefs.Values)
-					backup[d.defName] = new DifficultyDefStat(d);
+                {
+                    try
+                    {
+                        backup[d.defName] = new DifficultyDefStat(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
 
 				foreach (ThingDef d in Defs.IngestibleDefs.Values)
-					backup[d.defName] = new ThingDefStats(d);
+                {
+                    try
+                    {
+                        backup[d.defName] = new ThingDefStats(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
 
 				foreach (ThingDef d in Defs.MineableDefs.Values)
-					backup[d.defName] = new ThingDefStats(d);
+                {
+                    try
+                    {
+                        backup[d.defName] = new ThingDefStats(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
 
 				foreach (Backstory b in Defs.Backstories.Values)
-					backup[b.identifier] = new BackstoryStats(b);
+                {
+                    try
+                    {
+                        backup[b.identifier] = new BackstoryStats(b);
+                    }
+                    catch (Exception e)
+                    {
+                        if (b != null)
+                            Log.Warning("Failed to initialize backup for " + b.identifier + ". " + e.Message);
+                    }
+                }
 
 				foreach (ThingDef d in Defs.BuildingDefs.Values)
-					backup[d.defName] = new ThingDefStats(d);
+                {
+                    try
+                    {
+                        backup[d.defName] = new ThingDefStats(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
 			}
         }
 

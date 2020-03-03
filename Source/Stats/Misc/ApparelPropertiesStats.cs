@@ -15,9 +15,13 @@ namespace InGameDefEditor.Stats.Misc
         public bool careIfWornByCorpse;
         public bool hatRenderedFrontOfFace;
         public bool useDeflectMetalEffect;
+        public bool useWornGraphicMask;
+        public bool canBeGeneratedToSatisfyWarmth;
 
         public List<string> tags = new List<string>();
         public List<string> defaultOutfitTags;
+
+        public Gender gender;
 
         public List<DefStat<BodyPartGroupDef>> bodyPartGroups = new List<DefStat<BodyPartGroupDef>>();
         public List<DefStat<ApparelLayerDef>> layers = new List<DefStat<ApparelLayerDef>>();
@@ -30,6 +34,9 @@ namespace InGameDefEditor.Stats.Misc
             this.careIfWornByCorpse = a.careIfWornByCorpse;
             this.hatRenderedFrontOfFace = a.hatRenderedFrontOfFace;
             this.useDeflectMetalEffect = a.useDeflectMetalEffect;
+            this.useWornGraphicMask = a.useWornGraphicMask;
+            this.canBeGeneratedToSatisfyWarmth = a.canBeGeneratedToSatisfyWarmth;
+            this.gender = a.gender;
 
             this.tags = Util.CreateList(a.tags);
             this.defaultOutfitTags = Util.CreateList(a.defaultOutfitTags);
@@ -44,6 +51,9 @@ namespace InGameDefEditor.Stats.Misc
             to.careIfWornByCorpse = this.careIfWornByCorpse;
             to.hatRenderedFrontOfFace = this.hatRenderedFrontOfFace;
             to.useDeflectMetalEffect = this.useDeflectMetalEffect;
+            to.useWornGraphicMask = this.useWornGraphicMask;
+            to.canBeGeneratedToSatisfyWarmth = this.canBeGeneratedToSatisfyWarmth;
+            to.gender = this.gender;
 
             Util.Populate(out to.tags, this.tags, false);
             Util.Populate(out to.defaultOutfitTags, this.defaultOutfitTags, false);
@@ -68,11 +78,14 @@ namespace InGameDefEditor.Stats.Misc
             if (base.Equals(obj) &&
                 obj is ApparelPropertiesStats s)
             {
-                if (this.wornGraphicPath.Equals(s.wornGraphicPath) && 
+                if (this.wornGraphicPath.Equals(s.wornGraphicPath) &&
                     this.wearPerDay == s.wearPerDay &&
                     this.careIfWornByCorpse == s.careIfWornByCorpse &&
                     this.hatRenderedFrontOfFace == s.hatRenderedFrontOfFace &&
                     this.useDeflectMetalEffect == s.useDeflectMetalEffect &&
+                    this.useWornGraphicMask == s.useWornGraphicMask &&
+                    this.canBeGeneratedToSatisfyWarmth == s.canBeGeneratedToSatisfyWarmth &&
+                    this.gender == s.gender &&
                     Util.AreEqual(this.tags, s.tags, v => v.GetHashCode()) &&
                     Util.AreEqual(this.defaultOutfitTags, s.defaultOutfitTags, v => v.GetHashCode()) &&
                     Util.AreEqual(this.bodyPartGroups, s.bodyPartGroups, v => v.GetHashCode()) &&

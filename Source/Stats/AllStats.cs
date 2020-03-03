@@ -12,6 +12,12 @@ namespace InGameDefEditor.Stats
 	}
 
 	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
+	public class RootAutoApplyDefs
+	{
+		public List<string> autoApplyDefs;
+	}
+
+	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
     public class RootApparel
 	{
 		public List<ThingDefStats> stats;

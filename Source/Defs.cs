@@ -7,6 +7,7 @@ namespace InGameDefEditor
     static class Defs
 	{
 		public static readonly SortedDictionary<string, ThingDef> DisabledThingDefs = new SortedDictionary<string, ThingDef>();
+		public static readonly SortedDictionary<string, bool> ApplyStatsAutoThingDefs = new SortedDictionary<string, bool>();
 
 		public static readonly SortedDictionary<string, ThingDef> ApparelDefs = new SortedDictionary<string, ThingDef>();
         public static readonly SortedDictionary<string, ThingDef> WeaponDefs = new SortedDictionary<string, ThingDef>();
@@ -42,8 +43,7 @@ namespace InGameDefEditor
 					{
 						ApparelDefs[label] = d;
                     }
-
-                    if (d.IsWeapon)
+                    else if (d.IsWeapon)
 					{
 						WeaponDefs[label] = d;
 						if (d.IsWeaponUsingProjectiles && d.Verbs != null)
@@ -63,25 +63,21 @@ namespace InGameDefEditor
 							});
 						}
                     }
-
-                    if (d.defName.StartsWith("Arrow_") || 
+					else if(d.defName.StartsWith("Arrow_") || 
                         d.defName.StartsWith("Bullet_") || 
                         d.defName.StartsWith("Proj_"))
 					{
 						ProjectileDefs[label] = d;
                     }
-
-					if (d.IsIngestible)
+					else if(d.IsIngestible)
 					{
 						IngestibleDefs[label] = d;
 					}
-
-					if (d.mineable)
+					else if(d.mineable)
 					{
 						MineableDefs[label] = d;
 					}
-
-					if (d.building != null)
+					else if(d.building != null)
 					{
 						BuildingDefs[label] = d;
 					}
@@ -122,6 +118,7 @@ namespace InGameDefEditor
 		public static void ResetAll()
 		{
 			Defs.DisabledThingDefs.Clear();
+			Defs.ApplyStatsAutoThingDefs.Clear();
 
 			foreach (ThingDef d in Defs.ApparelDefs.Values)
 				Backup.ApplyStats(d);

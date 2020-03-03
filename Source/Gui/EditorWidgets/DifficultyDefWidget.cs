@@ -38,7 +38,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				new FloatInputWidget<DifficultyDef>(base.Def, "Manhunter Chance On Damage Factor", d => d.manhunterChanceOnDamageFactor, (d, v) => d.manhunterChanceOnDamageFactor = v),
 				new FloatInputWidget<DifficultyDef>(base.Def, "Deep Drill Infestation Chance Factor", d => d.deepDrillInfestationChanceFactor, (d, v) => d.deepDrillInfestationChanceFactor = v),
 				new FloatInputWidget<DifficultyDef>(base.Def, "Food Poison Chance Factor", d => d.foodPoisonChanceFactor, (d, v) => d.foodPoisonChanceFactor = v),
-				new FloatInputWidget<DifficultyDef>(base.Def, "Raid Beacon Threat Count Factor", d => d.raidBeaconThreatCountFactor, (d, v) => d.raidBeaconThreatCountFactor = v),
+				// TODO new FloatInputWidget<DifficultyDef>(base.Def, "Raid Beacon Threat Count Factor", d => d.raidBeaconThreatCountFactor, (d, v) => d.raidBeaconThreatCountFactor = v),
 				new FloatInputWidget<DifficultyDef>(base.Def, "Maintenance Cost Factor", d => d.maintenanceCostFactor, (d, v) => d.maintenanceCostFactor = v),
 				new FloatInputWidget<DifficultyDef>(base.Def, "Adaptation Growth Rate Factor Over Zero", d => d.adaptationGrowthRateFactorOverZero, (d, v) => d.adaptationGrowthRateFactorOverZero = v),
 				new FloatInputWidget<DifficultyDef>(base.Def, "Adaptation Effect Factor", d => d.adaptationEffectFactor, (d, v) => d.adaptationEffectFactor = v),
@@ -48,6 +48,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		public override void DrawLeft(float x, ref float y, float width)
 		{
+			base.DrawLeft(x, ref y, width);
+
 			foreach (var v in this.leftInputWidgets)
 				v.Draw(x, ref y, width);
 		}

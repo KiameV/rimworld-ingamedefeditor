@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using InGameDefEditor.Gui.EditorWidgets.Misc;
+using Verse;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
@@ -20,6 +21,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 		void Rebuild();
 		void ResetBuffers();
 		void ResetParent();
+		void DisableAutoDeploy();
 	}
 
 	public abstract class AParentDefStatWidget<D> : IParentStatWidget where D : Def, new()
@@ -27,22 +29,49 @@ namespace InGameDefEditor.Gui.EditorWidgets
         public readonly D Def;
         private readonly DefType type;
 
-        protected AParentDefStatWidget(D def, DefType type)
+		private BoolInputWidget<D> autoApplySettingsInput;
+
+		protected AParentDefStatWidget(D def, DefType type)
         {
             this.Def = def;
             this.type = type;
-        }
+
+			this.autoApplySettingsInput = new BoolInputWidget<D>(
+				def, "InGameDefEditor.AutoApplySettings".Translate(),
+				d =>
+				{
+					if (Defs.ApplyStatsAutoThingDefs.TryGetValue(d.defName, out bool b))
+						return b;
+					return false;
+				},
+				(d, applyAuto) =>
+				{
+					Defs.ApplyStatsAutoThingDefs[d.defName] = applyAuto;
+				});
+		}
 
         public virtual string DisplayLabel => Util.GetDefLabel(this.Def);
         public DefType Type => this.type;
 
         public Def BaseDef => this.Def;
 
-        public abstract void DrawLeft(float x, ref float y, float width);
+		public void DisableAutoDeploy()
+		{
+			Defs.ApplyStatsAutoThingDefs.Remove(this.Def.defName);
+		}
+
+		public virtual void DrawLeft(float x, ref float y, float width)
+		{
+			this.autoApplySettingsInput.Draw(x, ref y, width);
+		}
+
         public abstract void DrawMiddle(float x, ref float y, float width);
         public abstract void DrawRight(float x, ref float y, float width);
         public abstract void Rebuild();
-        public abstract void ResetBuffers();
+        public virtual void ResetBuffers()
+		{
+			this.autoApplySettingsInput.ResetBuffers();
+		}
 
 		public void ResetParent()
 		{

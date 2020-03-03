@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using Verse;
 using InGameDefEditor.Stats.DefStat;
 using System.Collections.Generic;
+using System.Text;
 
 namespace InGameDefEditor
 {
@@ -31,46 +32,52 @@ namespace InGameDefEditor
 						Log.Message("Unable to delete stats.xml");
 					}
 
+					StringBuilder sb = new StringBuilder("InGameDefEditor".Translate() + ": Loading Def Settings\n");
+
+					if (Load("AutoApplyDefs", out RootAutoApplyDefs raad))
+						raad?.autoApplyDefs.ForEach(s => Defs.ApplyStatsAutoThingDefs.Add(s, true));
+
 					if (Load(DefType.Apparel, out RootApparel ra))
-						ra?.stats.ForEach((d) => Initialize(d));
+						ra?.stats.ForEach((d) => Initialize(d, sb));
 
 					if (Load(DefType.Weapon, out RootWeapons rw))
-						rw?.stats.ForEach((d) => Initialize(d));
+						rw?.stats.ForEach((d) => Initialize(d, sb));
 
 					if (Load(DefType.Projectile, out RootProjectiles rp))
-						rp?.stats.ForEach((d) => Initialize(d));
+						rp?.stats.ForEach((d) => Initialize(d, sb));
 
 					if (Load(DefType.Biome, out RootBiomes rb))
-						rb?.stats.ForEach((d) => Initialize(d));
+						rb?.stats.ForEach((d) => Initialize(d, sb));
 
 					if (Load(DefType.Recipe, out RootRecipe rr))
-						rr?.recipes.ForEach((d) => Initialize(d));
+						rr?.recipes.ForEach((d) => Initialize(d, sb));
 
 					if (Load(DefType.Trait, out RootTraits rtr))
-						rtr?.stats.ForEach((d) => Initialize(d));
+						rtr?.stats.ForEach((d) => Initialize(d, sb));
 
 					if (Load(DefType.Thought, out RootThoughts rth))
-						rth?.stats.ForEach((d) => Initialize(d));
+						rth?.stats.ForEach((d) => Initialize(d, sb));
 
 					if (Load(DefType.StoryTeller, out RootStoryTeller rst))
-						rst?.stats.ForEach((d) => Initialize(d));
+						rst?.stats.ForEach((d) => Initialize(d, sb));
 
 					if (Load(DefType.Difficulty, out RootDifficulty dif))
-						dif?.stats.ForEach((d) => Initialize(d));
+						dif?.stats.ForEach((d) => Initialize(d, sb));
 
 					if (Load(DefType.Ingestible, out RootIngestible ing))
-						ing?.stats.ForEach((d) => Initialize(d));
+						ing?.stats.ForEach((d) => Initialize(d, sb));
 
 					if (Load(DefType.Mineable, out RootMineable min))
-						min?.stats.ForEach((d) => Initialize(d));
+						min?.stats.ForEach((d) => Initialize(d, sb));
 
 					if (Load(DefType.Backstory, out RootBackstory back))
-						back?.stats.ForEach((d) => Initialize(d));
+						back?.stats.ForEach((d) => Initialize(d, sb));
 
 					if (Load(DefType.Building, out RootBuilding building))
-						building?.stats.ForEach((d) => Initialize(d));
+						building?.stats.ForEach((d) => Initialize(d, sb));
 
 					// Do Last
+					sb.AppendLine("Disabling the following defs:");
 					if (Load("DisabledDefs", out RootDisabledDefs rdd))
 					{
 						rdd?.disabledThingDefs.ForEach(defName =>
@@ -83,69 +90,167 @@ namespace InGameDefEditor
 							{
 								Defs.DisabledThingDefs.Add(defName, def);
 								typeof(DefDatabase<ThingDef>).GetMethod("Remove", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { def });
+								sb.AppendLine("- " + def.defName);
 							}
 						});
 					}
+					Log.Message(sb.ToString());
 				}
 				catch (Exception e)
 				{
-					Log.Warning(e.Message);
+					Log.Warning("InGameDefEditor".Translate() + ": encountered an error - " + e.Message);
 				}
 				finally
 				{
 					hasLoaded = true;
 					DefLookupUtil.ClearDefDic();
-					Log.Message("InGameDefEditor".Translate() + ": Settings Applied");
 				}
 			}
 		}
 
-		public static void SaveData()
-		{
-			Save("DisabledDefs", new RootDisabledDefs() { disabledThingDefs = new List<string>(Defs.DisabledThingDefs.Keys) });
+        public static void SaveData()
+        {
+            Save("DisabledDefs", new RootDisabledDefs() { disabledThingDefs = new List<string>(Defs.DisabledThingDefs.Keys) });
 
-			Util.Populate(out List<ThingDefStats> ap, Defs.ApparelDefs.Values, (v) => HasChanged(new ThingDefStats(v)), false);
-			Save(DefType.Apparel, new RootApparel() { stats = ap });
+			var aad = new List<string>();
+			foreach (var kv in Defs.ApplyStatsAutoThingDefs)
+				if (kv.Value)
+					aad.Add(kv.Key);
+			Save("AutoApplyDefs", new RootAutoApplyDefs() { autoApplyDefs = aad }); ;
 
-			Util.Populate(out List<ThingDefStats> we, Defs.WeaponDefs.Values, (v) => HasChanged(new ThingDefStats(v)), false);
-			Save(DefType.Weapon, new RootWeapons() { stats = we });
+            try
+            {
+                Util.Populate(out List<ThingDefStats> ap, Defs.ApparelDefs.Values, (v) => HasChanged(new ThingDefStats(v)), false);
+                Save(DefType.Apparel, new RootApparel() { stats = ap });
+            }
+            catch (Exception e)
+            {
+                Log.Error("Problem saving " + DefType.Apparel + ".\n" + e.GetType().Name + "\n" + e.Message);
+            }
 
-			Util.Populate(out List<ProjectileDefStats> pr, Defs.ProjectileDefs.Values, (v) => HasChanged(new ProjectileDefStats(v)), false);
-			Save(DefType.Projectile, new RootProjectiles() { stats = pr });
+            try
+            {
+                Util.Populate(out List<ThingDefStats> we, Defs.WeaponDefs.Values, (v) => HasChanged(new ThingDefStats(v)), false);
+                Save(DefType.Weapon, new RootWeapons() { stats = we });
+            }
+            catch (Exception e)
+            {
+                Log.Error("Problem saving " + DefType.Weapon + ".\n" + e.GetType().Name + "\n" + e.Message);
+            }
 
-			Util.Populate(out List<BiomeDefStats> bi, Defs.BiomeDefs.Values, (v) => HasChanged(new BiomeDefStats(v)), false);
-			Save(DefType.Biome, new RootBiomes() { stats = bi });
+            try
+            {
+                Util.Populate(out List<ProjectileDefStats> pr, Defs.ProjectileDefs.Values, (v) => HasChanged(new ProjectileDefStats(v)), false);
+                Save(DefType.Projectile, new RootProjectiles() { stats = pr });
+            }
+            catch (Exception e)
+            {
+                Log.Error("Problem saving " + DefType.Projectile + ".\n" + e.GetType().Name + "\n" + e.Message);
+            }
 
-			//if (Controller.EnableRecipes)
-			//{ 
-				Util.Populate(out List<RecipeDefStats> re, Defs.RecipeDefs.Values, (v) => HasChanged(new RecipeDefStats(v)), false);
-				Save(DefType.Recipe, new RootRecipe() { recipes = re });
-			//}
+            try
+            {
+                Util.Populate(out List<BiomeDefStats> bi, Defs.BiomeDefs.Values, (v) => HasChanged(new BiomeDefStats(v)), false);
+                Save(DefType.Biome, new RootBiomes() { stats = bi });
+            }
+            catch (Exception e)
+            {
+                Log.Error("Problem saving " + DefType.Biome + ".\n" + e.GetType().Name + "\n" + e.Message);
+            }
 
-			Util.Populate(out List<TraitDefStat> traits, Defs.TraitDefs.Values, (v) => HasChanged(new TraitDefStat(v)), false);
-			Save(DefType.Trait, new RootTraits() { stats = traits });
+            try
+            {
+                //if (Controller.EnableRecipes)
+                //{ 
+                Util.Populate(out List<RecipeDefStats> re, Defs.RecipeDefs.Values, (v) => HasChanged(new RecipeDefStats(v)), false);
+                Save(DefType.Recipe, new RootRecipe() { recipes = re });
+                //}
+            }
+            catch (Exception e)
+            {
+                Log.Error("Problem saving " + DefType.Recipe + ".\n" + e.GetType().Name + "\n" + e.Message);
+            }
 
-			Util.Populate(out List<ThoughtDefStats> thoughts, Defs.ThoughtDefs.Values, (v) => HasChanged(new ThoughtDefStats(v)), false);
-			Save(DefType.Thought, new RootThoughts() { stats = thoughts });
+            try
+            {
+                Util.Populate(out List<TraitDefStat> traits, Defs.TraitDefs.Values, (v) => HasChanged(new TraitDefStat(v)), false);
+                Save(DefType.Trait, new RootTraits() { stats = traits });
+            }
+            catch (Exception e)
+            {
+                Log.Error("Problem saving " + DefType.Trait + ".\n" + e.GetType().Name + "\n" + e.Message);
+            }
 
-			Util.Populate(out List<StoryTellerDefStats> storyTellers, Defs.StoryTellerDefs.Values, (v) => HasChanged(new StoryTellerDefStats(v)), false);
-			Save(DefType.StoryTeller, new RootStoryTeller() { stats = storyTellers });
+            try
+            {
+                Util.Populate(out List<ThoughtDefStats> thoughts, Defs.ThoughtDefs.Values, (v) => HasChanged(new ThoughtDefStats(v)), false);
+                Save(DefType.Thought, new RootThoughts() { stats = thoughts });
+            }
+            catch (Exception e)
+            {
+                Log.Error("Problem saving " + DefType.Thought + ".\n" + e.GetType().Name + "\n" + e.Message);
+            }
 
-			Util.Populate(out List<DifficultyDefStat> difficulties, Defs.DifficultyDefs.Values, (v) => HasChanged(new DifficultyDefStat(v)), false);
-			Save(DefType.Difficulty, new RootDifficulty() { stats = difficulties });
+            try
+            {
+                Util.Populate(out List<StoryTellerDefStats> storyTellers, Defs.StoryTellerDefs.Values, (v) => HasChanged(new StoryTellerDefStats(v)), false);
+                Save(DefType.StoryTeller, new RootStoryTeller() { stats = storyTellers });
+            }
+            catch (Exception e)
+            {
+                Log.Error("Problem saving " + DefType.StoryTeller + ".\n" + e.GetType().Name + "\n" + e.Message);
+            }
 
-			Util.Populate(out List<ThingDefStats> ingestibles, Defs.IngestibleDefs.Values, v => HasChanged(new ThingDefStats(v)), false);
-			Save(DefType.Ingestible, new RootIngestible() { stats = ingestibles });
+            try
+            {
+                Util.Populate(out List<DifficultyDefStat> difficulties, Defs.DifficultyDefs.Values, (v) => HasChanged(new DifficultyDefStat(v)), false);
+                Save(DefType.Difficulty, new RootDifficulty() { stats = difficulties });
+            }
+            catch (Exception e)
+            {
+                Log.Error("Problem saving " + DefType.Difficulty + ".\n" + e.GetType().Name + "\n" + e.Message);
+            }
 
-			Util.Populate(out List<ThingDefStats> mineable, Defs.MineableDefs.Values, v => HasChanged(new ThingDefStats(v)), false);
-			Save(DefType.Mineable, new RootMineable() { stats = mineable });
+            try
+            {
+                Util.Populate(out List<ThingDefStats> ingestibles, Defs.IngestibleDefs.Values, v => HasChanged(new ThingDefStats(v)), false);
+                Save(DefType.Ingestible, new RootIngestible() { stats = ingestibles });
+            }
+            catch (Exception e)
+            {
+                Log.Error("Problem saving " + DefType.Apparel + ".\n" + e.GetType().Name + "\n" + e.Message);
+            }
 
-			Util.Populate(out List<BackstoryStats> backstories, Defs.Backstories.Values, v => HasChanged(new BackstoryStats(v)), false);
-			Save(DefType.Backstory, new RootBackstory() { stats = backstories });
+            try
+            {
+                Util.Populate(out List<ThingDefStats> mineable, Defs.MineableDefs.Values, v => HasChanged(new ThingDefStats(v)), false);
+                Save(DefType.Mineable, new RootMineable() { stats = mineable });
+            }
+            catch (Exception e)
+            {
+                Log.Error("Problem saving " + DefType.Ingestible + ".\n" + e.GetType().Name + "\n" + e.Message);
+            }
 
-			Util.Populate(out List<ThingDefStats> buildings, Defs.BuildingDefs.Values, v => HasChanged(new ThingDefStats(v)), false);
-			Save(DefType.Building, new RootBuilding() { stats = buildings });
-		}
+            try
+            {
+                Util.Populate(out List<BackstoryStats> backstories, Defs.Backstories.Values, v => HasChanged(new BackstoryStats(v)), false);
+                Save(DefType.Backstory, new RootBackstory() { stats = backstories });
+            }
+            catch (Exception e)
+            {
+                Log.Error("Problem saving " + DefType.Backstory + ".\n" + e.GetType().Name + "\n" + e.Message);
+            }
+
+            try
+            {
+                Util.Populate(out List<ThingDefStats> buildings, Defs.BuildingDefs.Values, v => HasChanged(new ThingDefStats(v)), false);
+                Save(DefType.Building, new RootBuilding() { stats = buildings });
+            }
+            catch (Exception e)
+            {
+                Log.Error("Problem saving " + DefType.Building + ".\n" + e.GetType().Name + "\n" + e.Message);
+            }
+        }
 
 		private static string basePath = null;
 		private static string GetStatsPath()
@@ -241,17 +346,19 @@ namespace InGameDefEditor
 			return true;
 		}
 
-		private static void Initialize(BackstoryStats b)
+		private static void Initialize(BackstoryStats b, StringBuilder sb)
 		{
 			if (b != null)
 			{
 				try
 				{
-					if (b.Initialize())
+					if (b.Initialize() &&
+						Defs.ApplyStatsAutoThingDefs.TryGetValue(b.Backstory.identifier, out bool apply) && apply)
 					{
 						try
 						{
 							b.ApplyStats(b.Backstory);
+							sb.AppendLine($"- Backstory: {b.Backstory.identifier}");
 						}
 						catch (Exception e)
 						{
@@ -270,7 +377,7 @@ namespace InGameDefEditor
 			}
 		}
 
-		private static void Initialize<D>(DefStat<D> s) where D : Def, new()
+		private static void Initialize<D>(DefStat<D> s, StringBuilder sb) where D : Def, new()
 		{
 			if (s != null)
 			{
@@ -279,23 +386,27 @@ namespace InGameDefEditor
 					if (s.Initialize() &&
 						s is IParentStat p)
 					{
-						try
+						if (Defs.ApplyStatsAutoThingDefs.TryGetValue(s.defName, out bool apply) && apply)
 						{
-							p.ApplyStats(s.Def);
-						}
-						catch (Exception e)
-						{
-							Log.Error("Failed to apply settings to Def [" + s.defName + "] due to " + e.Message);
+							try
+							{
+								p.ApplyStats(s.Def);
+								sb.AppendLine($"- Def: {s.defName}");
+							}
+							catch (Exception e)
+							{
+								Log.Error($"Failed to apply settings to Def [{s.defName}] due to {e.Message}");
+							}
 						}
 					}
 					else
 					{
-						Log.Warning("Unable to initialize Def " + s.defName);
+						Log.Warning($"  Unable to initialize Def {s.defName}");
 					}
 				}
 				catch (Exception e)
 				{
-					Log.Error("Failed to load Def [" + s.defName + "] due to " + e.Message);
+					Log.Error($"Failed to load Def [{s.defName}] due to {e.Message}");
 				}
 			}
 		}

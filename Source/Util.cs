@@ -232,9 +232,20 @@ namespace InGameDefEditor
 				to = new List<T>(from.Count());
 				foreach (U u in from)
 				{
-					var v = createItem(u);
-					if (v != null)
-						to.Add(v);
+                    if (u != null)
+                    {
+                        try
+                        {
+                            var v = createItem(u);
+                            if (v != null)
+                                to.Add(v);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Warning("Error while creating item " + u.ToString() + ". " + e.GetType().Name + " " + e.Message);
+                            throw e;
+                        }
+                    }
 				}
 			}
 		}

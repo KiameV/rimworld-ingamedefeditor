@@ -60,8 +60,8 @@ namespace InGameDefEditor.Stats
 			this.manhunterChanceOnDamageFactor = d.manhunterChanceOnDamageFactor;
 			this.deepDrillInfestationChanceFactor = d.deepDrillInfestationChanceFactor;
 			this.foodPoisonChanceFactor = d.foodPoisonChanceFactor;
-			this.raidBeaconThreatCountFactor = d.raidBeaconThreatCountFactor;
-			this.maintenanceCostFactor = d.maintenanceCostFactor;
+            // TODO this.raidBeaconThreatCountFactor = d.raidBeaconThreatCountFactor;
+            this.maintenanceCostFactor = d.maintenanceCostFactor;
 			this.enemyDeathOnDownedChanceFactor = d.enemyDeathOnDownedChanceFactor;
 			this.adaptationGrowthRateFactorOverZero = d.adaptationGrowthRateFactorOverZero;
 			this.adaptationEffectFactor = d.adaptationEffectFactor;
@@ -91,8 +91,8 @@ namespace InGameDefEditor.Stats
 				to.manhunterChanceOnDamageFactor = this.manhunterChanceOnDamageFactor;
 				to.deepDrillInfestationChanceFactor = this.deepDrillInfestationChanceFactor;
 				to.foodPoisonChanceFactor = this.foodPoisonChanceFactor;
-				to.raidBeaconThreatCountFactor = this.raidBeaconThreatCountFactor;
-				to.maintenanceCostFactor = this.maintenanceCostFactor;
+                // TODO to.raidBeaconThreatCountFactor = this.raidBeaconThreatCountFactor;
+                to.maintenanceCostFactor = this.maintenanceCostFactor;
 				to.enemyDeathOnDownedChanceFactor = this.enemyDeathOnDownedChanceFactor;
 				to.adaptationGrowthRateFactorOverZero = this.adaptationGrowthRateFactorOverZero;
 				to.adaptationEffectFactor = this.adaptationEffectFactor;

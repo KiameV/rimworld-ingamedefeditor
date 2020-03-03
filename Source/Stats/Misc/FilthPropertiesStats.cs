@@ -17,8 +17,8 @@ namespace InGameDefEditor.Stats.Misc
 		public FilthPropertiesStats(FilthProperties p)
 		{
 			this.cleaningWorkToReduceThickness = p.cleaningWorkToReduceThickness;
-			this.terrainSourced = p.terrainSourced;
-			this.canFilthAttach = p.canFilthAttach;
+            // TODO this.terrainSourced = p.terrainSourced;
+            this.canFilthAttach = p.canFilthAttach;
 			this.rainWashes = p.rainWashes;
 			this.allowsFire = p.allowsFire;
 			this.maxThickness = p.maxThickness;
@@ -29,7 +29,7 @@ namespace InGameDefEditor.Stats.Misc
 			return new FilthProperties()
 			{
 				cleaningWorkToReduceThickness = this.cleaningWorkToReduceThickness,
-				terrainSourced = this.terrainSourced,
+				// TODO terrainSourced = this.terrainSourced,
 				canFilthAttach = this.canFilthAttach,
 				rainWashes = this.rainWashes,
 				allowsFire = this.allowsFire,

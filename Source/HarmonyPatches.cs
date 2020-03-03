@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using RimWorld;
 using System;
 using System.Reflection;
@@ -11,7 +11,7 @@ namespace InGameDefEditor
     {
         static HarmonyPatches()
         {
-            var harmony = HarmonyInstance.Create("com.ingamedefeditor.rimworld.mod");
+            var harmony = new Harmony("com.ingamedefeditor.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             Log.Message(
                 "InGameDefEditor Harmony Patches:" + Environment.NewLine +

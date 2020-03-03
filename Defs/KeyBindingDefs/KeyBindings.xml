@@ -6,7 +6,7 @@
 		<category>ShowInGameDefEditorShortcuts</category>
 		<defName>ShowInGameDefEditorDialog</defName>
 		<label>Show Dialog</label>
-		<defaultKeyCodeA>F10</defaultKeyCodeA>
+		<defaultKeyCodeA>LeftBracket</defaultKeyCodeA>
 		<devModeOnly>true</devModeOnly>
 	</KeyBindingDef>
 

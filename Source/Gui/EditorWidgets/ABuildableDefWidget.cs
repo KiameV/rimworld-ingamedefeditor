@@ -18,7 +18,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 		private BoolInputWidget<D> disabledInput;
 		protected bool isDisabled;
 
-        public ABuildableDefWidget(D def, DefType type) : base(def, type)
+		public ABuildableDefWidget(D def, DefType type) : base(def, type)
         {
             if (base.Def.statBases == null)
                 base.Def.statBases = new List<StatModifier>();
@@ -143,6 +143,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		public sealed override void DrawLeft(float x, ref float y, float width)
         {
+			base.DrawLeft(x, ref y, width);
+
 			this.disabledInput.Draw(x, ref y, width);
 			if (this.isDisabled)
 				return;
@@ -206,6 +208,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         public override void ResetBuffers()
         {
+			base.ResetBuffers();
 			this.disabledInput.ResetBuffers();
 			this.inputWidgets?.ForEach(v => v.ResetBuffers());
 			this.statBases?.ForEach(v => v.ResetBuffers());

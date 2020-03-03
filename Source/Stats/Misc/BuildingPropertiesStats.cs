@@ -148,8 +148,8 @@ namespace InGameDefEditor.Stats.Misc
 			this.trapDestroyOnSpring = p.trapDestroyOnSpring;
 			this.trapPeacefulWildAnimalsSpringChanceFactor = p.trapPeacefulWildAnimalsSpringChanceFactor;
 			this.unpoweredWorkTableWorkSpeedFactor = p.unpoweredWorkTableWorkSpeedFactor;
-			this.workSpeedPenaltyOutdoors = p.workSpeedPenaltyOutdoors;
-			this.workSpeedPenaltyTemperature = p.workSpeedPenaltyTemperature;
+			//this.workSpeedPenaltyOutdoors = p.workSpeedPenaltyOutdoors;
+			//this.workSpeedPenaltyTemperature = p.workSpeedPenaltyTemperature;
 			this.watchBuildingStandRectWidth = p.watchBuildingStandRectWidth;
 			this.haulToContainerDuration = p.haulToContainerDuration;
 
@@ -235,8 +235,8 @@ namespace InGameDefEditor.Stats.Misc
 			p.trapDestroyOnSpring = this.trapDestroyOnSpring;
 			p.trapPeacefulWildAnimalsSpringChanceFactor = this.trapPeacefulWildAnimalsSpringChanceFactor;
 			p.unpoweredWorkTableWorkSpeedFactor = this.unpoweredWorkTableWorkSpeedFactor;
-			p.workSpeedPenaltyOutdoors = this.workSpeedPenaltyOutdoors;
-			p.workSpeedPenaltyTemperature = this.workSpeedPenaltyTemperature;
+			//p.workSpeedPenaltyOutdoors = this.workSpeedPenaltyOutdoors;
+			//p.workSpeedPenaltyTemperature = this.workSpeedPenaltyTemperature;
 			p.watchBuildingStandRectWidth = this.watchBuildingStandRectWidth;
 			p.haulToContainerDuration = this.haulToContainerDuration;
 

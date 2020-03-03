@@ -31,8 +31,8 @@ namespace InGameDefEditor.Stats.Misc
 		{
 			this.stuffAdjective = p.stuffAdjective;
 			this.commonality = p.commonality;
-			this.smeltable = p.smeltable;
-			this.allowColorGenerators = p.allowColorGenerators;
+            // TODO this.smeltable = p.smeltable;
+            this.allowColorGenerators = p.allowColorGenerators;
 
 			this.color = new ColorStats(p.color);
 

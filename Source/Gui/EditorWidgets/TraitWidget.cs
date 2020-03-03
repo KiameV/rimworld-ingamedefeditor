@@ -106,6 +106,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		public override void DrawLeft(float x, ref float y, float width)
 		{
+			base.DrawLeft(x, ref y, width);
+
 			foreach (var v in this.inputWidgets)
 				v.Draw(x, ref y, width);
 
@@ -160,6 +162,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		public override void ResetBuffers()
 		{
+			base.ResetBuffers();
 			this.inputWidgets.ForEach(v => v.ResetBuffers());
 			this.traitDegreeDataWidgets.ForEach(v => v.ResetBuffers());
 		}
