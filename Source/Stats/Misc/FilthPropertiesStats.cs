@@ -7,7 +7,6 @@ namespace InGameDefEditor.Stats.Misc
 	public class FilthPropertiesStats
 	{
 		public float cleaningWorkToReduceThickness;
-		public bool terrainSourced;
 		public bool canFilthAttach;
 		public bool rainWashes;
 		public bool allowsFire;
@@ -17,7 +16,6 @@ namespace InGameDefEditor.Stats.Misc
 		public FilthPropertiesStats(FilthProperties p)
 		{
 			this.cleaningWorkToReduceThickness = p.cleaningWorkToReduceThickness;
-            // TODO this.terrainSourced = p.terrainSourced;
             this.canFilthAttach = p.canFilthAttach;
 			this.rainWashes = p.rainWashes;
 			this.allowsFire = p.allowsFire;
@@ -29,7 +27,6 @@ namespace InGameDefEditor.Stats.Misc
 			return new FilthProperties()
 			{
 				cleaningWorkToReduceThickness = this.cleaningWorkToReduceThickness,
-				// TODO terrainSourced = this.terrainSourced,
 				canFilthAttach = this.canFilthAttach,
 				rainWashes = this.rainWashes,
 				allowsFire = this.allowsFire,
@@ -44,7 +41,6 @@ namespace InGameDefEditor.Stats.Misc
 			{
 				return
 					this.cleaningWorkToReduceThickness == s.cleaningWorkToReduceThickness &&
-					this.terrainSourced == s.terrainSourced &&
 					this.canFilthAttach == s.canFilthAttach &&
 					this.rainWashes == s.rainWashes &&
 					this.allowsFire == s.allowsFire &&
@@ -58,7 +54,6 @@ namespace InGameDefEditor.Stats.Misc
 			return
 				"FilthPropertiesStats" +
 				"\ncleaningWorkToReduceThickness: " + cleaningWorkToReduceThickness +
-				"\nterrainSourced: " + terrainSourced +
 				"\ncanFilthAttach: " + canFilthAttach +
 				"\nrainWashes: " + rainWashes +
 				"\nallowsFire: " + allowsFire +

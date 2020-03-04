@@ -89,6 +89,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
     class BoolInputWidget<P> : AInputWidget<P, bool>
     {
         private bool value;
+		public Color? ColorOverride = null;
 
         public BoolInputWidget(P parent, string label, GetValue getValue, SetValue setValue, ShouldDrawInput shouldDrawInput = null) : base(parent, label, getValue, setValue, shouldDrawInput)
         {
@@ -98,8 +99,11 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 		protected override void DrawInput(float x, ref float y, float width)
 		{
+			if (ColorOverride != null)
+				GUI.color = ColorOverride.Value;
 			this.value = WindowUtil.DrawInput(x, ref y, width, base.label, this.value, delegate (bool b) { base.setValue(this.Parent, b); });
-        }
+			GUI.color = Color.white;
+		}
 
         public override void ResetBuffers()
         {

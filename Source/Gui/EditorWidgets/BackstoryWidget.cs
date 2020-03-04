@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using InGameDefEditor.Stats;
 using System.Text;
+using UnityEngine;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
@@ -151,7 +152,10 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				},
 				(b, applyAuto) =>
 				{
-					Defs.ApplyStatsAutoThingDefs[b.identifier] = applyAuto;
+					if (applyAuto)
+						Defs.ApplyStatsAutoThingDefs[b.identifier] = applyAuto;
+					else
+						Defs.ApplyStatsAutoThingDefs.Remove(b.identifier);
 				});
 
 			this.Rebuild();
@@ -164,6 +168,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		public void DrawLeft(float x, ref float y, float width)
 		{
+			this.autoApplySettingsInput.ColorOverride = (Defs.ApplyStatsAutoThingDefs.ContainsKey(this.Backstory.identifier)) ? Color.green : Color.red;
 			this.autoApplySettingsInput.Draw(x, ref y, width);
 
 			foreach (var v in this.inputWidgets)

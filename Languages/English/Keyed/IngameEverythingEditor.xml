@@ -6,7 +6,7 @@
 	<InGameDefEditor.ResetAll>Reset All</InGameDefEditor.ResetAll>
 	
 	<InGameDefEditor.AutoApplySettings>Auto Apply Settings</InGameDefEditor.AutoApplySettings>
-	
+	<InGameDefEditor.AutoLoaded>Auto Apply Defs</InGameDefEditor.AutoLoaded>
 	
 	<InGameDefEditor.RangedStats>Ranged Stats</InGameDefEditor.RangedStats>
 	<InGameDefEditor.MeleeStats>Melee Stats</InGameDefEditor.MeleeStats>

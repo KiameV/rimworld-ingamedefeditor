@@ -1,5 +1,6 @@
 ﻿using InGameDefEditor.Gui.EditorWidgets.Misc;
 using Verse;
+using UnityEngine;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
@@ -46,7 +47,10 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				},
 				(d, applyAuto) =>
 				{
-					Defs.ApplyStatsAutoThingDefs[d.defName] = applyAuto;
+					if (applyAuto)
+						Defs.ApplyStatsAutoThingDefs[d.defName] = applyAuto;
+					else
+						Defs.ApplyStatsAutoThingDefs.Remove(d.defName);
 				});
 		}
 
@@ -62,6 +66,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		public virtual void DrawLeft(float x, ref float y, float width)
 		{
+			this.autoApplySettingsInput.ColorOverride = (Defs.ApplyStatsAutoThingDefs.ContainsKey(this.Def.defName)) ? Color.green : Color.red;
 			this.autoApplySettingsInput.Draw(x, ref y, width);
 		}
 
