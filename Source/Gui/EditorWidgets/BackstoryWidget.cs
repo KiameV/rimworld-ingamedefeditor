@@ -211,8 +211,9 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			Util.Populate(out this.disallowedTraits, this.Backstory.disallowedTraits, te => this.CreateTraitEntryInput(te));
 		}
 
-		public void ResetParent()
+		public new void ResetParent()
 		{
+			base.ResetParent();
 			Backup.ApplyStats(this.Backstory);
 		}
 

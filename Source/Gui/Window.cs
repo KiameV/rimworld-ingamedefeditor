@@ -23,12 +23,15 @@ namespace InGameDefEditor
         private float previousYMaxLeft = 0,
                       previousYMaxMiddle = 0,
                       previousYMaxRight = 0;
+
+		private IEnumerable<IEditableDefType> defTypes;
 		
 		public override Vector2 InitialSize => new Vector2((float)UI.screenWidth - 20, (float)UI.screenHeight - 20);
 
         public InGameDefEditorWindow()
         {
             IOUtil.LoadData();
+			this.defTypes = this.GetDefTypes(true);
         }
 
 		public override void DoWindowContents(Rect rect)
@@ -41,7 +44,7 @@ namespace InGameDefEditor
 				WindowUtil.DrawFloatingOptions(
                         new WindowUtil.FloatOptionsArgs<IEditableDefType>()
                         {
-                            items = this.GetDefTypes(true),
+                            items = this.defTypes,
                             getDisplayName = dt => dt.Label,
 							onSelect = dt =>
 							{
@@ -80,19 +83,25 @@ namespace InGameDefEditor
 			if (Defs.DisabledDefs.Count > 0 &&
 				Widgets.ButtonText(new Rect(rect.xMax - 550, outerY, 200, 30), "InGameDefEditor.DisabledDefs".Translate()))
 			{
-				var l = new List<FloatMenuOption>();
-				foreach (string s in Defs.DisabledDefs.Keys)
-					l.Add(new FloatMenuOption(s, () => { }));
-				Find.WindowStack.Add(new FloatMenu(l));
+				WindowUtil.DrawFloatingOptions(
+						new WindowUtil.FloatOptionsArgs<Pair<string, object>>()
+						{
+							items = Defs.DisabledDefs.All,
+							getDisplayName = p => Util.GetLabel(p.Second),
+							onSelect = p => GetSelectionFromPair(p),
+						});
 			}
 
 			if (Defs.ApplyStatsAutoDefs.Count > 0 && 
 				Widgets.ButtonText(new Rect(rect.xMax - 300, outerY, 200, 30), "InGameDefEditor.AutoLoaded".Translate()))
 			{
-				var l = new List<FloatMenuOption>();
-				foreach (string s in Defs.ApplyStatsAutoDefs.Keys)
-					l.Add(new FloatMenuOption(s, () => { }));
-				Find.WindowStack.Add(new FloatMenu(l));
+				WindowUtil.DrawFloatingOptions(
+						new WindowUtil.FloatOptionsArgs<Pair<string, object>>()
+						{
+							items = Defs.ApplyStatsAutoDefs.All,
+							getDisplayName = p => Util.GetLabel(p.Second),
+							onSelect = p => GetSelectionFromPair(p),
+						});
 			}
 
 			outerY += 60;
@@ -108,7 +117,7 @@ namespace InGameDefEditor
 				{
 					// Left column
 					Widgets.BeginScrollView(
-						new Rect(0, y, 370, rect.height - outerY - 120),
+						new Rect(0, y, 370, rect.height - outerY - 120 - Math.Abs(outerY - y)),
 						ref leftScroll,
 						new Rect(0, 0, 354, this.previousYMaxLeft));
 					y = 0;
@@ -141,28 +150,27 @@ namespace InGameDefEditor
 				}
 			}
 
-			if (selectedDefType != null && 
-				Widgets.ButtonText(new Rect(rect.xMax - 340, rect.yMax - 32, 100, 32), "Reset".Translate()))
+			if (Widgets.ButtonText(new Rect(100, rect.yMax - 32, 100, 32), "Close".Translate()))
+			{
+				Find.WindowStack.TryRemove(typeof(InGameDefEditorWindow), true);
+			}
+			if (selectedDefType != null && selectedDef != null && 
+				Widgets.ButtonText(new Rect(rect.xMax - 340, rect.yMax - 32, 100, 32), "Reset".Translate() + " Def"))
 			{
 				Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("Reset " + selectedDef.DisplayLabel + "?", delegate { this.ResetSelected(); }));
 			}
 
-			if (Widgets.ButtonText(new Rect(100, rect.yMax - 32, 100, 32), "Close".Translate()))
-            {
-                Find.WindowStack.TryRemove(typeof(InGameDefEditorWindow), true);
-            }
-
-			if (selectedDef != null &&
-				Widgets.ButtonText(new Rect(rect.xMax - 230, rect.yMax - 32, 120, 32), "Reset".Translate() + " " + selectedDef.Type))
+			if (selectedDefType != null &&
+				Widgets.ButtonText(new Rect(rect.xMax - 230, rect.yMax - 32, 120, 32), "Reset".Translate() + " " + selectedDefType.Type))
 			{
-				Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("Reset".Translate() + " " + selectedDef.Type + "?", () =>
+				Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("Reset".Translate() + " " + selectedDefType.Type + "?", () =>
 				{
 					selectedDefType.ResetTypeDefs();
 					ResetSelected();
 				}));
 			}
 
-            if (Widgets.ButtonText(new Rect(rect.xMax - 100, rect.yMax - 32, 100, 32), "InGameDefEditor.ResetAll".Translate()))
+			if (Widgets.ButtonText(new Rect(rect.xMax - 100, rect.yMax - 32, 100, 32), "InGameDefEditor.ResetAll".Translate()))
             {
                 Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
                     "Reset everything to the original game's settings?",
@@ -178,11 +186,32 @@ namespace InGameDefEditor
             }
         }
 
+		private void GetSelectionFromPair(Pair<string, object> p)
+		{
+			if (DatabaseUtil.TryGetDefTypeFor(p.Second, out DefType dt))
+			{
+				foreach (var i in this.defTypes)
+				{
+					if (i.Type == dt)
+					{
+						selectedDefType = i;
+						if (p.Second is Def def)
+							this.CreateSelected(def, selectedDefType.Type);
+						else if (p.Second is Backstory b)
+							this.CreateSelected(b, selectedDefType.Type);
+						break;
+					}
+				}
+			}
+		}
+
 		private void ResetSelected()
 		{
 			if (selectedDef != null)
 			{
-				//selectedDef.DisableAutoDeploy();
+				Defs.DisabledDefs.Remove(selectedDef.BaseObject);
+				Defs.ApplyStatsAutoDefs.Remove(selectedDef.BaseObject);
+
 				selectedDef.ResetParent();
 				selectedDef.Rebuild();
 			}
@@ -302,8 +331,8 @@ namespace InGameDefEditor
 				foreach (var v in this.items)
 				{
 					Backup.ApplyStats(v);
-					Defs.ApplyStatsAutoDefs.Remove(v.identifier);
-					Defs.DisabledDefs.Remove(v.identifier);
+					Defs.ApplyStatsAutoDefs.Remove(v);
+					Defs.DisabledDefs.Remove(v);
 				}
 			}
 		}
@@ -335,7 +364,11 @@ namespace InGameDefEditor
 			public void ResetTypeDefs()
 			{
 				foreach (var v in this.Defs)
+				{
+					InGameDefEditor.Defs.DisabledDefs.Remove(v);
+					InGameDefEditor.Defs.ApplyStatsAutoDefs.Remove(v);
 					Backup.ApplyStats(v);
+				}
 			}
 		}
 

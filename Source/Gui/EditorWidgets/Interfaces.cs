@@ -15,6 +15,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 	interface IParentStatWidget
 	{
+		object BaseObject { get; }
 		DefType Type { get; }
 		string DisplayLabel { get; }
 		bool IsDisabled { get; }
@@ -30,6 +31,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 	public abstract class AParentDefStatWidget<D> : IParentStatWidget
 	{
+		public object BaseObject => this.Def;
 		public readonly D Def;
         private readonly DefType type;
 
@@ -70,7 +72,10 @@ namespace InGameDefEditor.Gui.EditorWidgets
 						 if (!Defs.DisabledDefs.Add(d))
 							 Log.Warning($"Failed to disable {this.DisplayLabel}");
 						 else
+						 {
+							 Defs.ApplyStatsAutoDefs.Remove(d);
 							 DatabaseUtil.Remove(d);
+						 }
 					 }
 					 else
 					 {
@@ -118,9 +123,11 @@ namespace InGameDefEditor.Gui.EditorWidgets
         public abstract void DrawRight(float x, ref float y, float width);
 
 		public abstract void Rebuild();
+
         public virtual void ResetBuffers()
 		{
 			this.autoApplySettingsInput.ResetBuffers();
+			this.disableDefInput.ResetBuffers();
 		}
 
 		public void ResetParent()

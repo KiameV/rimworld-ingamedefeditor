@@ -10,6 +10,19 @@ namespace InGameDefEditor
         private readonly SortedDictionary<string, Backstory> backstories = new SortedDictionary<string, Backstory>();
         private readonly SortedDictionary<string, Def> defs = new SortedDictionary<string, Def>();
 
+        public IEnumerable<Pair<string, object>> All
+        {
+            get
+            {
+                List<Pair<string, object>> l = new List<Pair<string, object>>();
+                foreach (var kv in backstories)
+                    l.Add(new Pair<string, object>(kv.Key, kv.Value));
+                foreach (var kv in defs)
+                    l.Add(new Pair<string, object>(kv.Key, kv.Value));
+                return l;
+            }
+        }
+
         public IEnumerable<string> Keys
         {
             get
@@ -43,14 +56,17 @@ namespace InGameDefEditor
                 case Def d:
                     defs[d.defName] = d;
                     return true;
+                case string s:
+                    if (DatabaseUtil.TryGetFromString(s, out object obj))
+                        return Add(obj);
+                    break;
             }
             return false;
         }
 
         public bool AddDef(string defName)
         {
-            Def d = DefDatabase<Def>.GetNamed(defName, false);
-            if (d != null)
+            if (DatabaseUtil.TryGetFromString(defName, out object o) && o is Def d)
             {
                 defs[d.defName] = d;
                 return true;
@@ -118,6 +134,10 @@ namespace InGameDefEditor
                     return backstories.Remove(b.identifier);
                 case Def d:
                     return defs.Remove(d.defName);
+                case string s:
+                    if (DatabaseUtil.TryGetFromString(s, out object obj))
+                        return Remove(o);
+                    break;
             }
             return false;
         }

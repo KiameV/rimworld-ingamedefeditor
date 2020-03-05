@@ -37,21 +37,20 @@ namespace InGameDefEditor
 
 					if (Load("AutoApplyDefs", out RootAutoApplyDefs raad))
 					{
-						if (raad.autoApplyDefs != null)
-						{
-							raad?.autoApplyDefs.ForEach(s => Defs.ApplyStatsAutoDefs.Add(s));
-						}
-						else
-						{
-							raad?.autoApplyDefsV2.ForEach(d => {
-								if (!Defs.ApplyStatsAutoDefs.AddDef(d))
-									Log.Warning($"unable to auto-apply stats to {d} as the def was not found");
-							});
-							raad?.autoApplyBackstories.ForEach(b => {
-								if (!Defs.ApplyStatsAutoDefs.AddBackstory(b))
-									Log.Warning($"unable to auto-apply stats to {b} as the backstory was not found");
-							});
-						}
+						Log.Message($"Auto-Apply Settings to:");
+						raad?.autoApplyDefs.ForEach(s => {
+							if (!Defs.ApplyStatsAutoDefs.Add(s))
+								Log.Warning($"unable to auto-apply stats to {s} as the def/backstory was not found");
+						});
+
+						raad?.autoApplyDefsV2.ForEach(s => {
+							if (!Defs.ApplyStatsAutoDefs.AddDef(s))
+								Log.Warning($"unable to auto-apply stats to {s} as the def was not found");
+						});
+						raad?.autoApplyBackstories.ForEach(s => {
+							if (!Defs.ApplyStatsAutoDefs.AddBackstory(s))
+								Log.Warning($"unable to auto-apply stats to {s} as the backstory was not found");
+						});
 					}
 
 					if (Load(DefType.Apparel, out RootApparel ra))
@@ -97,28 +96,34 @@ namespace InGameDefEditor
 					sb.AppendLine("Disabling the following defs:");
 					if (Load("DisabledDefs", out RootDisabledDefs rdd))
 					{
-						if (rdd.disabledThingDefs != null)
-							rdd?.disabledThingDefs.ForEach(defName => DatabaseUtil.RemoveDef(defName));
-						else
-						{
-							rdd?.disabledDefsV2.ForEach(d => {
-								if (!Defs.DisabledDefs.AddDef(d))
-									Log.Warning($"unable to auto-apply stats to {d} as the def was not found");
-							});
-							rdd?.disabledBackstories.ForEach(b => {
-								if (!Defs.DisabledDefs.AddBackstory(b))
-									Log.Warning($"unable to auto-apply stats to {b} as the backstory was not found");
-							});
-						}
+						rdd?.disabledThingDefs.ForEach(s => {
+							if (!Defs.DisabledDefs.Add(s))
+								Log.Warning($"failed to disable def {s} as the def was not found");
+							else
+								sb.AppendLine($"- {s}");
+						});
+						rdd?.disabledDefsV2.ForEach(s => {
+							if (!Defs.DisabledDefs.AddDef(s))
+								Log.Warning($"failed to disable def {s} as the def was not found");
+							else
+								sb.AppendLine($"- {s}");
+						});
+						rdd?.disabledBackstories.ForEach(s => {
+							if (!Defs.DisabledDefs.AddBackstory(s))
+								Log.Warning($"failed to disable def {s} as the def was not found");
+							else
+								sb.AppendLine($"- {s}");
+						});
 
 						Defs.DisabledDefs.Backstories.ForEach(b => DatabaseUtil.Remove(b));
 						Defs.DisabledDefs.Defs.ForEach(d => DatabaseUtil.Remove(d));
 					}
+
 					Log.Message(sb.ToString());
 				}
 				catch (Exception e)
 				{
-					Log.Warning("InGameDefEditor".Translate() + ": encountered an error - " + e.Message);
+					Log.Warning("InGameDefEditor".Translate() + ": encountered an error on load - " + e.Message);
 				}
 				finally
 				{
@@ -440,7 +445,7 @@ namespace InGameDefEditor
 					if (s.Initialize() &&
 						s is IParentStat p)
 					{
-						if (Defs.ApplyStatsAutoDefs.Contains(s))
+						if (Defs.ApplyStatsAutoDefs.Contains(s.Def))
 						{
 							try
 							{
