@@ -61,7 +61,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				});
 			
 			this.disableDefInput = new BoolInputWidget<D>(
-				 def, "InGameDefEditor.DisableDef",
+				 def, "InGameDefEditor.DisableDef".Translate(),
 				 d => IsDisabled,
 				 (d, isDisabled) =>
 				 {

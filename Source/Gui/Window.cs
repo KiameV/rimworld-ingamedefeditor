@@ -77,6 +77,15 @@ namespace InGameDefEditor
 				}
 			}
 
+			if (Defs.DisabledDefs.Count > 0 &&
+				Widgets.ButtonText(new Rect(rect.xMax - 550, outerY, 200, 30), "InGameDefEditor.DisabledDefs".Translate()))
+			{
+				var l = new List<FloatMenuOption>();
+				foreach (string s in Defs.DisabledDefs.Keys)
+					l.Add(new FloatMenuOption(s, () => { }));
+				Find.WindowStack.Add(new FloatMenu(l));
+			}
+
 			if (Defs.ApplyStatsAutoDefs.Count > 0 && 
 				Widgets.ButtonText(new Rect(rect.xMax - 300, outerY, 200, 30), "InGameDefEditor.AutoLoaded".Translate()))
 			{

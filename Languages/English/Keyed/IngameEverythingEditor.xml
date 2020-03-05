@@ -8,6 +8,9 @@
 	<InGameDefEditor.AutoApplySettings>Auto Apply Settings</InGameDefEditor.AutoApplySettings>
 	<InGameDefEditor.AutoLoaded>Auto Apply Defs</InGameDefEditor.AutoLoaded>
 	
+	<InGameDefEditor.DisableDef>Disable Def</InGameDefEditor.DisableDef>
+	<InGameDefEditor.DisabledDefs>Disabled Defs</InGameDefEditor.DisabledDefs>
+	
 	<InGameDefEditor.RangedStats>Ranged Stats</InGameDefEditor.RangedStats>
 	<InGameDefEditor.MeleeStats>Melee Stats</InGameDefEditor.MeleeStats>
 
