@@ -1,4 +1,5 @@
 ﻿using InGameDefEditor.Stats;
+using InGameDefEditor.Stats.DefStat;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -8,18 +9,20 @@ namespace InGameDefEditor
 {
     class Backup
     {
-		private const string THOUGHT_KEY = "thought";
-		private const string TRAIT_KEY = "trait";
+        private static bool initialized = false;
+		private readonly static Dictionary<string, BackstoryStats> backupBackstories = new Dictionary<string, BackstoryStats>();
+        private readonly static Dictionary<string, IParentStat> backupDefs = new Dictionary<string, IParentStat>();
 
-		private readonly static Dictionary<string, IParentStat> backup = new Dictionary<string, IParentStat>();
-
-		public static bool HasChanged<T>(T t) where T : IParentStat
+        public static bool HasChanged<T>(object o)
         {
-            if (t == null)
-                return false;
-
-            if (Defs.ApplyStatsAutoThingDefs.TryGetValue(t.UniqueKey, out bool b) && b)
-                return b;
+            switch(o)
+            {
+                case IDefStat ds:
+                    return Defs.ApplyStatsAutoDefs.Contains(ds.BaseDef);
+                case BackstoryStats bs:
+                    return Defs.ApplyStatsAutoDefs.ContainsBackstory(bs.Backstory);
+            }
+            Log.Warning($"Unable to determine if {Util.GetLabel(o)} should be auto-applied");
             return false;
             /*string key = t.UniqueKey;
             if (t is ThoughtDefStats)
@@ -39,13 +42,14 @@ namespace InGameDefEditor
 
         public static void Initialize()
         {
-            if (backup == null || backup.Count == 0)
+            if (!initialized)
             {
+                initialized = true;
                 foreach (ThingDef d in Defs.ApparelDefs.Values)
                 {
                     try
                     {
-                        backup[d.defName] = new ThingDefStats(d);
+                        backupDefs[d.defName] = new ThingDefStats(d);
                     }
                     catch (Exception e)
                     {
@@ -58,7 +62,7 @@ namespace InGameDefEditor
                 {
                     try
                     {
-                        backup[d.defName] = new ThingDefStats(d);
+                        backupDefs[d.defName] = new ThingDefStats(d);
                     }
                     catch (Exception e)
                     {
@@ -71,7 +75,7 @@ namespace InGameDefEditor
                 {
                     try
                     {
-                        backup[d.defName] = new ProjectileDefStats(d);
+                        backupDefs[d.defName] = new ProjectileDefStats(d);
                     }
                     catch (Exception e)
                     {
@@ -84,7 +88,7 @@ namespace InGameDefEditor
                 {
                     try
                     {
-                        backup[d.defName] = new BiomeDefStats(d);
+                        backupDefs[d.defName] = new BiomeDefStats(d);
                     }
                     catch (Exception e)
                     {
@@ -97,7 +101,7 @@ namespace InGameDefEditor
                 {
                     try
                     {
-                        backup[d.defName + THOUGHT_KEY] = new ThoughtDefStats(d);
+                        backupDefs[d.defName] = new ThoughtDefStats(d);
                     }
                     catch (Exception e)
                     {
@@ -110,7 +114,7 @@ namespace InGameDefEditor
                 {
                     try
                     {
-                        backup[d.defName] = new RecipeDefStats(d);
+                        backupDefs[d.defName] = new RecipeDefStats(d);
                     }
                     catch (Exception e)
                     {
@@ -123,7 +127,7 @@ namespace InGameDefEditor
                 {
                     try
                     {
-                        backup[d.defName + TRAIT_KEY] = new TraitDefStat(d);
+                        backupDefs[d.defName] = new TraitDefStat(d);
                     }
                     catch (Exception e)
                     {
@@ -136,7 +140,7 @@ namespace InGameDefEditor
                 {
                     try
                     {
-                        backup[d.defName] = new StoryTellerDefStats(d);
+                        backupDefs[d.defName] = new StoryTellerDefStats(d);
                     }
                     catch (Exception e)
                     {
@@ -149,7 +153,7 @@ namespace InGameDefEditor
                 {
                     try
                     {
-                        backup[d.defName] = new DifficultyDefStat(d);
+                        backupDefs[d.defName] = new DifficultyDefStat(d);
                     }
                     catch (Exception e)
                     {
@@ -162,7 +166,7 @@ namespace InGameDefEditor
                 {
                     try
                     {
-                        backup[d.defName] = new ThingDefStats(d);
+                        backupDefs[d.defName] = new ThingDefStats(d);
                     }
                     catch (Exception e)
                     {
@@ -175,7 +179,7 @@ namespace InGameDefEditor
                 {
                     try
                     {
-                        backup[d.defName] = new ThingDefStats(d);
+                        backupDefs[d.defName] = new ThingDefStats(d);
                     }
                     catch (Exception e)
                     {
@@ -188,7 +192,7 @@ namespace InGameDefEditor
                 {
                     try
                     {
-                        backup[b.identifier] = new BackstoryStats(b);
+                        backupBackstories[b.identifier] = new BackstoryStats(b);
                     }
                     catch (Exception e)
                     {
@@ -201,7 +205,7 @@ namespace InGameDefEditor
                 {
                     try
                     {
-                        backup[d.defName] = new ThingDefStats(d);
+                        backupDefs[d.defName] = new ThingDefStats(d);
                     }
                     catch (Exception e)
                     {
@@ -212,26 +216,40 @@ namespace InGameDefEditor
 			}
         }
 
-        public static void ApplyStats(Backstory b)
+        public static bool ApplyStats(Backstory b)
         {
-            if (backup.TryGetValue(b.identifier, out IParentStat s))
+            if (backupBackstories.TryGetValue(b.identifier, out BackstoryStats s))
+            {
                 s.ApplyStats(b);
-            else
-                Log.Warning("Unable to find backup for Backstory " + b.identifier);
+                return true;
+            }
+            Log.Warning("Unable to find backup for Backstory " + b.identifier);
+            return false;
 		}
 
-		public static void ApplyStats(Def def)
+		public static bool ApplyStats(Def def)
 		{
 			string key = def.defName;
-			if (def is ThoughtDef)
-				key += THOUGHT_KEY;
-			else if (def is TraitDef)
-				key += TRAIT_KEY;
-
-			if (backup.TryGetValue(key, out IParentStat s))
-				s.ApplyStats(def);
-			else
-				Log.Warning("Unable to find backup for Def " + def.defName);
+            if (backupDefs.TryGetValue(key, out IParentStat s))
+            {
+                s.ApplyStats(def);
+                return true;
+            }
+            Log.Warning("Unable to find backup for Def " + def.defName);
+            return false;
 		}
+
+        public static bool ApplyStats(object o)
+        {
+            switch(o)
+            {
+                case Backstory b:
+                    return ApplyStats(b);
+                case Def d:
+                    return ApplyStats(d);
+            }
+            Log.Warning($"Unable to ApplyStats to {Util.GetLabel(o)}");
+            return false;
+        }
 	}
 }

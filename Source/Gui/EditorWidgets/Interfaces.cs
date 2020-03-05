@@ -1,6 +1,8 @@
 ﻿using InGameDefEditor.Gui.EditorWidgets.Misc;
 using Verse;
 using UnityEngine;
+using System.Reflection;
+using RimWorld;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
@@ -15,22 +17,26 @@ namespace InGameDefEditor.Gui.EditorWidgets
 	{
 		DefType Type { get; }
 		string DisplayLabel { get; }
-
+		bool IsDisabled { get; }
 		void DrawLeft(float x, ref float y, float width);
 		void DrawMiddle(float x, ref float y, float width);
 		void DrawRight(float x, ref float y, float width);
 		void Rebuild();
 		void ResetBuffers();
 		void ResetParent();
-		void DisableAutoDeploy();
+		//void DisableAutoDeploy();
+		void DrawStaticButtons(float x, ref float y, float width);
 	}
 
-	public abstract class AParentDefStatWidget<D> : IParentStatWidget where D : Def, new()
-    {
-        public readonly D Def;
+	public abstract class AParentDefStatWidget<D> : IParentStatWidget
+	{
+		public readonly D Def;
         private readonly DefType type;
 
 		private BoolInputWidget<D> autoApplySettingsInput;
+		private BoolInputWidget<D> disableDefInput;
+		public bool IsDisabled => Defs.DisabledDefs.Contains(Def);
+		protected bool IsAutoApply => Defs.ApplyStatsAutoDefs.Contains(Def);
 
 		protected AParentDefStatWidget(D def, DefType type)
         {
@@ -39,40 +45,79 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 			this.autoApplySettingsInput = new BoolInputWidget<D>(
 				def, "InGameDefEditor.AutoApplySettings".Translate(),
-				d =>
-				{
-					if (Defs.ApplyStatsAutoThingDefs.TryGetValue(d.defName, out bool b))
-						return b;
-					return false;
-				},
+				d => IsAutoApply,
 				(d, applyAuto) =>
 				{
 					if (applyAuto)
-						Defs.ApplyStatsAutoThingDefs[d.defName] = applyAuto;
+					{
+						if (!Defs.ApplyStatsAutoDefs.Add(d))
+							Log.Warning($"Failed to apply auto load to {Util.GetLabel(d)}");
+					}
 					else
-						Defs.ApplyStatsAutoThingDefs.Remove(d.defName);
+					{
+						if (!Defs.ApplyStatsAutoDefs.Remove(d))
+							Log.Warning($"Failed to remove auto load from {Util.GetLabel(d)}");
+					}
 				});
+			
+			this.disableDefInput = new BoolInputWidget<D>(
+				 def, "InGameDefEditor.DisableDef",
+				 d => IsDisabled,
+				 (d, isDisabled) =>
+				 {
+					 if (isDisabled)
+					 {
+						 if (!Defs.DisabledDefs.Add(d))
+							 Log.Warning($"Failed to disable {this.DisplayLabel}");
+						 else
+							 DatabaseUtil.Remove(d);
+					 }
+					 else
+					 {
+						 if (!Defs.DisabledDefs.Remove(d))
+							 Log.Warning($"Failed to enable {this.DisplayLabel}");
+						 else
+							 DatabaseUtil.Add(d);
+					 }
+				 }, d =>
+				 {
+					 bool enabled = Current.Game == null || IsDisabled;
+					 return new AInputWidget<D, bool>.ShouldDrawInputResult(enabled, (enabled) ? "" : "Cannot disabled defs while a game is not running.");
+				 });
 		}
 
-        public virtual string DisplayLabel => Util.GetDefLabel(this.Def);
+        public virtual string DisplayLabel => Util.GetLabel(this.Def);
         public DefType Type => this.type;
 
-        public Def BaseDef => this.Def;
-
-		public void DisableAutoDeploy()
+		public void DrawStaticButtons(float x, ref float y, float width)
 		{
-			Defs.ApplyStatsAutoThingDefs.Remove(this.Def.defName);
+			try
+			{
+				bool isDisabled = IsDisabled;
+				if (IsDisabled)
+					GUI.color = Color.red;
+				this.disableDefInput.Draw(x, ref y, width);
+
+				if (!IsDisabled)
+				{
+					if (IsAutoApply)
+						GUI.color = Color.green;
+					else
+						GUI.color = Color.red;
+					this.autoApplySettingsInput.Draw(x, ref y, width);
+				}
+			}
+			finally
+			{
+				GUI.color = Color.white;
+			}
 		}
 
-		public virtual void DrawLeft(float x, ref float y, float width)
-		{
-			this.autoApplySettingsInput.ColorOverride = (Defs.ApplyStatsAutoThingDefs.ContainsKey(this.Def.defName)) ? Color.green : Color.red;
-			this.autoApplySettingsInput.Draw(x, ref y, width);
-		}
-
+		public abstract void DrawLeft(float x, ref float y, float width);
         public abstract void DrawMiddle(float x, ref float y, float width);
         public abstract void DrawRight(float x, ref float y, float width);
-        public abstract void Rebuild();
+
+		public abstract void Rebuild();
         public virtual void ResetBuffers()
 		{
 			this.autoApplySettingsInput.ResetBuffers();

@@ -65,7 +65,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				beingUsed = () => base.Def.nullifyingOwnTales,
 				onAdd = v => base.Def.nullifyingOwnTales = Util.AddTo(base.Def.nullifyingOwnTales, v),
 				onRemove = v => base.Def.nullifyingOwnTales = Util.RemoveFrom(base.Def.nullifyingOwnTales, v),
-				getDisplayName = v => Util.GetDefLabel(v)
+				getDisplayName = v => Util.GetLabel(v)
 			};
 
 			this.requiredTraits = new PlusMinusArgs<TraitDef>()
@@ -78,7 +78,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 					base.Def.nullifyingTraits = Util.RemoveFrom(base.Def.nullifyingTraits, v);
 				},
 				onRemove = v => base.Def.requiredTraits = Util.RemoveFrom(base.Def.requiredTraits, v),
-				getDisplayName = v => Util.GetDefLabel(v)
+				getDisplayName = v => Util.GetLabel(v)
 			};
 
 			this.nullifyingTraits = new PlusMinusArgs<TraitDef>()
@@ -91,7 +91,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 					base.Def.requiredTraits = Util.RemoveFrom(base.Def.requiredTraits, v);
 				},
 				onRemove = v => base.Def.nullifyingTraits = Util.RemoveFrom(base.Def.nullifyingTraits, v),
-				getDisplayName = v => Util.GetDefLabel(v)
+				getDisplayName = v => Util.GetLabel(v)
 			};
 
 			this.Rebuild();
@@ -99,8 +99,6 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		public override void DrawLeft(float x, ref float y, float width)
 		{
-			base.DrawLeft(x, ref y, width);
-
 			foreach (var v in this.inputWidgets)
 				v.Draw(x, ref y, width);
 		}
@@ -110,19 +108,19 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			WindowUtil.PlusMinusLabel(x, ref y, width, "Nullifying Own Tales", this.nullifyingOwnTales);
 			foreach (var v in this.Def.nullifyingOwnTales)
 			{
-				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetDefLabel(v));
+				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetLabel(v));
 				y += 30;
 			}
 			WindowUtil.PlusMinusLabel(x, ref y, width, "Required Traits", this.requiredTraits);
 			foreach (var v in this.Def.requiredTraits)
 			{
-				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetDefLabel(v));
+				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetLabel(v));
 				y += 30;
 			}
 			WindowUtil.PlusMinusLabel(x, ref y, width, "Nullifying Traits", this.nullifyingTraits);
 			foreach (var v in this.Def.nullifyingTraits)
 			{
-				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetDefLabel(v));
+				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetLabel(v));
 				y += 30;
 			}
 		}

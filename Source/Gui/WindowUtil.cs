@@ -98,7 +98,7 @@ namespace InGameDefEditor
 				previousY = 0;
 
 				foreach (var v in items)
-					DrawLabel(10, ref previousY, width - 10, "- " + Util.GetDefLabel(v));
+					DrawLabel(10, ref previousY, width - 10, "- " + Util.GetLabel(v));
 
 				Widgets.EndScrollView();
 				y += 332;
@@ -109,7 +109,7 @@ namespace InGameDefEditor
 				foreach (var v in items)
 				{
 					float orig = y;
-					DrawLabel(10, ref y, width - 10, "- " + Util.GetDefLabel(v));
+					DrawLabel(10, ref y, width - 10, "- " + Util.GetLabel(v));
 					previousY += y - orig;
 				}
 			}
@@ -124,7 +124,7 @@ namespace InGameDefEditor
 		public static void DrawList<D>(float x, ref float y, float width, IEnumerable<D> items, bool bolded = false) where D : Def, new()
 		{
 			foreach (var v in items)
-				DrawLabel(10, ref y, width - 10, "- " + Util.GetDefLabel(v));
+				DrawLabel(10, ref y, width - 10, "- " + Util.GetLabel(v));
 		}
 
 		public delegate string GetDisplayName<T>(T t);

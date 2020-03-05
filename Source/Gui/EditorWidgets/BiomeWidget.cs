@@ -196,8 +196,6 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
         public override void DrawLeft(float x, ref float y, float width)
         {
-            base.DrawLeft(x, ref y, width);
-
             foreach (var w in this.inputWidgets)
                 w.Draw(x, ref y, width);
 

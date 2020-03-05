@@ -76,7 +76,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 					base.Def.requiredWorkTypes = Util.RemoveFrom(base.Def.requiredWorkTypes, v);
 				},
 				onRemove = v => base.Def.disabledWorkTypes = Util.RemoveFrom(base.Def.disabledWorkTypes, v),
-				getDisplayName = v => Util.GetDefLabel(v)
+				getDisplayName = v => Util.GetLabel(v)
 			};
 
 			this.requiredWorkTypes = new PlusMinusArgs<WorkTypeDef>()
@@ -89,7 +89,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 					base.Def.disabledWorkTypes = Util.RemoveFrom(base.Def.disabledWorkTypes, v);
 				},
 				onRemove = v => base.Def.requiredWorkTypes = Util.RemoveFrom(base.Def.requiredWorkTypes, v),
-				getDisplayName = v => Util.GetDefLabel(v)
+				getDisplayName = v => Util.GetLabel(v)
 			};
 
 			this.conflictingTraits = new PlusMinusArgs<TraitDef>()
@@ -98,7 +98,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				beingUsed = () => base.Def.conflictingTraits,
 				onAdd = v => base.Def.conflictingTraits = Util.AddTo(base.Def.conflictingTraits, v),
 				onRemove = v => base.Def.conflictingTraits = Util.RemoveFrom(base.Def.conflictingTraits, v),
-				getDisplayName = v => Util.GetDefLabel(v)
+				getDisplayName = v => Util.GetLabel(v)
 			};
 
 			this.Rebuild();
@@ -106,8 +106,6 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		public override void DrawLeft(float x, ref float y, float width)
 		{
-			base.DrawLeft(x, ref y, width);
-
 			foreach (var v in this.inputWidgets)
 				v.Draw(x, ref y, width);
 
@@ -133,19 +131,19 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			WindowUtil.PlusMinusLabel(x, ref y, width, "Required Work Types", this.requiredWorkTypes);
 			foreach (var v in this.Def.requiredWorkTypes)
 			{
-				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetDefLabel(v));
+				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetLabel(v));
 				y += 30;
 			}
 			WindowUtil.PlusMinusLabel(x, ref y, width, "Disabled Work Types", this.disabledWorkTypes);
 			foreach (var v in this.Def.disabledWorkTypes)
 			{
-				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetDefLabel(v));
+				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetLabel(v));
 				y += 30;
 			}
 			WindowUtil.PlusMinusLabel(x, ref y, width, "Confliting Traits", this.conflictingTraits);
 			foreach (var v in this.Def.conflictingTraits)
 			{
-				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetDefLabel(v));
+				WindowUtil.DrawLabel(x + 20, y, width, "- " + Util.GetLabel(v));
 				y += 30;
 			}
 		}

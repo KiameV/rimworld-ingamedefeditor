@@ -51,8 +51,6 @@ namespace InGameDefEditor.Stats
 		//public Texture2D portraitLargeTex;
 		//public Texture2D portraitTinyTex;
 
-		public string UniqueKey => base.defName;
-
 		public StoryTellerDefStats() : base() { }
 		public StoryTellerDefStats(StorytellerDef d) : base(d)
 		{

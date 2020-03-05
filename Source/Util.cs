@@ -278,7 +278,7 @@ namespace InGameDefEditor
 			List<D> list = new List<D>(DefDatabase<D>.AllDefs);
 			if (exclude != null)
 				list.RemoveAll(exclude);
-			list.Sort((l, r) => Util.GetDefLabel(l).CompareTo(Util.GetDefLabel(r)));
+			list.Sort((l, r) => Util.GetLabel(l).CompareTo(Util.GetLabel(r)));
 			return list;
 		}
 
@@ -471,11 +471,16 @@ namespace InGameDefEditor
 			return l;
 		}
 
-		public static string GetDefLabel<D>(D d) where D : Def, new()
+		public static string GetLabel(object o)
 		{
-			if (d == null)
-				return "None";
-			return d.label ?? d.defName;
+			switch(o)
+			{
+				case Backstory b:
+					return b.identifier;
+				case Def d:
+					return d.label ?? d.defName;
+			}
+			return "None";
 		}
 
 		public static string ToString(object o)

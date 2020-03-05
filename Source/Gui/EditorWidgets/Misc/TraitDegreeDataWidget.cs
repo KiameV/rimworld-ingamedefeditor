@@ -166,7 +166,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 		private FloatInputWidget<StatModifier> CreateStatModifierInput(StatModifier sm)
 		{
-			return new FloatInputWidget<StatModifier>(sm, Util.GetDefLabel(sm.stat), v => v.value, (s, v) => s.value = v);
+			return new FloatInputWidget<StatModifier>(sm, Util.GetLabel(sm.stat), v => v.value, (s, v) => s.value = v);
 		}
 	}
 }

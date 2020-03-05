@@ -8,6 +8,7 @@ using Verse;
 using InGameDefEditor.Stats.DefStat;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace InGameDefEditor
 {
@@ -35,7 +36,23 @@ namespace InGameDefEditor
 					StringBuilder sb = new StringBuilder("InGameDefEditor".Translate() + ": Loading Def Settings\n");
 
 					if (Load("AutoApplyDefs", out RootAutoApplyDefs raad))
-						raad?.autoApplyDefs.ForEach(s => Defs.ApplyStatsAutoThingDefs.Add(s, true));
+					{
+						if (raad.autoApplyDefs != null)
+						{
+							raad?.autoApplyDefs.ForEach(s => Defs.ApplyStatsAutoDefs.Add(s));
+						}
+						else
+						{
+							raad?.autoApplyDefsV2.ForEach(d => {
+								if (!Defs.ApplyStatsAutoDefs.AddDef(d))
+									Log.Warning($"unable to auto-apply stats to {d} as the def was not found");
+							});
+							raad?.autoApplyBackstories.ForEach(b => {
+								if (!Defs.ApplyStatsAutoDefs.AddBackstory(b))
+									Log.Warning($"unable to auto-apply stats to {b} as the backstory was not found");
+							});
+						}
+					}
 
 					if (Load(DefType.Apparel, out RootApparel ra))
 						ra?.stats.ForEach((d) => Initialize(d, sb));
@@ -80,19 +97,22 @@ namespace InGameDefEditor
 					sb.AppendLine("Disabling the following defs:");
 					if (Load("DisabledDefs", out RootDisabledDefs rdd))
 					{
-						rdd?.disabledThingDefs.ForEach(defName =>
+						if (rdd.disabledThingDefs != null)
+							rdd?.disabledThingDefs.ForEach(defName => DatabaseUtil.RemoveDef(defName));
+						else
 						{
-							if (!DefLookupUtil.TryGetDef(defName, out ThingDef def))
-							{
-								Log.Error("Could not disable ThingDef " + defName);
-							}
-							else
-							{
-								Defs.DisabledThingDefs.Add(defName, def);
-								typeof(DefDatabase<ThingDef>).GetMethod("Remove", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { def });
-								sb.AppendLine("- " + def.defName);
-							}
-						});
+							rdd?.disabledDefsV2.ForEach(d => {
+								if (!Defs.DisabledDefs.AddDef(d))
+									Log.Warning($"unable to auto-apply stats to {d} as the def was not found");
+							});
+							rdd?.disabledBackstories.ForEach(b => {
+								if (!Defs.DisabledDefs.AddBackstory(b))
+									Log.Warning($"unable to auto-apply stats to {b} as the backstory was not found");
+							});
+						}
+
+						Defs.DisabledDefs.Backstories.ForEach(b => DatabaseUtil.Remove(b));
+						Defs.DisabledDefs.Defs.ForEach(d => DatabaseUtil.Remove(d));
 					}
 					Log.Message(sb.ToString());
 				}
@@ -110,18 +130,41 @@ namespace InGameDefEditor
 
         public static void SaveData()
         {
-            Save("DisabledDefs", new RootDisabledDefs() { disabledThingDefs = new List<string>(Defs.DisabledThingDefs.Keys) });
+			try
+			{
+				var dBackstories = new List<string>();
+				Defs.DisabledDefs.Backstories.ForEach(b => dBackstories.Add(b.identifier));
+				var dDefs = new List<string>();
+				Defs.DisabledDefs.Defs.ForEach(d => dDefs.Add(d.defName));
+				Save("DisabledDefs", new RootDisabledDefs() { 
+					disabledBackstories = dBackstories,
+					disabledDefsV2 = dDefs
+				});
+			}
+			catch (Exception e)
+			{
+				Log.Error("Problem saving disabled defs settings\n" + e.GetType().Name + "\n" + e.Message);
+			}
 
-			var aad = new List<string>();
-			foreach (var kv in Defs.ApplyStatsAutoThingDefs)
-				if (kv.Value)
-					aad.Add(kv.Key);
-			Save("AutoApplyDefs", new RootAutoApplyDefs() { autoApplyDefs = aad }); ;
+			try
+			{
+				var aaBackstories = new List<string>();
+				Defs.ApplyStatsAutoDefs.Backstories.ForEach(b => aaBackstories.Add(b.identifier));
+				var aaDefs = new List<string>();
+				Defs.ApplyStatsAutoDefs.Defs.ForEach(d => aaDefs.Add(d.defName));
+				Save("AutoApplyDefs", new RootAutoApplyDefs() {
+					autoApplyBackstories = aaBackstories,
+					autoApplyDefsV2 = aaDefs
+				});
+			}
+			catch (Exception e)
+			{
+				Log.Error("Problem saving auto-apply settings\n" + e.GetType().Name + "\n" + e.Message);
+			}
 
             try
-            {
-                Util.Populate(out List<ThingDefStats> ap, Defs.ApparelDefs.Values, (v) => HasChanged(new ThingDefStats(v)), false);
-                Save(DefType.Apparel, new RootApparel() { stats = ap });
+			{
+                Save(DefType.Apparel, new RootApparel() { stats = GetChangedDefs(Defs.ApparelDefs.Values, (d) => new ThingDefStats(d)) });
             }
             catch (Exception e)
             {
@@ -130,8 +173,7 @@ namespace InGameDefEditor
 
             try
             {
-                Util.Populate(out List<ThingDefStats> we, Defs.WeaponDefs.Values, (v) => HasChanged(new ThingDefStats(v)), false);
-                Save(DefType.Weapon, new RootWeapons() { stats = we });
+                Save(DefType.Weapon, new RootWeapons() { stats = GetChangedDefs(Defs.WeaponDefs.Values, (d) => new ThingDefStats(d)) });
             }
             catch (Exception e)
             {
@@ -140,8 +182,7 @@ namespace InGameDefEditor
 
             try
             {
-                Util.Populate(out List<ProjectileDefStats> pr, Defs.ProjectileDefs.Values, (v) => HasChanged(new ProjectileDefStats(v)), false);
-                Save(DefType.Projectile, new RootProjectiles() { stats = pr });
+                Save(DefType.Projectile, new RootProjectiles() { stats = GetChangedDefs(Defs.ProjectileDefs.Values, (d) => new ProjectileDefStats(d)) });
             }
             catch (Exception e)
             {
@@ -150,8 +191,7 @@ namespace InGameDefEditor
 
             try
             {
-                Util.Populate(out List<BiomeDefStats> bi, Defs.BiomeDefs.Values, (v) => HasChanged(new BiomeDefStats(v)), false);
-                Save(DefType.Biome, new RootBiomes() { stats = bi });
+                Save(DefType.Biome, new RootBiomes() { stats = GetChangedDefs(Defs.BiomeDefs.Values, (d) => new BiomeDefStats(d)) });
             }
             catch (Exception e)
             {
@@ -160,11 +200,7 @@ namespace InGameDefEditor
 
             try
             {
-                //if (Controller.EnableRecipes)
-                //{ 
-                Util.Populate(out List<RecipeDefStats> re, Defs.RecipeDefs.Values, (v) => HasChanged(new RecipeDefStats(v)), false);
-                Save(DefType.Recipe, new RootRecipe() { recipes = re });
-                //}
+                Save(DefType.Recipe, new RootRecipe() { recipes = GetChangedDefs(Defs.RecipeDefs.Values, (d) => new RecipeDefStats(d)) });
             }
             catch (Exception e)
             {
@@ -173,8 +209,7 @@ namespace InGameDefEditor
 
             try
             {
-                Util.Populate(out List<TraitDefStat> traits, Defs.TraitDefs.Values, (v) => HasChanged(new TraitDefStat(v)), false);
-                Save(DefType.Trait, new RootTraits() { stats = traits });
+                Save(DefType.Trait, new RootTraits() { stats = GetChangedDefs(Defs.TraitDefs.Values, (d) => new TraitDefStat(d)) });
             }
             catch (Exception e)
             {
@@ -183,8 +218,7 @@ namespace InGameDefEditor
 
             try
             {
-                Util.Populate(out List<ThoughtDefStats> thoughts, Defs.ThoughtDefs.Values, (v) => HasChanged(new ThoughtDefStats(v)), false);
-                Save(DefType.Thought, new RootThoughts() { stats = thoughts });
+                Save(DefType.Thought, new RootThoughts() { stats = GetChangedDefs(Defs.ThoughtDefs.Values, (d) => new ThoughtDefStats(d)) });
             }
             catch (Exception e)
             {
@@ -193,8 +227,7 @@ namespace InGameDefEditor
 
             try
             {
-                Util.Populate(out List<StoryTellerDefStats> storyTellers, Defs.StoryTellerDefs.Values, (v) => HasChanged(new StoryTellerDefStats(v)), false);
-                Save(DefType.StoryTeller, new RootStoryTeller() { stats = storyTellers });
+                Save(DefType.StoryTeller, new RootStoryTeller() { stats = GetChangedDefs(Defs.StoryTellerDefs.Values, (d) => new StoryTellerDefStats(d)) });
             }
             catch (Exception e)
             {
@@ -203,8 +236,7 @@ namespace InGameDefEditor
 
             try
             {
-                Util.Populate(out List<DifficultyDefStat> difficulties, Defs.DifficultyDefs.Values, (v) => HasChanged(new DifficultyDefStat(v)), false);
-                Save(DefType.Difficulty, new RootDifficulty() { stats = difficulties });
+                Save(DefType.Difficulty, new RootDifficulty() { stats = GetChangedDefs(Defs.DifficultyDefs.Values, (d) => new DifficultyDefStat(d)) });
             }
             catch (Exception e)
             {
@@ -213,8 +245,7 @@ namespace InGameDefEditor
 
             try
             {
-                Util.Populate(out List<ThingDefStats> ingestibles, Defs.IngestibleDefs.Values, v => HasChanged(new ThingDefStats(v)), false);
-                Save(DefType.Ingestible, new RootIngestible() { stats = ingestibles });
+                Save(DefType.Ingestible, new RootIngestible() { stats = GetChangedDefs(Defs.IngestibleDefs.Values, (d) => new ThingDefStats(d)) });
             }
             catch (Exception e)
             {
@@ -223,8 +254,7 @@ namespace InGameDefEditor
 
             try
             {
-                Util.Populate(out List<ThingDefStats> mineable, Defs.MineableDefs.Values, v => HasChanged(new ThingDefStats(v)), false);
-                Save(DefType.Mineable, new RootMineable() { stats = mineable });
+                Save(DefType.Mineable, new RootMineable() { stats = GetChangedDefs(Defs.MineableDefs.Values, (d) => new ThingDefStats(d)) });
             }
             catch (Exception e)
             {
@@ -233,8 +263,7 @@ namespace InGameDefEditor
 
             try
             {
-                Util.Populate(out List<BackstoryStats> backstories, Defs.Backstories.Values, v => HasChanged(new BackstoryStats(v)), false);
-                Save(DefType.Backstory, new RootBackstory() { stats = backstories });
+                Save(DefType.Backstory, new RootBackstory() { stats = GetChangedBackstory(Defs.Backstories.Values) });
             }
             catch (Exception e)
             {
@@ -243,14 +272,39 @@ namespace InGameDefEditor
 
             try
             {
-                Util.Populate(out List<ThingDefStats> buildings, Defs.BuildingDefs.Values, v => HasChanged(new ThingDefStats(v)), false);
-                Save(DefType.Building, new RootBuilding() { stats = buildings });
+                Save(DefType.Building, new RootBuilding() { stats = GetChangedDefs(Defs.BuildingDefs.Values, (d) => new ThingDefStats(d)) });
             }
             catch (Exception e)
             {
                 Log.Error("Problem saving " + DefType.Building + ".\n" + e.GetType().Name + "\n" + e.Message);
             }
         }
+
+		private static List<BackstoryStats> GetChangedBackstory(IEnumerable<Backstory> backstories)
+		{
+			List<BackstoryStats> result = new List<BackstoryStats>(backstories.Count());
+			foreach (var b in backstories)
+			{
+				if (Defs.ApplyStatsAutoDefs.ContainsBackstory(b))
+				{
+					result.Add(new BackstoryStats(b));
+				}
+			}
+			return result;
+		}
+
+		private static List<S> GetChangedDefs<D, S>(IEnumerable<D> defs, Func<D, S> newInstance) where D : Def, new() where S : IDefStat
+		{
+			List<S> result = new List<S>(defs.Count());
+			foreach (var d in defs)
+			{
+				if (Defs.ApplyStatsAutoDefs.ContainsDef(d))
+				{
+					result.Add(newInstance(d));
+				}
+			}
+			return result;
+		}
 
 		private static string basePath = null;
 		private static string GetStatsPath()
@@ -353,7 +407,7 @@ namespace InGameDefEditor
 				try
 				{
 					if (b.Initialize() &&
-						Defs.ApplyStatsAutoThingDefs.TryGetValue(b.Backstory.identifier, out bool apply) && apply)
+						Defs.ApplyStatsAutoDefs.Contains(b.Backstory))
 					{
 						try
 						{
@@ -386,7 +440,7 @@ namespace InGameDefEditor
 					if (s.Initialize() &&
 						s is IParentStat p)
 					{
-						if (Defs.ApplyStatsAutoThingDefs.TryGetValue(s.defName, out bool apply) && apply)
+						if (Defs.ApplyStatsAutoDefs.Contains(s))
 						{
 							try
 							{
@@ -409,13 +463,6 @@ namespace InGameDefEditor
 					Log.Error($"Failed to load Def [{s.defName}] due to {e.Message}");
 				}
 			}
-		}
-
-		private static T HasChanged<T>(T d) where T : IParentStat
-		{
-			if (Backup.HasChanged(d))
-				return d;
-			return default(T);
 		}
 	}
 }

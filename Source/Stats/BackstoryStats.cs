@@ -14,7 +14,7 @@ namespace InGameDefEditor.Stats
 	{
 		[XmlIgnore]
 		private Backstory backstory;
-		public Backstory Backstory { get => this.backstory; }
+		public Backstory Backstory => this.backstory;
 
 		[XmlElement(IsNullable = false)]
 		public string identifier;
@@ -33,8 +33,6 @@ namespace InGameDefEditor.Stats
 		public List<IntValueDefStat<TraitDef>> disallowedTraits;
 
 		public List<string> spawnCategories = new List<string>();
-
-		public string UniqueKey => identifier;
 
 		public BackstoryStats() { }
 		public BackstoryStats(Backstory b)

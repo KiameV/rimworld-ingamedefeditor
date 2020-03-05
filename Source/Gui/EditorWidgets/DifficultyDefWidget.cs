@@ -48,8 +48,6 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		public override void DrawLeft(float x, ref float y, float width)
 		{
-			base.DrawLeft(x, ref y, width);
-
 			foreach (var v in this.leftInputWidgets)
 				v.Draw(x, ref y, width);
 		}

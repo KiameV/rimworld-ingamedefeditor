@@ -517,12 +517,12 @@ namespace InGameDefEditor.Stats.Misc
 			if (cd != null)
 			{
 				sb.Append(" - ");
-				sb.Append(Util.GetDefLabel(cd));
+				sb.Append(Util.GetLabel(cd));
 			}
 			if (id != null)
 			{
 				sb.Append(" - ");
-				sb.Append(Util.GetDefLabel(id));
+				sb.Append(Util.GetLabel(id));
 			}
 			return sb.ToString();
 		}
@@ -541,12 +541,12 @@ namespace InGameDefEditor.Stats.Misc
 			if (cd != null)
 			{
 				sb.Append(" - ");
-				sb.Append(Util.GetDefLabel(cd));
+				sb.Append(Util.GetLabel(cd));
 			}
 			if (id != null)
 			{
 				sb.Append(" - ");
-				sb.Append(Util.GetDefLabel(id));
+				sb.Append(Util.GetLabel(id));
 			}
 			return sb.ToString();
 		}

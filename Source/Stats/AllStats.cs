@@ -9,12 +9,16 @@ namespace InGameDefEditor.Stats
 	public class RootDisabledDefs
 	{
 		public List<string> disabledThingDefs;
+		public List<string> disabledDefsV2;
+		public List<string> disabledBackstories;
 	}
 
 	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
 	public class RootAutoApplyDefs
 	{
 		public List<string> autoApplyDefs;
+		public List<string> autoApplyDefsV2;
+		public List<string> autoApplyBackstories;
 	}
 
 	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]

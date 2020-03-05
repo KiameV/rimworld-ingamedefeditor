@@ -41,7 +41,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			this.allowedTargetTags = new PlusMinusArgs<IncidentTargetTagDef>()
 			{
 				allItems = DefDatabase<IncidentTargetTagDef>.AllDefs,
-				getDisplayName = v => Util.GetDefLabel(v),
+				getDisplayName = v => Util.GetLabel(v),
 				beingUsed = () => this.Props.allowedTargetTags,
 				onAdd = v =>
 				{
@@ -54,7 +54,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			this.disallowedTargetTags = new PlusMinusArgs<IncidentTargetTagDef>()
 			{
 				allItems = DefDatabase<IncidentTargetTagDef>.AllDefs,
-				getDisplayName = v => Util.GetDefLabel(v),
+				getDisplayName = v => Util.GetLabel(v),
 				beingUsed = () => this.Props.disallowedTargetTags,
 				onAdd = v =>
 				{
@@ -147,7 +147,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 										return true;
 								return false;
 							},
-							getDisplayName = d => Util.GetDefLabel(d),
+							getDisplayName = d => Util.GetLabel(d),
 							onAdd = d =>
 							{
 								IncidentCategoryEntry ice = new IncidentCategoryEntry()
@@ -186,7 +186,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 		private FloatInputWidget<IncidentCategoryEntry> CreateCategoryWeightInput(IncidentCategoryEntry ice)
 		{
-			return new FloatInputWidget<IncidentCategoryEntry>(ice, Util.GetDefLabel(ice.category), c => c.weight, (c, v) => c.weight = v);
+			return new FloatInputWidget<IncidentCategoryEntry>(ice, Util.GetLabel(ice.category), c => c.weight, (c, v) => c.weight = v);
 		}
 
 		protected override void DrawInputs(float x, ref float y, float width)
@@ -200,7 +200,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				WindowUtil.PlusMinusLabel(x, ref y, width, "Category Weights", this.categoryWeightArgs);
 				if (rm.categoryWeights != null)
 					foreach (var v in rm.categoryWeights)
-						WindowUtil.DrawLabel(x + 20, ref y, width, "- " + Util.GetDefLabel(v.category), 30);
+						WindowUtil.DrawLabel(x + 20, ref y, width, "- " + Util.GetLabel(v.category), 30);
 			}
 
 			if (this.allowedTargetTags != null)
@@ -208,7 +208,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				WindowUtil.PlusMinusLabel(x, ref y, width, "Allowed Target Tags", this.allowedTargetTags);
 				if (this.Props.allowedTargetTags != null)
 					foreach (var v in this.Props.allowedTargetTags)
-						WindowUtil.DrawLabel(x + 20, ref y, width, "- " + Util.GetDefLabel(v), 30);
+						WindowUtil.DrawLabel(x + 20, ref y, width, "- " + Util.GetLabel(v), 30);
 			}
 
 			if (this.disallowedTargetTags != null)
@@ -216,7 +216,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				WindowUtil.PlusMinusLabel(x, ref y, width, "Disallowed Target Tags", this.disallowedTargetTags);
 				if (this.Props.disallowedTargetTags != null)
 					foreach (var v in this.Props.disallowedTargetTags)
-						WindowUtil.DrawLabel(x + 20, ref y, width, "- " + Util.GetDefLabel(v), 30);
+						WindowUtil.DrawLabel(x + 20, ref y, width, "- " + Util.GetLabel(v), 30);
 			}
 
 			foreach (var v in this.simpleCurveWidgets)

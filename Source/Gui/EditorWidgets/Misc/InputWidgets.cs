@@ -226,7 +226,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			this.labelWidth = labelWidth;
 			args = new FloatOptionsArgs<D>()
 			{
-				getDisplayName = def => Util.GetDefLabel(def),
+				getDisplayName = def => Util.GetLabel(def),
 				items = Util.SortedDefList<D>(exclude),
 				onSelect = def => base.setValue(base.Parent, def),
 				includeNullOption = includeNullOption
@@ -235,7 +235,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 		protected override void DrawInput(float x, ref float y, float width)
 		{
-			WindowUtil.DrawInput(x, ref y, width, base.label, this.labelWidth, Util.GetDefLabel(base.getValue(base.Parent)), this.args);
+			WindowUtil.DrawInput(x, ref y, width, base.label, this.labelWidth, Util.GetLabel(base.getValue(base.Parent)), this.args);
 		}
 
 		public override void ResetBuffers() { }
@@ -256,7 +256,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 			args = new PlusMinusArgs<D>()
 			{
-				getDisplayName = def => Util.GetDefLabel(def),
+				getDisplayName = def => Util.GetLabel(def),
 				allItems = DefDatabase<D>.AllDefs,
 				onAdd = def => Util.AddTo(this.items, def),
 				onRemove = def => Util.RemoveFrom(this.items, def),
@@ -275,7 +275,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			{
 				foreach (var def in beingUsed)
 				{
-					WindowUtil.DrawLabel(x, y, width, "- " + Util.GetDefLabel(def));
+					WindowUtil.DrawLabel(x, y, width, "- " + Util.GetLabel(def));
 					y += 30;
 				}
 			}

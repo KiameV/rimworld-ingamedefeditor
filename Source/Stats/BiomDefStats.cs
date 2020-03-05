@@ -37,8 +37,6 @@ namespace InGameDefEditor.Stats
         public List<FloatValueDoubleDefStat<IncidentDef, BiomeDef>> diseases = null;
         public List<DefStat<PawnKindDef>> allowedPackAnimals = null;
 
-		public string UniqueKey => base.defName;
-
 		public BiomeDefStats() { }
         public BiomeDefStats(BiomeDef d) : base(d)
         {

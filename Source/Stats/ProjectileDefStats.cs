@@ -13,8 +13,6 @@ namespace InGameDefEditor.Stats
         public float armorPenetration;
         public float speed;
 
-		public string UniqueKey => base.defName;
-
 		public ProjectileDefStats() { }
         public ProjectileDefStats(ThingDef d) : base(d)
         {

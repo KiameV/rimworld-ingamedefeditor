@@ -35,8 +35,6 @@ namespace InGameDefEditor.Stats
 		public float adaptationGrowthRateFactorOverZero;
 		public float adaptationEffectFactor;
 
-		public string UniqueKey => base.defName;
-
 		public DifficultyDefStat() { }
 		public DifficultyDefStat(DifficultyDef d) : base(d)
 		{

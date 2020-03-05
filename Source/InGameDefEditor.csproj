@@ -94,6 +94,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backup.cs" />
+    <Compile Include="DatabaseUtil.cs" />
+    <Compile Include="DefsDictionary.cs" />
     <Compile Include="DefType.cs" />
     <Compile Include="DefLookupUtil.cs" />
     <Compile Include="Defs.cs" />

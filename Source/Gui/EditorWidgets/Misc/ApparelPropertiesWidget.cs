@@ -38,7 +38,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				beingUsed = () => this.apparelProperties?.bodyPartGroups,
 				onAdd = v => this.apparelProperties.bodyPartGroups.Add(v),
 				onRemove = v => this.apparelProperties.bodyPartGroups.Remove(v),
-				getDisplayName = v => Util.GetDefLabel(v),
+				getDisplayName = v => Util.GetLabel(v),
 			};
 
 			this.apparelLayerArgs = new WindowUtil.PlusMinusArgs<ApparelLayerDef>()
@@ -47,7 +47,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				beingUsed = () => this.apparelProperties?.layers,
 				onAdd = v => this.apparelProperties.layers.Add(v),
 				onRemove = v => this.apparelProperties.layers.Remove(v),
-				getDisplayName = v => Util.GetDefLabel(v),
+				getDisplayName = v => Util.GetLabel(v),
 			};
 		}
 

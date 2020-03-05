@@ -15,43 +15,10 @@ namespace InGameDefEditor.Gui.EditorWidgets
 		protected readonly List<FloatInputWidget<StatModifier>> statBases = new List<FloatInputWidget<StatModifier>>();
 		private readonly WindowUtil.PlusMinusArgs<StatDef> statBasesPlusMinus;
 
-		private BoolInputWidget<D> disabledInput;
-		protected bool isDisabled;
-
 		public ABuildableDefWidget(D def, DefType type) : base(def, type)
         {
             if (base.Def.statBases == null)
                 base.Def.statBases = new List<StatModifier>();
-
-			this.isDisabled = Defs.DisabledThingDefs.ContainsKey(def.defName);
-
-			this.disabledInput = new BoolInputWidget<D>(
-				def, "Disable Def",
-				d =>
-				{
-					this.isDisabled = Defs.DisabledThingDefs.ContainsKey(d.defName);
-					return this.isDisabled;
-				},
-				(d, isDisabled) =>
-				{
-					this.isDisabled = isDisabled;
-					if (isDisabled)
-					{
-						if (d is ThingDef)
-							Defs.DisabledThingDefs[d.defName] = d as ThingDef;
-						typeof(DefDatabase<ThingDef>).GetMethod("Remove", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { d });
-					}
-					else
-					{
-						Defs.DisabledThingDefs.Remove(d.defName);
-						if (d is ThingDef)
-							DefDatabase<ThingDef>.Add(d as ThingDef);
-					}
-				}, v =>
-				{
-					bool enabled = Current.Game == null || this.isDisabled;
-						return new AInputWidget<D, bool>.ShouldDrawInputResult(enabled, (enabled) ? "" : "Cannot disabled defs while a game is not running.");
-				});
 
 			this.inputWidgets = new List<IInputWidget>()
 			{
@@ -143,12 +110,6 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		public sealed override void DrawLeft(float x, ref float y, float width)
         {
-			base.DrawLeft(x, ref y, width);
-
-			this.disabledInput.Draw(x, ref y, width);
-			if (this.isDisabled)
-				return;
-
 			y += 10;
 			foreach (var v in this.inputWidgets)
 				v.Draw(x, ref y, width);
@@ -158,16 +119,11 @@ namespace InGameDefEditor.Gui.EditorWidgets
 		
 		public sealed override void DrawMiddle(float x, ref float y, float width)
 		{
-			if (this.isDisabled)
-				return;
 			this.DrawMiddleInput(x, ref y, width);
 		}
 
 		public sealed override void DrawRight(float x, ref float y, float width)
 		{
-			if (this.isDisabled)
-				return;
-			
 			this.DrawStatModifiers(x, ref y, width);
 
 			y += 10;
@@ -209,7 +165,6 @@ namespace InGameDefEditor.Gui.EditorWidgets
         public override void ResetBuffers()
         {
 			base.ResetBuffers();
-			this.disabledInput.ResetBuffers();
 			this.inputWidgets?.ForEach(v => v.ResetBuffers());
 			this.statBases?.ForEach(v => v.ResetBuffers());
         }

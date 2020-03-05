@@ -61,7 +61,7 @@ namespace InGameDefEditor
 						getDisplayName = i =>
 						{
 							if (i is Def def)
-								return Util.GetDefLabel(def);
+								return Util.GetLabel(def);
 							else if (i is Backstory b)
 								return b.title;
 							return i.ToString();
@@ -77,11 +77,11 @@ namespace InGameDefEditor
 				}
 			}
 
-			if (Defs.ApplyStatsAutoThingDefs.Keys.Count > 0 && 
+			if (Defs.ApplyStatsAutoDefs.Count > 0 && 
 				Widgets.ButtonText(new Rect(rect.xMax - 300, outerY, 200, 30), "InGameDefEditor.AutoLoaded".Translate()))
 			{
-				var l = new List<FloatMenuOption>(Defs.ApplyStatsAutoThingDefs.Keys.Count);
-				foreach (string s in Defs.ApplyStatsAutoThingDefs.Keys)
+				var l = new List<FloatMenuOption>();
+				foreach (string s in Defs.ApplyStatsAutoDefs.Keys)
 					l.Add(new FloatMenuOption(s, () => { }));
 				Find.WindowStack.Add(new FloatMenu(l));
 			}
@@ -91,39 +91,45 @@ namespace InGameDefEditor
             if (selectedDef != null)
             {
 				float x = 0;
-				float y = 0;
+				float y = outerY;
 
-                // Left column
-                Widgets.BeginScrollView(
-                    new Rect(0, outerY, 370, rect.height - outerY - 120),
-                    ref leftScroll,
-                    new Rect(0, 0, 354, this.previousYMaxLeft));
+				selectedDef.DrawStaticButtons(x, ref y, 370);
 
-                selectedDef.DrawLeft(x, ref y, 354);
-                this.previousYMaxLeft = y;
+				if (!selectedDef.IsDisabled)
+				{
+					// Left column
+					Widgets.BeginScrollView(
+						new Rect(0, y, 370, rect.height - outerY - 120),
+						ref leftScroll,
+						new Rect(0, 0, 354, this.previousYMaxLeft));
+					y = 0;
 
-                Widgets.EndScrollView();
+					selectedDef.DrawLeft(x, ref y, 354);
+					this.previousYMaxLeft = y;
 
-                // Middle Column
-                Widgets.BeginScrollView(
-                    new Rect(380, outerY, 370, rect.height - outerY - 120),
-                    ref middleScroll,
-                    new Rect(0, 0, 354, this.previousYMaxMiddle));
-                y = 0;
-                selectedDef.DrawMiddle(x, ref y, 354);
-                this.previousYMaxMiddle = y;
-                Widgets.EndScrollView();
+					Widgets.EndScrollView();
 
-                // Right Column
-                Widgets.BeginScrollView(
-                    new Rect(760, outerY, 370, rect.height - outerY - 120),
-                    ref rightScroll,
-                    new Rect(0, 0, 354, this.previousYMaxRight));
-                y = 0;
-                selectedDef.DrawRight(x, ref y, 354);
-                this.previousYMaxRight = y;
+					// Middle Column
+					Widgets.BeginScrollView(
+						new Rect(380, outerY, 370, rect.height - outerY - 120),
+						ref middleScroll,
+						new Rect(0, 0, 354, this.previousYMaxMiddle));
+					y = 0;
+					selectedDef.DrawMiddle(x, ref y, 354);
+					this.previousYMaxMiddle = y;
+					Widgets.EndScrollView();
 
-                Widgets.EndScrollView();
+					// Right Column
+					Widgets.BeginScrollView(
+						new Rect(760, outerY, 370, rect.height - outerY - 120),
+						ref rightScroll,
+						new Rect(0, 0, 354, this.previousYMaxRight));
+					y = 0;
+					selectedDef.DrawRight(x, ref y, 354);
+					this.previousYMaxRight = y;
+
+					Widgets.EndScrollView();
+				}
 			}
 
 			if (selectedDefType != null && 
@@ -153,8 +159,8 @@ namespace InGameDefEditor
                     "Reset everything to the original game's settings?",
                     delegate
 					{
-						Defs.DisabledThingDefs.Clear();
-						Defs.ApplyStatsAutoThingDefs.Clear();
+						Defs.DisabledDefs.Clear();
+						Defs.ApplyStatsAutoDefs.Clear();
 						foreach (var v in this.GetDefTypes(false))
 							v.ResetTypeDefs();
 						if (selectedDef != null)
@@ -167,7 +173,7 @@ namespace InGameDefEditor
 		{
 			if (selectedDef != null)
 			{
-				selectedDef.DisableAutoDeploy();
+				//selectedDef.DisableAutoDeploy();
 				selectedDef.ResetParent();
 				selectedDef.Rebuild();
 			}
@@ -287,8 +293,8 @@ namespace InGameDefEditor
 				foreach (var v in this.items)
 				{
 					Backup.ApplyStats(v);
-					Defs.ApplyStatsAutoThingDefs.Remove(v.identifier);
-					Defs.DisabledThingDefs.Remove(v.identifier);
+					Defs.ApplyStatsAutoDefs.Remove(v.identifier);
+					Defs.DisabledDefs.Remove(v.identifier);
 				}
 			}
 		}
@@ -343,8 +349,8 @@ namespace InGameDefEditor
 				new EditableDefType<ThingDef>("Weapons", DefType.Weapon, Defs.WeaponDefs.Values),
 			};
 
-			if (includeDisabled && Defs.DisabledThingDefs.Count > 0)
-				defTypes.Add(new EditableDefType<ThingDef>("Disabled", DefType.Disabled, Defs.DisabledThingDefs.Values));
+			/*if (includeDisabled && Defs.DisabledDefs.Count > 0)
+				defTypes.Add(new EditableDefType<ThingDef>("Disabled", DefType.Disabled, Defs.DisabledDefs.Values));*/
 			return defTypes;
 		}
 
@@ -386,7 +392,7 @@ namespace InGameDefEditor
                         new WindowUtil.FloatOptionsArgs<D>()
                         {
                             items = possibleDefs,
-                            getDisplayName = def => Util.GetDefLabel(def),
+                            getDisplayName = def => Util.GetLabel(def),
                             onSelect = def => this.onSelect(def, this.type)
                         });
                 }

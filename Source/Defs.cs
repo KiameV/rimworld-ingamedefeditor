@@ -6,8 +6,8 @@ namespace InGameDefEditor
 {
     static class Defs
 	{
-		public static readonly SortedDictionary<string, ThingDef> DisabledThingDefs = new SortedDictionary<string, ThingDef>();
-		public static readonly SortedDictionary<string, bool> ApplyStatsAutoThingDefs = new SortedDictionary<string, bool>();
+		public static readonly DefsDictionary DisabledDefs = new DefsDictionary();
+		public static readonly DefsDictionary ApplyStatsAutoDefs = new DefsDictionary();
 
 		public static readonly SortedDictionary<string, ThingDef> ApparelDefs = new SortedDictionary<string, ThingDef>();
         public static readonly SortedDictionary<string, ThingDef> WeaponDefs = new SortedDictionary<string, ThingDef>();
@@ -31,7 +31,7 @@ namespace InGameDefEditor
                 int i = 0;
                 foreach (ThingDef d in DefDatabase<ThingDef>.AllDefs)
                 {
-					string label = Util.GetDefLabel(d);
+					string label = Util.GetLabel(d);
 					if (d == null)
 					{
 						Log.Warning("Null definition found. Skipping.");
@@ -51,7 +51,7 @@ namespace InGameDefEditor
 							d.Verbs.ForEach(v =>
 							{
 								if (v.defaultProjectile != null)
-									ProjectileDefs[Util.GetDefLabel(v.defaultProjectile)] = v.defaultProjectile;
+									ProjectileDefs[Util.GetLabel(v.defaultProjectile)] = v.defaultProjectile;
 								/*else
 								{
 									if (d.building == null ||
@@ -84,25 +84,25 @@ namespace InGameDefEditor
                 }
 
 				foreach (var d in DefDatabase<BiomeDef>.AllDefs)
-					BiomeDefs[Util.GetDefLabel(d)] = d;
+					BiomeDefs[Util.GetLabel(d)] = d;
 
 				foreach (var d in DefDatabase<ThoughtDef>.AllDefs)
-					ThoughtDefs[Util.GetDefLabel(d)] = d;
+					ThoughtDefs[Util.GetLabel(d)] = d;
 
 				foreach (var d in DefDatabase<RecipeDef>.AllDefs)
 				{
 					if (!d.defName.StartsWith("OCD_MineDeep"))
-						RecipeDefs[Util.GetDefLabel(d)] = d;
+						RecipeDefs[Util.GetLabel(d)] = d;
 				}
 
 				foreach (var d in DefDatabase<TraitDef>.AllDefs)
-					TraitDefs[Util.GetDefLabel(d)] = d;
+					TraitDefs[Util.GetLabel(d)] = d;
 
 				foreach (var d in DefDatabase<StorytellerDef>.AllDefs)
-					StoryTellerDefs[Util.GetDefLabel(d)] = d;
+					StoryTellerDefs[Util.GetLabel(d)] = d;
 
 				foreach (var d in DefDatabase<DifficultyDef>.AllDefs)
-					DifficultyDefs[Util.GetDefLabel(d)] = d;
+					DifficultyDefs[Util.GetLabel(d)] = d;
 				
 				foreach (var b in BackstoryDatabase.allBackstories.Values)
 					Backstories[b.title] = b;
@@ -117,8 +117,8 @@ namespace InGameDefEditor
 
 		public static void ResetAll()
 		{
-			Defs.DisabledThingDefs.Clear();
-			Defs.ApplyStatsAutoThingDefs.Clear();
+			Defs.DisabledDefs.Clear();
+			Defs.ApplyStatsAutoDefs.Clear();
 
 			foreach (ThingDef d in Defs.ApparelDefs.Values)
 				Backup.ApplyStats(d);

@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
-	class BackstoryWidget : IParentStatWidget
+	class BackstoryWidget : AParentDefStatWidget<Backstory>
 	{
 		private readonly Backstory Backstory;
 		private readonly DefType type;
@@ -34,12 +34,9 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		//public List<string> spawnCategories = new List<string>();
 
-		public string DisplayLabel => this.Backstory.title;
-		public DefType Type => this.type;
+		public override string DisplayLabel => this.Backstory.title;
 
-		private BoolInputWidget<Backstory> autoApplySettingsInput;
-
-		public BackstoryWidget(Backstory backstory, DefType type)
+		public BackstoryWidget(Backstory backstory, DefType type) : base(backstory, type)
 		{
 			if (backstory.skillGainsResolved == null)
 				backstory.skillGainsResolved = new Dictionary<SkillDef, int>();
@@ -97,13 +94,13 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				{
 					this.Backstory.skillGainsResolved.Remove(v);
 					for (int i = 0; i < this.skillGains.Count; ++i)
-						if (this.skillGains[i].DisplayLabel == Util.GetDefLabel(v))
+						if (this.skillGains[i].DisplayLabel == Util.GetLabel(v))
 						{
 							this.skillGains.RemoveAt(i);
 							break;
 						}
 				},
-				getDisplayName = v => Util.GetDefLabel(v),
+				getDisplayName = v => Util.GetLabel(v),
 			};
 			
 			this.forcedTraitsPlusMinus = new PlusMinusArgs<TraitDef>()
@@ -121,7 +118,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				{
 					this.RemoveForcedTraits(v);
 				},
-				getDisplayName = v => Util.GetDefLabel(v),
+				getDisplayName = v => Util.GetLabel(v),
 			};
 
 			this.disallowedTraitsPlusMinus = new PlusMinusArgs<TraitDef>()
@@ -139,43 +136,24 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				{
 					this.RemoveDisallowedTraits(v);
 				},
-				getDisplayName = v => Util.GetDefLabel(v),
+				getDisplayName = v => Util.GetLabel(v),
 			};
-
-			this.autoApplySettingsInput = new BoolInputWidget<Backstory>(
-				backstory, "Auto Apply Settings",
-				b =>
-				{
-					if (Defs.ApplyStatsAutoThingDefs.TryGetValue(b.identifier, out bool autoApply))
-						return autoApply;
-					return false;
-				},
-				(b, applyAuto) =>
-				{
-					if (applyAuto)
-						Defs.ApplyStatsAutoThingDefs[b.identifier] = applyAuto;
-					else
-						Defs.ApplyStatsAutoThingDefs.Remove(b.identifier);
-				});
 
 			this.Rebuild();
 		}
 
 		public void DisableAutoDeploy()
 		{
-			Defs.ApplyStatsAutoThingDefs.Remove(this.Backstory.identifier);
+			Defs.ApplyStatsAutoDefs.Remove(this.Backstory.identifier);
 		}
 
-		public void DrawLeft(float x, ref float y, float width)
+		public override void DrawLeft(float x, ref float y, float width)
 		{
-			this.autoApplySettingsInput.ColorOverride = (Defs.ApplyStatsAutoThingDefs.ContainsKey(this.Backstory.identifier)) ? Color.green : Color.red;
-			this.autoApplySettingsInput.Draw(x, ref y, width);
-
 			foreach (var v in this.inputWidgets)
 				v.Draw(x, ref y, width);
 		}
 
-		public void DrawMiddle(float x, ref float y, float width)
+		public override void DrawMiddle(float x, ref float y, float width)
 		{
 			PlusMinusLabel(x, ref y, width, "Skill Gains", this.skillGainsPlusMinus);
 			foreach (var v in this.skillGains)
@@ -199,19 +177,19 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				v.Draw(x + 10, ref y, width - 10);
 		}
 
-		public void DrawRight(float x, ref float y, float width)
+		public override void DrawRight(float x, ref float y, float width)
 		{
 			DrawLabel(x, ref y, width, "Spawn Categories", 30f, true);
 			foreach (var v in this.Backstory.spawnCategories)
 				DrawLabel(10, ref y, width - 10, "- " + v);
 		}
 
-		public void Rebuild()
+		public override void Rebuild()
 		{
 			this.ResetBuffers();
 		}
 
-		public void ResetBuffers()
+		public override void ResetBuffers()
 		{
 			this.inputWidgets?.ForEach(v => v.ResetBuffers());
 			this.skillGains?.ForEach(v => v.ResetBuffers());
@@ -252,13 +230,13 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		private IntInputWidget<Dictionary<SkillDef, int>> CreateSkillGainsInput(SkillDef sd)
 		{
-			return new IntInputWidget<Dictionary<SkillDef, int>>(this.Backstory.skillGainsResolved, Util.GetDefLabel(sd), d => d[sd], (d, i) => d[sd] = i);
+			return new IntInputWidget<Dictionary<SkillDef, int>>(this.Backstory.skillGainsResolved, Util.GetLabel(sd), d => d[sd], (d, i) => d[sd] = i);
 		}
 
 		private IntInputWidget<TraitEntry> CreateTraitEntryInput(TraitEntry te)
 		{
-			var input = new IntInputWidget<TraitEntry>(te, Util.GetDefLabel(te.def) + " (Degree)", d => d.degree, (d, i) => d.degree = i);
-			StringBuilder sb = new StringBuilder(Util.GetDefLabel(te.def));
+			var input = new IntInputWidget<TraitEntry>(te, Util.GetLabel(te.def) + " (Degree)", d => d.degree, (d, i) => d.degree = i);
+			StringBuilder sb = new StringBuilder(Util.GetLabel(te.def));
 			sb.AppendLine();
 			sb.AppendLine("Degrees:");
 			foreach (var degree in te.def.degreeDatas)

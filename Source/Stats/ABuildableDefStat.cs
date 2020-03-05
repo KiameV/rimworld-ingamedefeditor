@@ -6,7 +6,7 @@ using Verse;
 
 namespace InGameDefEditor.Stats
 {
-	public abstract class ABuildableDefStat<D> : DefStat<D>, IParentStat where D : BuildableDef, new()
+	public abstract class ABuildableDefStat<D> : DefStat<D>, IParentStat  where D : BuildableDef, new()
 	{
 		//public List<Type> placeWorkers;
 		//public Graphic graphic = BaseContent.BadGraphic;
@@ -49,8 +49,6 @@ namespace InGameDefEditor.Stats
 		public List<DefStat<ResearchProjectDef>> researchPrerequisites;
 		public List<FloatValueDefStat<StatDef>> statBases = null;
 		public List<IntValueDefStat<ThingDef>> costList;
-
-		public string UniqueKey => base.defName;
 
 		public ABuildableDefStat() { }
 		public ABuildableDefStat(D d) : base(d)
