@@ -173,29 +173,51 @@ namespace InGameDefEditor.Stats
 			if (!base.Initialize())
 				return false;
 
-			Util.InitializeDefStat(researchPrerequisite);
-			Util.InitializeDefStat(requiredGiverWorkType);
-			Util.InitializeDefStat(unfinishedThingDef);
-			Util.InitializeDefStat(soundWorking);
-			Util.InitializeDefStat(workSpeedStat);
-			Util.InitializeDefStat(efficiencyStat);
-			Util.InitializeDefStat(workTableEfficiencyStat);
-			Util.InitializeDefStat(workTableSpeedStat);
-			Util.InitializeDefStat(addsHediff);
-			Util.InitializeDefStat(removesHediff);
-			Util.InitializeDefStat(workSkill);
-			Util.InitializeDefStat(effectWorking);
+			if (!Util.InitializeDefStat(researchPrerequisite))
+				Log.Warning($"Failed to initialize researcg prerequisite {researchPrerequisite.defName}");
+			if (!Util.InitializeDefStat(requiredGiverWorkType))
+				Log.Warning($"Failed to initialize required giver work type {requiredGiverWorkType.defName}");
+			if (!Util.InitializeDefStat(unfinishedThingDef))
+				Log.Warning($"Failed to initialize unfinished thing def {unfinishedThingDef.defName}");
+			if (!Util.InitializeDefStat(soundWorking))
+				Log.Warning($"Failed to initialize sound working {soundWorking.defName}");
+			if (!Util.InitializeDefStat(workSpeedStat))
+				Log.Warning($"Failed to initialize work speed stat {workSpeedStat.defName}");
+			if (!Util.InitializeDefStat(efficiencyStat))
+				Log.Warning($"Failed to initialize efficiency stat {efficiencyStat.defName}");
+			if (!Util.InitializeDefStat(workTableEfficiencyStat))
+				Log.Warning($"Failed to initialize work table efficiency stat {workTableEfficiencyStat.defName}"); ;
+			if (!Util.InitializeDefStat(workTableSpeedStat))
+				Log.Warning($"Failed to initialize work table speed stat {workTableSpeedStat.defName}");
+			if (!Util.InitializeDefStat(addsHediff))
+				Log.Warning($"Failed to initialize adds hediff {addsHediff.defName}");
+			if (!Util.InitializeDefStat(removesHediff))
+				Log.Warning($"Failed to initialize removes hediff {removesHediff.defName}");
+			if (!Util.InitializeDefStat(workSkill))
+				Log.Warning($"Failed to initialize work skill {workSkill.defName}");
+			if (!Util.InitializeDefStat(effectWorking))
+				Log.Warning($"Failed to initialize effect working {effectWorking.defName}");
 
-            foreach (var v in this.ingredients)
-                v.Initialize();
+			foreach (var v in this.ingredients)
+			{
+				if (!v.Initialize())
+					Log.Warning($"Failed to initialize ingredients portion");
+			}
 
-			Util.InitializeDefStat(forceHiddenSpecialFilters);
-			Util.InitializeDefStat(recipeUsers);
-			Util.InitializeDefStat(appliedOnFixedBodyParts);
+			if (!Util.InitializeDefStat(forceHiddenSpecialFilters))
+				Log.Warning($"Failed to initialize force hidden special filters portion");
+			if (!Util.InitializeDefStat(recipeUsers))
+				Log.Warning($"Failed to initialize recipe users portion");
+			if (!Util.InitializeDefStat(appliedOnFixedBodyParts))
+				Log.Warning($"Failed to initialize applied on fixed body parts portion");
 
-			Util.InitializeDefStat(products);
-			Util.InitializeDefStat(skillRequirements);
-			Util.InitializeDefStat(premultipliedSmallIngredients);
+			if (!Util.InitializeDefStat(products))
+				Log.Warning($"Failed to initialize products portion");
+			if (!Util.InitializeDefStat(skillRequirements))
+				Log.Warning($"Failed to initialize skill requirements portion");
+			if (!Util.InitializeDefStat(premultipliedSmallIngredients))
+				Log.Warning($"Failed to initialize premultiplied small ingredients portion");
+
 			return true;
 		}
 

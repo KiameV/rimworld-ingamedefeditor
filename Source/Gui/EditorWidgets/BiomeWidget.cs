@@ -415,5 +415,10 @@ namespace InGameDefEditor.Gui.EditorWidgets
             return new FloatInputWidget<BiomeAnimalRecord>(
                 r, r.animal.label, (BiomeAnimalRecord w) => w.commonality, (BiomeAnimalRecord w, float f) => w.commonality = f);
         }
+
+        protected override void AddDefsToAutoApply(bool isAutoApply)
+        {
+
+        }
     }
 }

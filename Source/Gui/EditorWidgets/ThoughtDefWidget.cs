@@ -188,5 +188,10 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			this.inputWidgets.ForEach(v => v.ResetBuffers());
 			this.stages.ForEach(v => v.ResetBuffers());
 		}
+
+		protected override void AddDefsToAutoApply(bool isAutoApply)
+		{
+
+		}
 	}
 }

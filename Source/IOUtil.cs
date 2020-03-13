@@ -442,9 +442,11 @@ namespace InGameDefEditor
 			{
 				try
 				{
+					Log.Message($"Initialize {s.defName} and IParentStat? {s is IParentStat}");
 					if (s.Initialize() &&
 						s is IParentStat p)
 					{
+						Log.Message($"Auto Apply? {Defs.ApplyStatsAutoDefs.Contains(s.Def)}");
 						if (Defs.ApplyStatsAutoDefs.Contains(s.Def))
 						{
 							try
@@ -460,12 +462,12 @@ namespace InGameDefEditor
 					}
 					else
 					{
-						Log.Warning($"  Unable to initialize Def {s.defName}");
+						Log.Warning($"Unable to initialize Def {s.defName}\n{s.ToString()}");
 					}
 				}
 				catch (Exception e)
 				{
-					Log.Error($"Failed to load Def [{s.defName}] due to {e.Message}");
+					Log.Error($"Failed to load Def [{s.defName}] due to {e.Message}\n{s.ToString()}");
 				}
 			}
 		}

@@ -478,7 +478,9 @@ namespace InGameDefEditor
 				case Backstory b:
 					return b.identifier;
 				case Def d:
-					return d.label ?? d.defName;
+					if (d.label != null)
+						return $"{d.label} - {d.defName}";
+					return d.defName;
 			}
 			return "None";
 		}

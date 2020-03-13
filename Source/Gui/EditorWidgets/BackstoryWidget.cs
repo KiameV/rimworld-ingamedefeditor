@@ -254,5 +254,10 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			};
 			return input;
 		}
+
+		protected override void AddDefsToAutoApply(bool isAutoApply)
+		{
+
+		}
 	}
 }

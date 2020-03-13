@@ -133,9 +133,17 @@ namespace InGameDefEditor.Stats
 		{
 			if (!base.Initialize())
 				return false;
-			
-			this.forcedDifficulty?.Initialize();
-			this.comps?.ForEach(v => v.Initialize());
+
+			if (this.forcedDifficulty?.Initialize() == false)
+				Log.Warning($"Failed to initialize Forced Difficulty");
+
+			this.comps?.ForEach(v =>
+			{
+				if (!v.Initialize())
+				{
+					Log.Error($"Failed to initialize {v.compClass} with category of {v.category}");
+				}
+			});
 
 			return true;
 		}

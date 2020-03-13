@@ -306,5 +306,10 @@ namespace InGameDefEditor.Gui.EditorWidgets
 		{
 			return new IntInputWidget<ThingDefCountClass>(tdc, tdc.thingDef.label, (tdcc) => tdcc.count, (tdcc, i) => tdcc.count = i);
 		}
+
+		protected override void AddDefsToAutoApply(bool isAutoApply)
+		{
+
+		}
 	}
 }

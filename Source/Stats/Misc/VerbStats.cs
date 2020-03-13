@@ -167,21 +167,24 @@ namespace InGameDefEditor.Stats.Misc
         public bool Initialize()
 		{
 			if (this.surpriseAttack != null)
-				this.surpriseAttack.Initialize();
+			{
+				if (!this.surpriseAttack.Initialize())
+					return false;
+			}
 
-			Util.InitializeDefStat(this.soundCast);
-			Util.InitializeDefStat(this.soundCastTail);
-			Util.InitializeDefStat(this.soundAiming);
-			Util.InitializeDefStat(this.meleeDamageDef);
-			Util.InitializeDefStat(this.impactMote);
-			Util.InitializeDefStat(this.linkedBodyPartsGroup);
-			Util.InitializeDefStat(this.defaultProjectile);
-			Util.InitializeDefStat(this.spawnDef);
-			Util.InitializeDefStat(this.colonyWideTaleDef);
-			Util.InitializeDefStat(this.bodypartTagTarget);
-			Util.InitializeDefStat(this.rangedFireRulepack);
-
-			return true;
+			bool result = false;
+			if (!Util.InitializeDefStat(this.soundCast)) result = false;
+			if (!Util.InitializeDefStat(this.soundCastTail)) result = false;
+			if (!Util.InitializeDefStat(this.soundAiming)) result = false;
+			if (!Util.InitializeDefStat(this.meleeDamageDef)) result = false;
+			if (!Util.InitializeDefStat(this.impactMote)) result = false;
+			if (!Util.InitializeDefStat(this.linkedBodyPartsGroup)) result = false;
+			if (!Util.InitializeDefStat(this.defaultProjectile)) result = false;
+			if (!Util.InitializeDefStat(this.spawnDef)) result = false;
+			if (!Util.InitializeDefStat(this.colonyWideTaleDef)) result = false;
+			if (!Util.InitializeDefStat(this.bodypartTagTarget)) result = false;
+			if (!Util.InitializeDefStat(this.rangedFireRulepack)) result = false;
+			return result;
         }
 
         public override bool Equals(object obj)

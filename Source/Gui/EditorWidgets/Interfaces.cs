@@ -40,6 +40,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
 		public bool IsDisabled => Defs.DisabledDefs.Contains(Def);
 		protected bool IsAutoApply => Defs.ApplyStatsAutoDefs.Contains(Def);
 
+		protected abstract void AddDefsToAutoApply(bool isAutoApply);
+
 		protected AParentDefStatWidget(D def, DefType type)
         {
             this.Def = def;
@@ -54,11 +56,15 @@ namespace InGameDefEditor.Gui.EditorWidgets
 					{
 						if (!Defs.ApplyStatsAutoDefs.Add(d))
 							Log.Warning($"Failed to apply auto load to {Util.GetLabel(d)}");
+						else
+							AddDefsToAutoApply(true);
 					}
 					else
 					{
 						if (!Defs.ApplyStatsAutoDefs.Remove(d))
 							Log.Warning($"Failed to remove auto load from {Util.GetLabel(d)}");
+						else
+							AddDefsToAutoApply(false);
 					}
 				});
 			

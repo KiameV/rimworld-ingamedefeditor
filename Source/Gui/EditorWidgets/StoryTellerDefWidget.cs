@@ -114,7 +114,12 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			this.inputWidgets?.ForEach(v => v.ResetBuffers());
 			this.comps?.ForEach(v => v.ResetBuffers());
 		}
-		
+
+		protected override void AddDefsToAutoApply(bool isAutoApply)
+		{
+
+		}
+
 		private AcceptanceReport IsUnique(StorytellerCompProperties toCheck)
 		{
 			var checkHashCode = StorytellerCompPropertiesStats.GetHashCode(toCheck);

@@ -59,5 +59,10 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			foreach (var w in this.inputWidgets)
 				w.ResetBuffers();
 		}
+
+		protected override void AddDefsToAutoApply(bool isAutoApply)
+		{
+
+		}
 	}
 }

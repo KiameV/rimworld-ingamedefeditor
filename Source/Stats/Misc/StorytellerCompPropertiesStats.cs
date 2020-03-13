@@ -206,7 +206,7 @@ namespace InGameDefEditor.Stats.Misc
 		public bool Initialize()
 		{
 			this.allowedTargetTags?.ForEach(v => v.Initialize());
-			this.disallowedTargetTags?.ForEach(v => v.Initialize());
+			this.disallowedTargetTags?.ForEach(v =>  v.Initialize());
 			this.categoryWeights?.ForEach(v => v.Initialize());
 			this.category?.Initialize();
 			this.incident?.Initialize();

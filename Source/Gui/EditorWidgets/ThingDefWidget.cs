@@ -221,5 +221,40 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			foreach (var w in this.EquipmentModifiers)
 				w.Draw(x, ref y, width);
 		}
+
+		protected override void AddDefsToAutoApply(bool isAutoApply)
+		{
+			if (this.Def.IsWeaponUsingProjectiles)
+			{
+				foreach (var v in this.Def.Verbs)
+				{
+					if (v.LaunchesProjectile && v.defaultProjectile != null)
+					{
+						if (isAutoApply)
+							Defs.ApplyStatsAutoDefs.Add(v.defaultProjectile);
+						else
+						{
+							bool remove = true;
+							foreach(Def d in Defs.ApplyStatsAutoDefs.Defs)
+							{
+								if (d is ThingDef td && td.IsWeaponUsingProjectiles && remove)
+								{
+									foreach (var tdv in td.Verbs)
+									{
+										if (tdv.LaunchesProjectile && tdv.defaultProjectile?.defName == v.defaultProjectile.defName)
+										{
+											remove = false;
+											break;
+										}
+									}
+								}
+							}
+							if (remove)
+								Defs.ApplyStatsAutoDefs.Remove(v.defaultProjectile);
+						}
+					}
+				}
+			}
+		}
 	}
 }

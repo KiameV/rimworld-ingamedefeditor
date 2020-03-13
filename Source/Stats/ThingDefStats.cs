@@ -256,18 +256,38 @@ namespace InGameDefEditor.Stats
                 return false;
 
 			if (this.VerbStats != null)
-				this.VerbStats.ForEach(v => Util.InitializeDefStat(v));
+				this.VerbStats.ForEach(v => 
+				{
+					if (!Util.InitializeDefStat(v))
+					{
+						Log.Warning($"Failed to initialize verb stat {v.category}");
+					}
+				});
 
 			if (this.Tools != null)
-				this.Tools.ForEach(v => Util.InitializeDefStat(v));
+				this.Tools.ForEach(v =>
+				{
+					if (!Util.InitializeDefStat(v))
+					{
+						Log.Warning($"Failed to initialize Tool {Util.GetLabel(v)}");
+					}
+				});
 
 			if (this.EquippedStatOffsets != null)
-				this.EquippedStatOffsets.ForEach(v => Util.InitializeDefStat(v));
+				this.EquippedStatOffsets.ForEach(v =>
+				{
+					if (!Util.InitializeDefStat(v))
+					{
+						Log.Warning($"Failed to initialize Equipment Stat Offset {Util.GetLabel(v)}");
+					}
+				});
 
-			this.apparel?.Initialize();
-			this.ingestible?.Initialize();
-			this.building?.Initialize();
-
+			if (this.apparel?.Initialize() == false)
+				Log.Warning($"Failed to initialize Apparel portion");
+			if (this.ingestible?.Initialize() == false)
+				Log.Warning($"Failed to initialize Ingestible portion");
+			if (this.building?.Initialize() == false)
+				Log.Warning($"Failed to initialize Building portion");
 			return true;
         }
 

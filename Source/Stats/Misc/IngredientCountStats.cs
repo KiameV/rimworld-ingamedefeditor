@@ -33,7 +33,8 @@ namespace InGameDefEditor.Stats.Misc
 
         public bool Initialize()
         {
-            return this.ThingFilterStats.Initialize();
+            this.ThingFilterStats.Initialize();
+			return true;
         }
 
 

@@ -56,7 +56,7 @@ namespace InGameDefEditor
 
 			if (selectedDefType != null)
 			{
-				if (Widgets.ButtonText(new Rect(220, outerY, 200, 30), ((selectedDef == null) ? selectedDefType.Label + " Def" : selectedDef.DisplayLabel)))
+				if (Widgets.ButtonText(new Rect(220, outerY, 300, 30), ((selectedDef == null) ? selectedDefType.Label + " Def" : selectedDef.DisplayLabel)))
 				{
 					WindowUtil.DrawFloatingOptions(new WindowUtil.FloatOptionsArgs<object>()
 					{

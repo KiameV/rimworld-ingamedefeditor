@@ -38,7 +38,7 @@ namespace InGameDefEditor.Stats.Misc
 
 		public HoldOffsetSetStats ingestHoldOffsetStanding = null;
 
-		public string Label => throw new NotImplementedException();
+		public string Label => "<ingestible prop>";
 
 		//public List<IngestionOutcomeDoerStats> outcomeDoers;
 
