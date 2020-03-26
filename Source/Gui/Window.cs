@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using InGameDefEditor.Gui.EditorWidgets.Misc;
 using System;
 using System.Linq;
-using System.Reflection;
 
 namespace InGameDefEditor
 {
@@ -268,6 +267,9 @@ namespace InGameDefEditor
 				case DefType.Difficulty:
 					selectedDef = new DifficultyDefWidget(d as DifficultyDef, type);
 					break;
+				case DefType.Hediff:
+					selectedDef = new HediffDefWidget(d as HediffDef, type);
+					break;
 			}
             this.ResetScrolls();
 			IngredientCountWidget.ResetUniqueId();
@@ -381,6 +383,7 @@ namespace InGameDefEditor
 				new EditableDefType<BiomeDef>("Biomes", DefType.Biome, Defs.BiomeDefs.Values),
 				new EditableDefType<ThingDef>("Buildings", DefType.Building, Defs.BuildingDefs.Values),
 				new EditableDefType<DifficultyDef>("Difficulty", DefType.Difficulty, this.SortDifficultyOptions(Defs.DifficultyDefs.Values)),
+				new EditableDefType<HediffDef>("Hediffs", DefType.Hediff, Defs.HediffDefs.Values),
 				new EditableDefType<ThingDef>("Ingestible", DefType.Ingestible, Defs.IngestibleDefs.Values),
 				new EditableDefType<ThingDef>("Mineable", DefType.Mineable, Defs.MineableDefs.Values),
 				new EditableDefType<ThingDef>("Projectiles", DefType.Projectile, Defs.ProjectileDefs.Values),

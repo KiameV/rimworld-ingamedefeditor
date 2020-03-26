@@ -103,9 +103,13 @@
     <Compile Include="Gui\EditorWidgets\Dialog\Dialog_Name.cs" />
     <Compile Include="Gui\EditorWidgets\Dialog\Dialog_StoryTellerComponentDialog.cs" />
     <Compile Include="Gui\EditorWidgets\DifficultyDefWidget.cs" />
+    <Compile Include="Gui\EditorWidgets\HediffDefWidget.cs" />
+    <Compile Include="Gui\EditorWidgets\Misc\AddedBodyPartPropsWidget.cs" />
+    <Compile Include="Gui\EditorWidgets\Misc\InjuryPropsWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\ACollapsibleWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\ApparelPropertiesWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\BuildingPropertiesWidget.cs" />
+    <Compile Include="Gui\EditorWidgets\Misc\ColorWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\EffecterDefWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\IngestiblePropertiesWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\IngredientCountWidget.cs" />
@@ -139,6 +143,9 @@
     <Compile Include="Stats\BiomDefStats.cs" />
     <Compile Include="Stats\ABuildableDefStat.cs" />
     <Compile Include="Stats\DifficultyDefStat.cs" />
+    <Compile Include="Stats\HediffDefStat.cs" />
+    <Compile Include="Stats\Misc\AddedBodyPartPropsStats.cs" />
+    <Compile Include="Stats\Misc\InjuryPropsStats.cs" />
     <Compile Include="Stats\Misc\Rot4Stats.cs" />
     <Compile Include="Stats\Misc\StorytellerCompPropertiesStats.cs" />
     <Compile Include="Stats\Misc\ThoughtStageStats.cs" />
@@ -152,7 +159,6 @@
     <Compile Include="Stats\IParentStat.cs" />
     <Compile Include="Stats\DefStat\FloatValueDoubleDefStat.cs" />
     <Compile Include="Stats\DefStat\DefStat.cs" />
-    <Compile Include="Stats\DefStat\HediffDefStat.cs" />
     <Compile Include="Stats\DefStat\IDefStat.cs" />
     <Compile Include="Stats\DefStat\MinMaxFloatDefStat.cs" />
     <Compile Include="Stats\Misc\ApparelPropertiesStats.cs" />

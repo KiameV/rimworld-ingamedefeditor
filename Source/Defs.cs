@@ -18,6 +18,7 @@ namespace InGameDefEditor
 		public static readonly SortedDictionary<string, TraitDef> TraitDefs = new SortedDictionary<string, TraitDef>();
 		public static readonly SortedDictionary<string, StorytellerDef> StoryTellerDefs = new SortedDictionary<string, StorytellerDef>();
 		public static readonly SortedDictionary<string, DifficultyDef> DifficultyDefs = new SortedDictionary<string, DifficultyDef>();
+		public static readonly SortedDictionary<string, HediffDef> HediffDefs = new SortedDictionary<string, HediffDef>();
 		public static readonly SortedDictionary<string, ThingDef> IngestibleDefs = new SortedDictionary<string, ThingDef>();
 		public static readonly SortedDictionary<string, ThingDef> MineableDefs = new SortedDictionary<string, ThingDef>();
 		public static readonly SortedDictionary<string, Backstory> Backstories = new SortedDictionary<string, Backstory>();
@@ -103,7 +104,10 @@ namespace InGameDefEditor
 
 				foreach (var d in DefDatabase<DifficultyDef>.AllDefs)
 					DifficultyDefs[Util.GetLabel(d)] = d;
-				
+
+				foreach (var d in DefDatabase<HediffDef>.AllDefs)
+					HediffDefs[Util.GetLabel(d)] = d;
+
 				foreach (var b in BackstoryDatabase.allBackstories.Values)
 					Backstories[b.title] = b;
 
@@ -145,6 +149,9 @@ namespace InGameDefEditor
 				Backup.ApplyStats(d);
 
 			foreach (DifficultyDef d in Defs.DifficultyDefs.Values)
+				Backup.ApplyStats(d);
+
+			foreach (HediffDef d in Defs.HediffDefs.Values)
 				Backup.ApplyStats(d);
 
 			foreach (ThingDef d in Defs.IngestibleDefs.Values)

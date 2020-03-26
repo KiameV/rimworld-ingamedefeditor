@@ -16,5 +16,6 @@
 		Disabled,
 		Backstory,
 		Building,
+		Hediff,
 	};
 }

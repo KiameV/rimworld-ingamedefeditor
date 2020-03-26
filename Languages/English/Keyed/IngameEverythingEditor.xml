@@ -11,6 +11,8 @@
 	<InGameDefEditor.DisableDef>Disable Def</InGameDefEditor.DisableDef>
 	<InGameDefEditor.DisabledDefs>Disabled Defs</InGameDefEditor.DisabledDefs>
 	
+	<InGameDefEditor.Enabled>Enabled</InGameDefEditor.Enabled>
+	
 	<InGameDefEditor.RangedStats>Ranged Stats</InGameDefEditor.RangedStats>
 	<InGameDefEditor.MeleeStats>Melee Stats</InGameDefEditor.MeleeStats>
 

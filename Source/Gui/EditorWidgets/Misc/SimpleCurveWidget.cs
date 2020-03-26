@@ -8,16 +8,16 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
 	class SimpleCurveWidget : ACollapsibleWidget
 	{
-		private readonly string name;
-		private readonly SimpleCurve curve;
+		protected readonly string name;
+		protected SimpleCurve curve;
 
-		private Vector2 scroll;
-		private float innerY = float.MaxValue;
+		protected readonly List<MinMaxFloatStats> points = new List<MinMaxFloatStats>();
+		protected readonly List<MinMaxInputWidget<MinMaxFloatStats, float>> pointsInputs = new List<MinMaxInputWidget<MinMaxFloatStats, float>>();
 
-		private List<MinMaxFloatStats> points = new List<MinMaxFloatStats>();
-		private List<MinMaxInputWidget<MinMaxFloatStats, float>> pointsInputs = new List<MinMaxInputWidget<MinMaxFloatStats, float>>();
+		protected readonly FloatOptionsArgs<MinMaxFloatStats> pointsArgs;
 
-		private FloatOptionsArgs<MinMaxFloatStats> pointsArgs;
+		protected Vector2 scroll;
+		protected float innerY = float.MaxValue;
 
 		public override string DisplayLabel => this.name;
 
@@ -43,7 +43,9 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 		protected override void DrawInputs(float x, ref float y, float width)
 		{
-			WindowUtil.PlusMinusLabel(x, ref y, width, this.name,
+			if (this.curve != null)
+			{
+				WindowUtil.PlusMinusLabel(x, ref y, width, this.name,
 				() =>
 				{
 					MinMaxFloatStats p = new MinMaxFloatStats(0, 0);
@@ -51,45 +53,50 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 					this.pointsInputs.Add(this.CreateFloatInput(p));
 				},
 				() => WindowUtil.DrawFloatingOptions(pointsArgs));
-			SimpleCurveDrawer.DrawCurve(new Rect(x + 20, y, width, 100), curve);
-			y += 110;
+				SimpleCurveDrawer.DrawCurve(new Rect(x + 20, y, width, 100), curve);
+				y += 110;
 
-			if (this.innerY > 300)
-			{
-				Widgets.BeginScrollView(
-					new Rect(x + 20, y, width - 16, 300),
-					ref this.scroll,
-					new Rect(0, 0, width - 32, this.innerY));
-				this.innerY = 0;
-
-				foreach (var v in this.pointsInputs)
-					v.Draw(10, ref this.innerY, width - 60);
-
-				Widgets.EndScrollView();
-				y += 332;
-			}
-			else
-			{
-				this.innerY = 0;
-				foreach (var v in this.pointsInputs)
+				if (this.innerY > 300)
 				{
-					float orig = y;
-					v.Draw(10, ref y, width - 60);
-					this.innerY += y - orig;
+					Widgets.BeginScrollView(
+						new Rect(x + 20, y, width - 16, 300),
+						ref this.scroll,
+						new Rect(0, 0, width - 32, this.innerY));
+					this.innerY = 0;
+
+					foreach (var v in this.pointsInputs)
+						v.Draw(10, ref this.innerY, width - 60);
+
+					Widgets.EndScrollView();
+					y += 332;
+				}
+				else
+				{
+					this.innerY = 0;
+					foreach (var v in this.pointsInputs)
+					{
+						float orig = y;
+						v.Draw(10, ref y, width - 60);
+						this.innerY += y - orig;
+					}
 				}
 			}
 		}
 
 		public override void ResetBuffers()
 		{
-			this.points?.Clear();
-			this.pointsInputs?.Clear();
-			this.curve.Points?.ForEach(v =>
+
+			if (this.curve != null)
 			{
-				var m = new MinMaxFloatStats(v.x, v.y);
-				this.points.Add(m);
-				this.pointsInputs.Add(this.CreateFloatInput(m));
-			});
+				this.points?.Clear();
+				this.pointsInputs?.Clear();
+				this.curve.Points?.ForEach(v =>
+				{
+					var m = new MinMaxFloatStats(v.x, v.y);
+					this.points.Add(m);
+					this.pointsInputs.Add(this.CreateFloatInput(m));
+				});
+			}
 			this.scroll = Vector2.zero;
 		}
 
@@ -117,9 +124,42 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 		private void RecreateCurve()
 		{
-			List<CurvePoint> l = new List<CurvePoint>(this.points.Count);
-			this.points.ForEach(v => l.Add(new CurvePoint(v.Min, v.Max)));
-			this.curve.SetPoints(l);
+			if (this.curve != null)
+			{
+				List<CurvePoint> l = new List<CurvePoint>(this.points.Count);
+				this.points.ForEach(v => l.Add(new CurvePoint(v.Min, v.Max)));
+				this.curve.SetPoints(l);
+			}
+		}
+	}
+
+	class SimpleCurveToggleableWidget<P> : SimpleCurveWidget
+	{
+		public delegate SimpleCurve GetValue(P d);
+		public delegate void SetValue(P d, SimpleCurve v);
+
+		private readonly BoolInputWidget<P> Toggle;
+
+		public SimpleCurveToggleableWidget(P parent, string name, GetValue getter, SetValue setter) : base(name, null)
+		{
+			this.Toggle = new BoolInputWidget<P>(parent, "InGameDefEditor.Enabled".Translate(), p => getter(p) != null, (p, v) =>
+			{
+				setter(p, new SimpleCurve());
+				base.ResetBuffers();
+			});
+			this.Toggle.ResetBuffers();
+		}
+
+		protected override void DrawInputs(float x, ref float y, float width)
+		{
+			this.Toggle.Draw(x, ref y, width);
+			base.DrawInputs(x, ref y, width);
+		}
+
+		public override void ResetBuffers()
+		{
+			base.ResetBuffers();
+			this.Toggle?.ResetBuffers();
 		}
 	}
 }

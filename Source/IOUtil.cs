@@ -80,6 +80,9 @@ namespace InGameDefEditor
 					if (Load(DefType.Difficulty, out RootDifficulty dif))
 						dif?.stats.ForEach((d) => Initialize(d, sb));
 
+					if (Load(DefType.Hediff, out RootHediffs hed))
+						hed?.stats.ForEach((d) => Initialize(d, sb));
+
 					if (Load(DefType.Ingestible, out RootIngestible ing))
 						ing?.stats.ForEach((d) => Initialize(d, sb));
 
@@ -246,9 +249,18 @@ namespace InGameDefEditor
             catch (Exception e)
             {
                 Log.Error("Problem saving " + DefType.Difficulty + ".\n" + e.GetType().Name + "\n" + e.Message);
-            }
+			}
 
-            try
+			try
+			{
+				Save(DefType.Hediff, new RootHediffs() { stats = GetChangedDefs(Defs.HediffDefs.Values, (d) => new HediffDefStats(d)) });
+			}
+			catch (Exception e)
+			{
+				Log.Error("Problem saving " + DefType.Hediff + ".\n" + e.GetType().Name + "\n" + e.Message);
+			}
+
+			try
             {
                 Save(DefType.Ingestible, new RootIngestible() { stats = GetChangedDefs(Defs.IngestibleDefs.Values, (d) => new ThingDefStats(d)) });
             }

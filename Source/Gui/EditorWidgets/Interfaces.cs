@@ -107,7 +107,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				bool isDisabled = IsDisabled;
 				if (IsDisabled)
 					GUI.color = Color.red;
-				this.disableDefInput.Draw(x, ref y, width);
+				this.disableDefInput.Draw(x, ref y, width - 30);
 
 				if (!IsDisabled)
 				{
@@ -115,7 +115,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 						GUI.color = Color.green;
 					else
 						GUI.color = Color.red;
-					this.autoApplySettingsInput.Draw(x, ref y, width);
+					this.autoApplySettingsInput.Draw(x, ref y, width - 30);
 				}
 			}
 			finally

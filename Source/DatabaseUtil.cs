@@ -47,6 +47,8 @@ namespace InGameDefEditor
                 return true;
             if (TryGetFromDB<DifficultyDef>(s, out o))
                 return true;
+            if (TryGetFromDB<HediffDef>(s, out o))
+                return true;
             if (TryGetFromDB<RecipeDef>(s, out o))
                 return true;
             if (TryGetFromDB<StorytellerDef>(s, out o))
@@ -81,6 +83,9 @@ namespace InGameDefEditor
                     return true;
                 case DifficultyDef _:
                     dt = DefType.Difficulty;
+                    return true;
+                case HediffDef _:
+                    dt = DefType.Hediff;
                     return true;
                 case RecipeDef _:
                     dt = DefType.Recipe;
