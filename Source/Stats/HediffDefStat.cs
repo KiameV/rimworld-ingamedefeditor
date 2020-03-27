@@ -11,28 +11,28 @@ namespace InGameDefEditor.Stats
 	public class HediffDefStats : DefStat<HediffDef>, IParentStat
 	{
 		public bool isBad;
-		public DefStat<ThingDef> spawnThingOnRemoved;
+		public DefStat<ThingDef> spawnThingOnRemoved = null;
 		public float chanceToCauseNoPain;
 		public bool makesSickThought;
 		public bool makesAlert;
-		public DefStat<NeedDef> causesNeed;
-		public DefStat<NeedDef> disablesNeed;
+		public DefStat<NeedDef> causesNeed = null;
+		public DefStat<NeedDef> disablesNeed = null;
 		public float minSeverity;
 		public float maxSeverity;
 		public bool scenarioCanAdd;
 		//public List<HediffGiver> hediffGivers;
 		public bool cureAllAtOnceIfCuredByItem;
-		public DefStat<TaleDef> taleOnVisible;
+		public DefStat<TaleDef> taleOnVisible = null;
 		public bool everCurableByItem;
 		public string battleStateLabel;
 		//public List<string> tags;
 		public bool priceImpact;
 		public bool chronic;
-		public SimpleCurveStats removeOnRedressChanceByDaysCurve;
+		//public SimpleCurveStats removeOnRedressChanceByDaysCurve;
 		public bool displayWound;
-		public ColorStats defaultLabelColor;
-		public InjuryPropsStats injuryProps;
-		public AddedBodyPartPropsStats addedPartProps;
+		public ColorStats defaultLabelColor = null;
+		public InjuryPropsStats injuryProps = null;
+		public AddedBodyPartPropsStats addedPartProps = null;
 
 		public HediffDefStats() { }
 		public HediffDefStats(HediffDef d) : base(d)
@@ -48,11 +48,14 @@ namespace InGameDefEditor.Stats
 			this.battleStateLabel = d.battleStateLabel;
 			this.priceImpact = d.priceImpact;
 			this.chronic = d.chronic;
-			this.removeOnRedressChanceByDaysCurve = new SimpleCurveStats(d.removeOnRedressChanceByDaysCurve);
+			//this.removeOnRedressChanceByDaysCurve = new SimpleCurveStats(d.removeOnRedressChanceByDaysCurve);
 			this.displayWound = d.displayWound;
-			this.defaultLabelColor = new ColorStats(d.defaultLabelColor);
-			this.injuryProps = new InjuryPropsStats(d.injuryProps);
-			this.addedPartProps = new AddedBodyPartPropsStats(d.addedPartProps);
+			if (d.defaultLabelColor != null)
+				this.defaultLabelColor = new ColorStats(d.defaultLabelColor);
+			if (d.injuryProps != null)
+				this.injuryProps = new InjuryPropsStats(d.injuryProps);
+			if (d.addedPartProps != null)
+				this.addedPartProps = new AddedBodyPartPropsStats(d.addedPartProps);
 
 			Util.AssignDefStat(d.spawnThingOnRemoved, out this.spawnThingOnRemoved);
 			Util.AssignDefStat(d.causesNeed, out this.causesNeed);
@@ -89,7 +92,7 @@ namespace InGameDefEditor.Stats
 					this.battleStateLabel == d.battleStateLabel &&
 					this.priceImpact == d.priceImpact &&
 					this.chronic == d.chronic &&
-					this.removeOnRedressChanceByDaysCurve.Equals(d.removeOnRedressChanceByDaysCurve) &&
+					//this.removeOnRedressChanceByDaysCurve.Equals(d.removeOnRedressChanceByDaysCurve) &&
 					this.displayWound == d.displayWound &&
 					this.defaultLabelColor.Equals(d.defaultLabelColor) &&
 					this.injuryProps.Equals(d.injuryProps) &&
@@ -120,7 +123,7 @@ namespace InGameDefEditor.Stats
 				d.battleStateLabel = this.battleStateLabel;
 				d.priceImpact = this.priceImpact;
 				d.chronic = this.chronic;
-				this.removeOnRedressChanceByDaysCurve?.ApplyStats(d.removeOnRedressChanceByDaysCurve);
+				//this.removeOnRedressChanceByDaysCurve?.ApplyStats(d.removeOnRedressChanceByDaysCurve);
 				d.displayWound = this.displayWound;
 				d.defaultLabelColor = this.defaultLabelColor?.ToColor() ?? Color.white;
 				d.injuryProps = this.injuryProps?.ToInjuryProps() ?? null;

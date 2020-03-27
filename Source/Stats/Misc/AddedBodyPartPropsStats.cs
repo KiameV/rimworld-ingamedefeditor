@@ -1,8 +1,10 @@
-﻿using Verse;
+﻿using System;
+using Verse;
 
 namespace InGameDefEditor.Stats.Misc
 {
-    public class AddedBodyPartPropsStats
+	[Serializable]
+	public class AddedBodyPartPropsStats
 	{
 		public float partEfficiency;
 		public bool solid;

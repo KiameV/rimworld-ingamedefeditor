@@ -85,6 +85,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			this.statBasesPlusMinus = new WindowUtil.PlusMinusArgs<StatDef>()
 			{
 				allItems = DefDatabase<StatDef>.AllDefs,
+				getDisplayName = d => Util.GetLabel(d),
 				beingUsed = () =>
 				{
 					List<StatDef> l = new List<StatDef>(base.Def.statBases.Count);

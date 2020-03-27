@@ -1,8 +1,10 @@
-﻿using Verse;
+﻿using System;
+using Verse;
 
 namespace InGameDefEditor.Stats.Misc
 {
-    public class InjuryPropsStats
+	[Serializable]
+	public class InjuryPropsStats
     {
         public float painPerSeverity;
         public float averagePainPerSeverityPermanent;
