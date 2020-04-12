@@ -8,7 +8,6 @@ namespace InGameDefEditor
 {
     class DatabaseUtil
     {
-        private static readonly MethodInfo removeDefMI = typeof(DefDatabase<Def>).GetMethod("Remove", BindingFlags.Static | BindingFlags.NonPublic);
         private static readonly FieldInfo shuffleableBackstoryListFI = typeof(BackstoryDatabase).GetField("shuffleableBackstoryList", BindingFlags.Static | BindingFlags.NonPublic);
 
         public static void Add(Backstory b)
@@ -160,9 +159,40 @@ namespace InGameDefEditor
             }
         }
 
-        public static void Remove<D>(D d) where D : Def
+        public static void Remove(Def d)
         {
-            removeDefMI.Invoke(null, new object[] { d });
+            MethodInfo methodMI = null;
+            switch(d)
+            {
+                case BiomeDef _:
+                    methodMI = typeof(DefDatabase<BiomeDef>).GetMethod("Remove", BindingFlags.Static | BindingFlags.NonPublic);
+                    break;
+                case DifficultyDef _:
+                    methodMI = typeof(DefDatabase<DifficultyDef>).GetMethod("Remove", BindingFlags.Static | BindingFlags.NonPublic);
+                    break;
+                case HediffDef _:
+                    methodMI = typeof(DefDatabase<HediffDef>).GetMethod("Remove", BindingFlags.Static | BindingFlags.NonPublic);
+                    break;
+                case RecipeDef _:
+                    methodMI = typeof(DefDatabase<RecipeDef>).GetMethod("Remove", BindingFlags.Static | BindingFlags.NonPublic);
+                    break;
+                case StorytellerDef _:
+                    methodMI = typeof(DefDatabase<StorytellerDef>).GetMethod("Remove", BindingFlags.Static | BindingFlags.NonPublic);
+                    break;
+                case ThoughtDef _:
+                    methodMI = typeof(DefDatabase<ThoughtDef>).GetMethod("Remove", BindingFlags.Static | BindingFlags.NonPublic);
+                    break;
+                case TraitDef _:
+                    methodMI = typeof(DefDatabase<TraitDef>).GetMethod("Remove", BindingFlags.Static | BindingFlags.NonPublic);
+                    break;
+                case ThingDef _:
+                    methodMI = typeof(DefDatabase<ThingDef>).GetMethod("Remove", BindingFlags.Static | BindingFlags.NonPublic);
+                    break;
+                default:
+                    Log.Warning("Unable to disable " + d.defName);
+                    return;
+            }
+            methodMI.Invoke(null, new object[] { d });
         }
 
         public static bool Remove(object o)
@@ -203,5 +233,31 @@ namespace InGameDefEditor
             }
             return false;
         }
+
+
+        /*public static void RemoveDefs(List<Def> defs)
+        {
+            List<Def> defsList = typeof(DefDatabase<Def>).GetField("defsList", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null) as List<Def>;
+            Dictionary<string, Def> defsByName = typeof(DefDatabase<Def>).GetField("defsByName", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null) as Dictionary<string, Def>;
+
+            System.Text.StringBuilder sb = new System.Text.StringBuilder("Defs:" );
+            foreach (var defName in defsByName)
+                sb.AppendLine("- " + defName);
+            Log.Message(sb.ToString());
+
+            foreach (var d in defs)
+            {
+                if (!defsByName.Remove(d.defName))
+                    Log.Error("Failed to remove " + d.defName);
+            }
+            for (int i = defsList.Count-1; i >= 0; --i)
+            {
+                foreach (var toDisable in defs)
+                {
+                    defsList.RemoveAt(i);
+                }
+            }
+            typeof(DefDatabase<Def>).GetMethod("SetIndices", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, null);
+        }*/
     }
 }

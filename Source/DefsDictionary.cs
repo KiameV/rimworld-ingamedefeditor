@@ -111,7 +111,7 @@ namespace InGameDefEditor
 
         public bool ContainsDef(Def d)
         {
-            return defs.ContainsKey(d.defName);
+            return (d == null) ? false : defs.ContainsKey(d.defName);
         }
 
         public bool Contains(object o)

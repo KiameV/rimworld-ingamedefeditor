@@ -119,7 +119,7 @@ namespace InGameDefEditor
             }
         }
 
-		public static void ResetAll()
+		/*public static void ResetAll()
 		{
 			Defs.DisabledDefs.Clear();
 			Defs.ApplyStatsAutoDefs.Clear();
@@ -165,6 +165,6 @@ namespace InGameDefEditor
 
 			foreach (ThingDef d in Defs.BuildingDefs.Values)
 				Backup.ApplyStats(d);
-		}
+		}*/
 	}
 }
