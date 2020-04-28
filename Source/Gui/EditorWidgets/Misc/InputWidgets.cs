@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InGameDefEditor.Gui.Dialog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -278,6 +279,64 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 					WindowUtil.DrawLabel(x, y, width, "- " + Util.GetLabel(def));
 					y += 30;
 				}
+			}
+		}
+
+		public void ResetBuffers() { }
+	}
+
+	class TextPlusMinusInputWidget : IInputWidget
+	{
+		private readonly string label;
+		private readonly float labelWidth;
+		private readonly List<string> items;
+		private WindowUtil.PlusMinusArgs<string> args;
+
+		public TextPlusMinusInputWidget(string label, float labelWidth, List<string> items)
+		{
+			this.label = label;
+			this.labelWidth = labelWidth;
+			this.items = items;
+
+			args = new PlusMinusArgs<string>()
+			{
+				getDisplayName = s => s,
+				onRemove = s => this.items.Remove(s),
+				beingUsed = () => this.items,
+				addArgs = new FloatOptionsArgs<string>()
+				{
+					skipListCustomOnly = true,
+					onCustomOption = () => Find.WindowStack.Add(new Dialog_Name(
+						"Tag",
+						delegate (string s)
+						{
+							this.items.Add(s);
+						},
+						delegate (string s)
+						{
+							return s.Trim().Length > 0 && !this.items.Contains(s);
+						})),
+				},
+				removeArgs = new FloatOptionsArgs<string>()
+				{
+					getDisplayName = (s) => s,
+					items = this.items,
+					onSelect = (s) => this.items.Remove(s),
+				},
+			};
+		}
+
+		public string DisplayLabel => label;
+
+		public void Draw(float x, ref float y, float width)
+		{
+			WindowUtil.PlusMinusLabel(x, ref y, width, label, this.args);
+			IEnumerable<string> beingUsed = this.args.beingUsed.Invoke();
+			x += 10;
+			foreach (var s in beingUsed)
+			{
+				WindowUtil.DrawLabel(x, y, width, $"- {s}");
+				y += 30;
 			}
 		}
 

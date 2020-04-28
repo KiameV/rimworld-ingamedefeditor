@@ -30,7 +30,7 @@ namespace InGameDefEditor.Gui.Dialog
 
         protected override void SetName(string name)
         {
-            this.onAcceptName(name.Trim());
+            this.onAcceptName?.Invoke(name.Trim());
         }
     }
 }

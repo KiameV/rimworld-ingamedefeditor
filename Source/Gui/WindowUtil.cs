@@ -139,9 +139,17 @@ namespace InGameDefEditor
             public OnSelect<T> onSelect = null;
 			public OnCustomOption onCustomOption = null;
 			public bool includeNullOption = false;
+            public bool skipListCustomOnly = false;
         }
         public static void DrawFloatingOptions<T>(FloatOptionsArgs<T> args)
         {
+            if (args.skipListCustomOnly && args.onCustomOption != null)
+            {
+                Log.Warning("Invoke onCustomOptions");
+                args.onCustomOption?.Invoke();
+                return;
+            }
+
             if (args == null || args.items == null || args.items.Count() == 0)
                 return;
 
