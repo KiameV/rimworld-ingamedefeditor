@@ -157,7 +157,7 @@ namespace InGameDefEditor
             if (args.includeNullOption)
             {
                 options.Add(new FloatMenuOption(
-                    "None", delegate { args.onSelect(default(T)); },
+                    "None", delegate { args.onSelect(default); },
                     MenuOptionPriority.High, null, null, 0f, null, null));
             }
 			if (args.onCustomOption != null)

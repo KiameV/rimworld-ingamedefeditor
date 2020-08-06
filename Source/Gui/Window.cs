@@ -13,6 +13,7 @@ namespace InGameDefEditor
 	{
 		private static IEditableDefType selectedDefType = null;
 		private static IParentStatWidget selectedDef = null;
+		private static string defFilter = "";
 
         private static Vector2 
 			leftScroll = Vector2.zero,
@@ -49,25 +50,21 @@ namespace InGameDefEditor
 							{
 								selectedDefType = dt;
 								selectedDef = null;
+								defFilter = "";
 							}
 						});
 			}
 
 			if (selectedDefType != null)
 			{
+				Widgets.Label(new Rect(550, outerY + 4, 100, 30), "InGameDefEditor.DefFilter".Translate());
+				defFilter = Widgets.TextField(new Rect(625, outerY, 100, 30), defFilter).ToLower();
 				if (Widgets.ButtonText(new Rect(220, outerY, 300, 30), ((selectedDef == null) ? selectedDefType.Label + " Def" : selectedDef.DisplayLabel)))
 				{
 					WindowUtil.DrawFloatingOptions(new WindowUtil.FloatOptionsArgs<object>()
 					{
-						items = selectedDefType.GetDefs(),
-						getDisplayName = i =>
-						{
-							if (i is Def def)
-								return Util.GetLabel(def);
-							else if (i is Backstory b)
-								return b.title;
-							return i.ToString();
-						},
+						items = selectedDefType.GetDefs().Where(def => (defFilter.Length > 0) ? this.GetDisplayLabel(def).ToLower().IndexOf(defFilter) != -1 : true),
+						getDisplayName = i => this.GetDisplayLabel(i),
 						onSelect = i =>
 						{
 							if (i is Def def)
@@ -184,6 +181,15 @@ namespace InGameDefEditor
 					}));
             }
         }
+
+		private string GetDisplayLabel(object o)
+		{
+			if (o is Def def)
+				return Util.GetLabel(def);
+			else if (o is Backstory b)
+				return b.title;
+			return o.ToString();
+		}
 
 		private void GetSelectionFromPair(Pair<string, object> p)
 		{

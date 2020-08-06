@@ -21,4 +21,6 @@
 
 	<InGameDefEditor.SoundCast>Sound Cast</InGameDefEditor.SoundCast>
 	<InGameDefEditor.SoundCastTail>Sound Cast Tail</InGameDefEditor.SoundCastTail>
+	
+	<InGameDefEditor.DefFilter>Def Filter</InGameDefEditor.DefFilter>
 </LanguageData>
