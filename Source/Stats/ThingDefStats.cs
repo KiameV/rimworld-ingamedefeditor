@@ -288,6 +288,8 @@ namespace InGameDefEditor.Stats
 				Log.Warning($"Failed to initialize Ingestible portion");
 			if (this.building?.Initialize() == false)
 				Log.Warning($"Failed to initialize Building portion");
+			if (this.stuffProps?.Initialize() == false)
+				Log.Warning($"Failed to initialize Stuff Properties portion");
 			return true;
         }
 
@@ -300,7 +302,8 @@ namespace InGameDefEditor.Stats
 					Util.AreEqual(this.VerbStats, s.VerbStats, null) &&
 					Util.AreEqual(this.Tools, s.Tools, null) &&
 					object.Equals(this.ingestible, s.ingestible) &&
-					object.Equals(this.building, s.building))
+					object.Equals(this.building, s.building) &&
+					object.Equals(this.stuffProps, s.stuffProps))
                 {
 					return true;
                 }
@@ -352,10 +355,15 @@ namespace InGameDefEditor.Stats
 				{
 					this.building?.ApplyStats(t.building);
 				}
+
+				if (this.stuffProps != null && t.stuffProps != null)
+				{
+					this.stuffProps?.ApplyStats(t.stuffProps);
+				}
 #if DEBUG_THINGDEF
             Log.Warning("ApplyStats Done");
 #endif
-				}
+			}
 				else
 					Log.Error("ThingDefStat passed none ThingDef!");
         }

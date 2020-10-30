@@ -53,10 +53,17 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>C:\Users\travis\Desktop\RimworldDebug\Mods\InGameDefEditor\1.2\Assemblies\</OutputPath>
     <DefineConstants>
     </DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
+    <DebugType>portable</DebugType>
+    <DocumentationFile>
+    </DocumentationFile>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <ErrorReport>prompt</ErrorReport>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
@@ -117,6 +124,7 @@
     <Compile Include="Gui\EditorWidgets\Misc\QualityRangeWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\SimpleCurveWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\StorytellerCompPropertiesWidget.cs" />
+    <Compile Include="Gui\EditorWidgets\Misc\StuffPropertiesWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\ThingFilterWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\ThoughtStageWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\TraitDegreeDataWidget.cs" />

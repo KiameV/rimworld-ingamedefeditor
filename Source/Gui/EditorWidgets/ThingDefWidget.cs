@@ -13,15 +13,13 @@ namespace InGameDefEditor.Gui.EditorWidgets
         private readonly List<FloatInputWidget<StatModifier>> EquipmentModifiers = new List<FloatInputWidget<StatModifier>>();
 		private IngestiblePropertiesWidget ingestiblePropertiesWidget = null;
 		private BuildingPropertiesWidget buildingPropertiesWidget = null;
-		private ApparelPropertiesWidget apparelWidget = null;
+		private ApparelPropertiesWidget apparelPropertiesWidget = null;
+		private StuffPropertiesWidget stuffPropertiesWidget = null;
 
 		public ThingDefWidget(ThingDef def, DefType type) : base(def, type)
         {
             if (base.Def.equippedStatOffsets == null)
                 base.Def.equippedStatOffsets = new List<StatModifier>();
-
-			if (base.Def.apparel != null)
-				this.apparelWidget = new ApparelPropertiesWidget(base.Def.apparel);
 
 			this.Rebuild();
         }
@@ -36,7 +34,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			if (base.Type == DefType.Apparel)
             {
                 this.DrawEquipmentStatOffsets(x, ref y, width);
-				this.apparelWidget?.Draw(x, ref y, width);
+				this.apparelPropertiesWidget?.Draw(x, ref y, width);
             }
             else if (base.Type == DefType.Weapon)
             {
@@ -46,6 +44,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
             }
 			this.ingestiblePropertiesWidget?.Draw(x, ref y, width);
 			this.buildingPropertiesWidget?.Draw(x, ref y, width);
+			this.stuffPropertiesWidget?.Draw(x, ref y, width);
 		}
 
         public override void DrawRightInput(float x, ref float y, float width)
@@ -84,24 +83,36 @@ namespace InGameDefEditor.Gui.EditorWidgets
                     this.EquipmentModifiers.Add(this.CreateFloatInput(s));
                 }
 			}
+
+			this.apparelPropertiesWidget = null;
+			if (base.Def.apparel != null)
+				this.apparelPropertiesWidget = new ApparelPropertiesWidget(base.Def.apparel);
+
 			this.ingestiblePropertiesWidget = null;
 			if (base.Def.ingestible != null)
 				this.ingestiblePropertiesWidget = new IngestiblePropertiesWidget(base.Def.ingestible);
+
 			this.buildingPropertiesWidget = null;
 			if (base.Def.building != null)
 				this.buildingPropertiesWidget = new BuildingPropertiesWidget(base.Def.building);
+
+			this.stuffPropertiesWidget = null;
+			if (base.Def.stuffProps != null)
+				this.stuffPropertiesWidget = new StuffPropertiesWidget(base.Def.stuffProps);
+
 			this.ResetBuffers();
 		}
 
         public override void ResetBuffers()
         {
 			base.ResetBuffers();
-
             this.VerbWidgets.ForEach(v => v.ResetBuffers());
             this.ToolWidgets.ForEach(v => v.ResetBuffers());
             this.EquipmentModifiers.ForEach(v => v.ResetBuffers());
+			this.apparelPropertiesWidget?.ResetBuffers();
 			this.ingestiblePropertiesWidget?.ResetBuffers();
 			this.buildingPropertiesWidget?.ResetBuffers();
+			this.stuffPropertiesWidget?.ResetBuffers();
 		}
 
 		private void DrawVerbs(float x, ref float y, float width)
