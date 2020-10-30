@@ -100,6 +100,12 @@ namespace InGameDefEditor.Stats
 	}
 
 	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
+	public class RootResource
+	{
+		public List<ThingDefStats> stats;
+	}
+
+   [XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
 	public class RootHediffs
 	{
 		public List<HediffDefStats> stats;

@@ -41,8 +41,7 @@ namespace InGameDefEditor
         {
             get
             {
-                return backstories.Count
-                    + defs.Count;
+                return backstories.Count + defs.Count;
             }
         }
 

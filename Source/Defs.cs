@@ -23,6 +23,7 @@ namespace InGameDefEditor
 		public static readonly SortedDictionary<string, ThingDef> MineableDefs = new SortedDictionary<string, ThingDef>();
 		public static readonly SortedDictionary<string, Backstory> Backstories = new SortedDictionary<string, Backstory>();
 		public static readonly SortedDictionary<string, ThingDef> BuildingDefs = new SortedDictionary<string, ThingDef>();
+		public static readonly SortedDictionary<string, ThingDef> ResourceDefs = new SortedDictionary<string, ThingDef>();
 		private static bool isInit = false;
 		
 		public static void Initialize()
@@ -82,6 +83,10 @@ namespace InGameDefEditor
 					{
 						BuildingDefs[label] = d;
 					}
+					else if(d.CountAsResource)
+                    {
+						ResourceDefs[label] = d;
+                    }
                 }
 
 				foreach (var d in DefDatabase<BiomeDef>.AllDefs)

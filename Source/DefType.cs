@@ -17,5 +17,6 @@
 		Backstory,
 		Building,
 		Hediff,
+		Resource,
 	};
 }

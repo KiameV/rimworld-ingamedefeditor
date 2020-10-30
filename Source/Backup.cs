@@ -213,6 +213,19 @@ namespace InGameDefEditor
                             Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
                     }
                 }
+
+                foreach (ThingDef d in Defs.ResourceDefs.Values)
+                {
+                    try
+                    {
+                        backupDefs[d.defName] = new ThingDefStats(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
 			}
         }
 

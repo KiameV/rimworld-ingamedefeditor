@@ -13,14 +13,14 @@ namespace InGameDefEditor
         {
             var harmony = new Harmony("com.ingamedefeditor.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
-            Log.Message(
+            /*Log.Message(
                 "InGameDefEditor Harmony Patches:" + Environment.NewLine +
                 "  Prefix:" + Environment.NewLine +
                 "    Page_SelectScenario.BeginScenarioConfiguration" + Environment.NewLine +
                 "    SavedGameLoaderNow.LoadGameFromSaveFileNow" + Environment.NewLine +
                 "    Root_Play.SetupForQuickTestPlay" + Environment.NewLine +
                 "  Postfix:" + Environment.NewLine +
-                "    UIRoot.UIRootOnGUI");
+                "    UIRoot.UIRootOnGUI");*/
         }
     }
 

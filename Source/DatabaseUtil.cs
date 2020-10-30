@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using Verse;
 
 namespace InGameDefEditor
@@ -122,6 +123,11 @@ namespace InGameDefEditor
                     else if (d.building != null)
                     {
                         dt = DefType.Building;
+                        return true;
+                    }
+                    else if (d.CountAsResource)
+                    {
+                        dt = DefType.Resource;
                         return true;
                     }
                     else if (

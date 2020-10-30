@@ -95,6 +95,9 @@ namespace InGameDefEditor
 					if (Load(DefType.Building, out RootBuilding building))
 						building?.stats.ForEach((d) => Initialize(d, sb));
 
+					if (Load(DefType.Resource, out RootResource resource))
+						resource?.stats.ForEach((d) => Initialize(d, sb));
+
 					// Do Last
 					sb.AppendLine("Disabling the following defs:");
 					if (Load("DisabledDefs", out RootDisabledDefs rdd))
@@ -294,8 +297,17 @@ namespace InGameDefEditor
             catch (Exception e)
             {
                 Log.Error("Problem saving " + DefType.Building + ".\n" + e.GetType().Name + "\n" + e.Message);
-            }
-        }
+			}
+
+			try
+			{
+				Save(DefType.Resource, new RootResource() { stats = GetChangedDefs(Defs.ResourceDefs.Values, (d) => new ThingDefStats(d)) });
+			}
+			catch (Exception e)
+			{
+				Log.Error("Problem saving " + DefType.Resource + ".\n" + e.GetType().Name + "\n" + e.Message);
+			}
+		}
 
 		private static List<BackstoryStats> GetChangedBackstory(IEnumerable<Backstory> backstories)
 		{

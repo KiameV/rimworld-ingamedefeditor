@@ -246,6 +246,7 @@ namespace InGameDefEditor
             {
                 case DefType.Apparel:
 				case DefType.Building:
+				case DefType.Resource:
 				case DefType.Disabled:
 				case DefType.Ingestible:
 				case DefType.Mineable:
@@ -394,6 +395,7 @@ namespace InGameDefEditor
 				new EditableDefType<ThingDef>("Mineable", DefType.Mineable, Defs.MineableDefs.Values),
 				new EditableDefType<ThingDef>("Projectiles", DefType.Projectile, Defs.ProjectileDefs.Values),
 				new EditableDefType<RecipeDef>("Recipes", DefType.Recipe, Defs.RecipeDefs.Values),
+				new EditableDefType<ThingDef>("Resource", DefType.Resource, Defs.ResourceDefs.Values),
 				new EditableDefType<StorytellerDef>("Story Tellers", DefType.StoryTeller, Defs.StoryTellerDefs.Values),
 				new EditableDefType<ThoughtDef>("Thoughts", DefType.Thought, Defs.ThoughtDefs.Values),
 				new EditableDefType<TraitDef>("Traits", DefType.Trait, Defs.TraitDefs.Values),
