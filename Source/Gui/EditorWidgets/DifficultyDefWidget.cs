@@ -42,6 +42,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				new FloatInputWidget<DifficultyDef>(base.Def, "Maintenance Cost Factor", d => d.maintenanceCostFactor, (d, v) => d.maintenanceCostFactor = v),
 				new FloatInputWidget<DifficultyDef>(base.Def, "Adaptation Growth Rate Factor Over Zero", d => d.adaptationGrowthRateFactorOverZero, (d, v) => d.adaptationGrowthRateFactorOverZero = v),
 				new FloatInputWidget<DifficultyDef>(base.Def, "Adaptation Effect Factor", d => d.adaptationEffectFactor, (d, v) => d.adaptationEffectFactor = v),
+				new FloatInputWidget<DifficultyDef>(base.Def, "Scaria Rot Chance", d => d.scariaRotChance, (d, v) => d.scariaRotChance = v),
 			};
 			this.Rebuild();
 		}

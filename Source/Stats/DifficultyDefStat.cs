@@ -34,6 +34,7 @@ namespace InGameDefEditor.Stats
 		public float enemyDeathOnDownedChanceFactor;
 		public float adaptationGrowthRateFactorOverZero;
 		public float adaptationEffectFactor;
+		public float scariaRotChance;
 
 		public DifficultyDefStat() { }
 		public DifficultyDefStat(DifficultyDef d) : base(d)
@@ -63,6 +64,7 @@ namespace InGameDefEditor.Stats
 			this.enemyDeathOnDownedChanceFactor = d.enemyDeathOnDownedChanceFactor;
 			this.adaptationGrowthRateFactorOverZero = d.adaptationGrowthRateFactorOverZero;
 			this.adaptationEffectFactor = d.adaptationEffectFactor;
+			this.scariaRotChance = d.scariaRotChance;
 		}
 
 		public void ApplyStats(object def)
@@ -94,6 +96,7 @@ namespace InGameDefEditor.Stats
 				to.enemyDeathOnDownedChanceFactor = this.enemyDeathOnDownedChanceFactor;
 				to.adaptationGrowthRateFactorOverZero = this.adaptationGrowthRateFactorOverZero;
 				to.adaptationEffectFactor = this.adaptationEffectFactor;
+				to.scariaRotChance = this.scariaRotChance;
 			}
 		}
 		
@@ -137,7 +140,8 @@ namespace InGameDefEditor.Stats
 					this.maintenanceCostFactor == d.maintenanceCostFactor &&
 					this.enemyDeathOnDownedChanceFactor == d.enemyDeathOnDownedChanceFactor &&
 					this.adaptationGrowthRateFactorOverZero == d.adaptationGrowthRateFactorOverZero &&
-					this.adaptationEffectFactor == d.adaptationEffectFactor;
+					this.adaptationEffectFactor == d.adaptationEffectFactor &&
+					this.scariaRotChance == d.scariaRotChance;
 			}
 			return false;
 		}
