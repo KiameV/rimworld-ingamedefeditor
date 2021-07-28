@@ -2,13 +2,14 @@
 using RimWorld;
 using System.Collections.Generic;
 using Verse;
+using static InGameDefEditor.WindowUtil;
 
 namespace InGameDefEditor.Gui.EditorWidgets
 {
     class HediffDefWidget : AParentDefStatWidget<HediffDef>
 	{
 		private readonly List<IInputWidget> leftInputWidgets;
-		private readonly List<IInputWidget> midddleInputWidgets;
+		private readonly List<IInputWidget> middleInputWidgets;
 		private readonly List<IInputWidget> rightInputWidgets;
 
 		public HediffDefWidget(HediffDef def, DefType type) : base(def, type)
@@ -30,14 +31,13 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				new ColorWidget<HediffDef>(base.Def, "Default Label Color", d => d.defaultLabelColor, (d, v) => d.defaultLabelColor = v),
 			};
 
-			this.midddleInputWidgets = new List<IInputWidget>()
+			this.middleInputWidgets = new List<IInputWidget>()
 			{
 				new DefInputWidget<HediffDef, ThingDef>(base.Def, "Spawn Thing On Removed", 150, d => d.spawnThingOnRemoved, (d, v) => d.spawnThingOnRemoved = v, true),
 				new DefInputWidget<HediffDef, NeedDef>(base.Def, "Causes Need", 150, d => d.causesNeed, (d, v) => d.causesNeed = v, true),
-				new DefInputWidget<HediffDef, NeedDef>(base.Def, "Disables Need", 150, d => d.disablesNeed, (d, v) => d.disablesNeed = v, true),
+				new DefPlusMinusInputWidget<NeedDef>("Disables Needs", 150, def.disablesNeeds),
 				new DefInputWidget<HediffDef, TaleDef>(base.Def, "Tale On Visible", 150, d => d.taleOnVisible, (d, v) => d.taleOnVisible = v, true),
 				//new SimpleCurveToggleableWidget<HediffDef>(base.Def, "Remove On Redress Chance By Days Curve", d => d.removeOnRedressChanceByDaysCurve, (d, v) => d.removeOnRedressChanceByDaysCurve = v),
-
 			};
 
 			this.rightInputWidgets = new List<IInputWidget>(2);
@@ -57,7 +57,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 
 		public override void DrawMiddle(float x, ref float y, float width)
 		{
-			foreach (var v in this.midddleInputWidgets)
+			foreach (var v in this.middleInputWidgets)
 				v.Draw(x, ref y, width);
 		}
 
@@ -75,7 +75,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 		public override void ResetBuffers()
 		{
 			this.leftInputWidgets.ForEach(v => v.ResetBuffers());
-			this.midddleInputWidgets.ForEach(v => v.ResetBuffers());
+			this.middleInputWidgets.ForEach(v => v.ResetBuffers());
 			this.rightInputWidgets.ForEach(v => v.ResetBuffers());
 		}
 

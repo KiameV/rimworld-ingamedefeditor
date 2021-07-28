@@ -2,6 +2,7 @@
 using InGameDefEditor.Stats.Misc;
 using RimWorld;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
@@ -16,7 +17,7 @@ namespace InGameDefEditor.Stats
 		public bool makesSickThought;
 		public bool makesAlert;
 		public DefStat<NeedDef> causesNeed = null;
-		public DefStat<NeedDef> disablesNeed = null;
+		public List<DefStat<NeedDef>> disablesNeeds = null;
 		public float minSeverity;
 		public float maxSeverity;
 		public bool scenarioCanAdd;
@@ -59,7 +60,11 @@ namespace InGameDefEditor.Stats
 
 			Util.AssignDefStat(d.spawnThingOnRemoved, out this.spawnThingOnRemoved);
 			Util.AssignDefStat(d.causesNeed, out this.causesNeed);
-			Util.AssignDefStat(d.disablesNeed, out this.disablesNeed);
+			if (d.disablesNeeds != null)
+			{
+				this.disablesNeeds = new List<DefStat<NeedDef>>(d.disablesNeeds.Count);
+				Util.ListIndexAssign(d.disablesNeeds, this.disablesNeeds, (f, t) => Util.AssignDefStat(f, out t));
+			}
 			Util.AssignDefStat(d.taleOnVisible, out this.taleOnVisible);
 		}
 
@@ -70,7 +75,9 @@ namespace InGameDefEditor.Stats
 
 			this.spawnThingOnRemoved?.Initialize();
 			this.causesNeed?.Initialize();
-			this.disablesNeed?.Initialize();
+			if (this.disablesNeeds?.Count > 0)
+				foreach(var dn in this.disablesNeeds)
+					dn?.Initialize();
 			this.taleOnVisible?.Initialize();
 			return true;
 		}
@@ -97,10 +104,10 @@ namespace InGameDefEditor.Stats
 					this.defaultLabelColor.Equals(d.defaultLabelColor) &&
 					this.injuryProps.Equals(d.injuryProps) &&
 					this.addedPartProps.Equals(d.addedPartProps) &&
-					this.spawnThingOnRemoved.Equals(this.spawnThingOnRemoved) &&
-					this.causesNeed.Equals(this.causesNeed) &&
-					this.disablesNeed.Equals(this.disablesNeed) &&
-					this.taleOnVisible.Equals(this.taleOnVisible);
+					this.spawnThingOnRemoved.Equals(d.spawnThingOnRemoved) &&
+					this.causesNeed.Equals(d.causesNeed) &&
+					Util.AreEqual(this.disablesNeeds, d.disablesNeeds) &&
+					this.taleOnVisible.Equals(d.taleOnVisible);
 			}
 			return false;
 		}
@@ -131,7 +138,7 @@ namespace InGameDefEditor.Stats
 
 				d.spawnThingOnRemoved = this.spawnThingOnRemoved?.Def ?? null;
 				d.causesNeed = this.causesNeed?.Def ?? null;
-				d.disablesNeed = this.disablesNeed?.Def ?? null;
+				Util.Populate(out d.disablesNeeds, this.disablesNeeds, (f) => f.Def, true);
 				d.taleOnVisible = this.taleOnVisible.Def ?? null;
 #if DEBUG_HEDIFFDEF
             Log.Warning("ApplyStats Done");

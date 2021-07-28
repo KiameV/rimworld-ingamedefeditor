@@ -64,7 +64,8 @@ namespace InGameDefEditor.Gui.EditorWidgets
                 new BoolInputWidget<BiomeDef>(base.Def, "Local Plants Care Fertability", (BiomeDef def) => def.wildPlantsCareAboutLocalFertility, (BiomeDef def, bool b) => def.wildPlantsCareAboutLocalFertility = b),
                 new FloatInputWidget<BiomeDef>(base.Def, "Wild Plant Regrow Days", (BiomeDef def) => def.wildPlantRegrowDays, (BiomeDef def, float f) => def.wildPlantRegrowDays = f),
                 new FloatInputWidget<BiomeDef>(base.Def, "Movement Difficulty", (BiomeDef def) => def.movementDifficulty, (BiomeDef def, float f) => def.movementDifficulty = f),
-                new BoolInputWidget<BiomeDef>(base.Def, "Has Bedrock", (BiomeDef def) => def.hasBedrock, (BiomeDef def, bool b) => def.hasBedrock = b)
+                new BoolInputWidget<BiomeDef>(base.Def, "Has Bedrock", (BiomeDef def) => def.hasBedrock, (BiomeDef def, bool b) => def.hasBedrock = b),
+                new BoolInputWidget<BiomeDef>(base.Def, "Is Extreme Biome", (BiomeDef def) => def.isExtremeBiome, (BiomeDef def, bool b) => def.isExtremeBiome = b),
             };
 
             this.weatherPlusMinusArgs = new PlusMinusArgs<WeatherDef>()

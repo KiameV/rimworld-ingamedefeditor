@@ -14,8 +14,6 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			//public ColorStats drawColor;
 			this.leftInputWidgets = new List<IInputWidget>()
 			{
-				new IntInputWidget<DifficultyDef>(base.Def, "Difficulty", d => d.difficulty, (d, v) => d.difficulty = v),
-				new BoolInputWidget<DifficultyDef>(base.Def, "Is Extreme", d => d.isExtreme, (d, v) => d.isExtreme = v),
 				new BoolInputWidget<DifficultyDef>(base.Def, "Allow Big Threats", d => d.allowBigThreats, (d, v) => d.allowBigThreats = v),
 				new BoolInputWidget<DifficultyDef>(base.Def, "Allow Intro Threats", d => d.allowIntroThreats, (d, v) => d.allowIntroThreats = v),
 				new BoolInputWidget<DifficultyDef>(base.Def, "Allow Cave Hives", d => d.allowCaveHives, (d, v) => d.allowCaveHives = v),

@@ -36,7 +36,7 @@ namespace InGameDefEditor.Stats.Misc
 		public float gestationPeriodDays;
 		public float mateMtbHours;
 		public float nameOnTameChance;
-		public float nameOnNuzzleChance;
+		//public float nameOnNuzzleChance;
 		public float baseBodySize;
 		public float baseHealthScale;
 		public float baseHungerRate;
@@ -97,7 +97,7 @@ namespace InGameDefEditor.Stats.Misc
 			this.gestationPeriodDays = p.gestationPeriodDays;
 			this.mateMtbHours = p.mateMtbHours;
 			this.nameOnTameChance = p.nameOnTameChance;
-			this.nameOnNuzzleChance = p.nameOnNuzzleChance;
+			//this.nameOnNuzzleChance = p.nameOnNuzzleChance;
 			this.baseBodySize = p.baseBodySize;
 			this.baseHealthScale = p.baseHealthScale;
 			this.baseHungerRate = p.baseHungerRate;

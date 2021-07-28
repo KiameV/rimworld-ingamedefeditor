@@ -244,8 +244,10 @@ namespace InGameDefEditor
         {
             switch (type)
             {
-                case DefType.Apparel:
+				//case DefType.Animal:
+				case DefType.Apparel:
 				case DefType.Building:
+				case DefType.Plant:
 				case DefType.Resource:
 				case DefType.Disabled:
 				case DefType.Ingestible:
@@ -282,7 +284,7 @@ namespace InGameDefEditor
 			IngredientCountWidget.ResetUniqueId();
 		}
 
-		private IEnumerable<DifficultyDef> SortDifficultyOptions(SortedDictionary<string, DifficultyDef>.ValueCollection values)
+		/*private IEnumerable<DifficultyDef> SortDifficultyOptions(SortedDictionary<string, DifficultyDef>.ValueCollection values)
 		{
 			SortedDictionary<int, List<DifficultyDef>> d = new SortedDictionary<int, List<DifficultyDef>>();
 			foreach (var v in values)
@@ -299,7 +301,7 @@ namespace InGameDefEditor
 				foreach (DifficultyDef def in defs)
 					result.Add(def);
 			return result;
-		}
+		}*/
 
 		#region ButonWidget
 		private interface IEditableDefType
@@ -385,14 +387,16 @@ namespace InGameDefEditor
 		{
 			List<IEditableDefType> defTypes = new List<IEditableDefType>()
 			{
+				//new EditableDefType<ThingDef>("Animals", DefType.Animal, Defs.AnimalDefs.Values),
 				new EditableDefType<ThingDef>("Apparel", DefType.Apparel, Defs.ApparelDefs.Values),
 				new EditableBackstoryType("Backstories", DefType.Backstory, Defs.Backstories.Values),
 				new EditableDefType<BiomeDef>("Biomes", DefType.Biome, Defs.BiomeDefs.Values),
 				new EditableDefType<ThingDef>("Buildings", DefType.Building, Defs.BuildingDefs.Values),
-				new EditableDefType<DifficultyDef>("Difficulty", DefType.Difficulty, this.SortDifficultyOptions(Defs.DifficultyDefs.Values)),
+				new EditableDefType<DifficultyDef>("Difficulty", DefType.Difficulty, Defs.DifficultyDefs.Values),// this.SortDifficultyOptions(Defs.DifficultyDefs.Values)),
 				new EditableDefType<HediffDef>("Hediffs", DefType.Hediff, Defs.HediffDefs.Values),
-				new EditableDefType<ThingDef>("Ingestible", DefType.Ingestible, Defs.IngestibleDefs.Values),
-				new EditableDefType<ThingDef>("Mineable", DefType.Mineable, Defs.MineableDefs.Values),
+				new EditableDefType<ThingDef>("Ingestibles", DefType.Ingestible, Defs.IngestibleDefs.Values),
+				new EditableDefType<ThingDef>("Mineables", DefType.Mineable, Defs.MineableDefs.Values),
+				new EditableDefType<ThingDef>("Plants", DefType.Plant, Defs.PlantDefs.Values),
 				new EditableDefType<ThingDef>("Projectiles", DefType.Projectile, Defs.ProjectileDefs.Values),
 				new EditableDefType<RecipeDef>("Recipes", DefType.Recipe, Defs.RecipeDefs.Values),
 				new EditableDefType<ThingDef>("Resource", DefType.Resource, Defs.ResourceDefs.Values),

@@ -130,7 +130,18 @@ namespace InGameDefEditor
                         dt = DefType.Resource;
                         return true;
                     }
+                    else if (d.plant != null)
+                    {
+                        dt = DefType.Plant;
+                        return true;
+                    }
+                    /*else if (d.thingCategories.Contains(ThingCategoryDefOf.Animals))
+                    {
+                        dt = DefType.Animal;
+                        return true;
+                    }*/
                     else if (
+                        d.thingClass == typeof(Bullet) || 
                         d.defName.StartsWith("Arrow_") ||
                         d.defName.StartsWith("Bullet_") ||
                         d.defName.StartsWith("Proj_"))

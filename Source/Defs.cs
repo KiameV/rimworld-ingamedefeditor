@@ -24,6 +24,8 @@ namespace InGameDefEditor
 		public static readonly SortedDictionary<string, Backstory> Backstories = new SortedDictionary<string, Backstory>();
 		public static readonly SortedDictionary<string, ThingDef> BuildingDefs = new SortedDictionary<string, ThingDef>();
 		public static readonly SortedDictionary<string, ThingDef> ResourceDefs = new SortedDictionary<string, ThingDef>();
+		//public static readonly SortedDictionary<string, ThingDef> AnimalDefs = new SortedDictionary<string, ThingDef>();
+		public static readonly SortedDictionary<string, ThingDef> PlantDefs = new SortedDictionary<string, ThingDef>();
 		private static bool isInit = false;
 		
 		public static void Initialize()
@@ -65,12 +67,18 @@ namespace InGameDefEditor
 							});
 						}
                     }
-					else if(d.defName.StartsWith("Arrow_") || 
+					else if(
+						d.thingClass == typeof(Bullet) ||
+						d.defName.StartsWith("Arrow_") || 
                         d.defName.StartsWith("Bullet_") || 
                         d.defName.StartsWith("Proj_"))
 					{
 						ProjectileDefs[label] = d;
                     }
+					else if (d.plant != null)
+					{
+						PlantDefs[label] = d;
+					}
 					else if(d.IsIngestible)
 					{
 						IngestibleDefs[label] = d;
@@ -87,6 +95,10 @@ namespace InGameDefEditor
                     {
 						ResourceDefs[label] = d;
                     }
+					/*else if (d.thingCategories?.Contains(ThingCategoryDefOf.Animals) == true)
+                    {
+						AnimalDefs[label] = d;
+                    }*/
                 }
 
 				foreach (var d in DefDatabase<BiomeDef>.AllDefs)

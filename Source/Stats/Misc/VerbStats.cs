@@ -35,7 +35,7 @@ namespace InGameDefEditor.Stats.Misc
 		public bool ai_IsWeapon;
 		public bool ai_IsBuildingDestroyer;
 		public float ai_AvoidFriendlyFireRadius;
-		public float forcedMissRadius;
+		//public float forcedMissRadius;
 		public float accuracyTouch;
 		public float accuracyShort;
 		public float accuracyMedium;
@@ -88,7 +88,7 @@ namespace InGameDefEditor.Stats.Misc
 			this.ai_IsWeapon = v.ai_IsWeapon;
 			this.ai_IsBuildingDestroyer = v.ai_IsBuildingDestroyer;
 			this.ai_AvoidFriendlyFireRadius = v.ai_AvoidFriendlyFireRadius;
-			this.forcedMissRadius = v.forcedMissRadius;
+			//this.forcedMissRadius = v.forcedMissRadius;
 			this.accuracyTouch = v.accuracyTouch;
 			this.accuracyShort = v.accuracyShort;
 			this.accuracyMedium = v.accuracyMedium;
@@ -139,7 +139,7 @@ namespace InGameDefEditor.Stats.Misc
 			to.ai_IsWeapon = this.ai_IsWeapon;
 			to.ai_IsBuildingDestroyer = this.ai_IsBuildingDestroyer;
 			to.ai_AvoidFriendlyFireRadius = this.ai_AvoidFriendlyFireRadius;
-			to.forcedMissRadius = this.forcedMissRadius;
+			//to.forcedMissRadius = this.forcedMissRadius;
 			to.accuracyTouch = this.accuracyTouch;
 			to.accuracyShort = this.accuracyShort;
 			to.accuracyMedium = this.accuracyMedium;
@@ -225,7 +225,7 @@ namespace InGameDefEditor.Stats.Misc
 					this.ai_IsWeapon == v.ai_IsWeapon &&
 					this.ai_IsBuildingDestroyer == v.ai_IsBuildingDestroyer &&
 					this.ai_AvoidFriendlyFireRadius == v.ai_AvoidFriendlyFireRadius &&
-					this.forcedMissRadius == v.forcedMissRadius &&
+					//this.forcedMissRadius == v.forcedMissRadius &&
 					this.accuracyTouch == v.accuracyTouch &&
 					this.accuracyShort == v.accuracyShort &&
 					this.accuracyMedium == v.accuracyMedium &&

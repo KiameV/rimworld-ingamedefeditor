@@ -31,7 +31,6 @@ namespace InGameDefEditor.Stats
 		public TechLevel minTechLevelToBuild;
 		public TechLevel maxTechLevelToBuild;
 		public AltitudeLayer altitudeLayer;
-		public bool menuHidden;
 		public float specialDisplayRadius;
 
 		public DefStat<TerrainAffordanceDef> terrainAffordanceNeeded;
@@ -66,7 +65,6 @@ namespace InGameDefEditor.Stats
 			this.minTechLevelToBuild = d.minTechLevelToBuild;
 			this.maxTechLevelToBuild = d.maxTechLevelToBuild;
 			this.altitudeLayer = d.altitudeLayer;
-			this.menuHidden = d.menuHidden;
 			this.specialDisplayRadius = d.specialDisplayRadius;
 
 			Util.AssignDefStat(d.terrainAffordanceNeeded, out this.terrainAffordanceNeeded);
@@ -103,7 +101,6 @@ namespace InGameDefEditor.Stats
 				to.minTechLevelToBuild = this.minTechLevelToBuild;
 				to.maxTechLevelToBuild = this.maxTechLevelToBuild;
 				to.altitudeLayer = this.altitudeLayer;
-				to.menuHidden = this.menuHidden;
 				to.specialDisplayRadius = this.specialDisplayRadius;
 
 				Util.AssignDef(this.terrainAffordanceNeeded, out to.terrainAffordanceNeeded);
@@ -167,7 +164,6 @@ namespace InGameDefEditor.Stats
 					this.minTechLevelToBuild == d.minTechLevelToBuild &&
 					this.maxTechLevelToBuild == d.maxTechLevelToBuild &&
 					this.altitudeLayer == d.altitudeLayer &&
-					this.menuHidden == d.menuHidden &&
 					this.specialDisplayRadius == d.specialDisplayRadius &&
 					Util.AreEqual(d.terrainAffordanceNeeded, this.terrainAffordanceNeeded) && 
 					Util.AreEqual(d.repairEffect, this.repairEffect) && 

@@ -110,4 +110,16 @@ namespace InGameDefEditor.Stats
 	{
 		public List<HediffDefStats> stats;
 	}
+
+	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
+	public class RootAnimals
+	{
+		public List<ThingDefStats> stats;
+	}
+
+	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
+	public class RootPlants
+	{
+		public List<ThingDefStats> stats;
+	}
 }

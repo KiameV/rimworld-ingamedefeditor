@@ -360,6 +360,11 @@ namespace InGameDefEditor.Stats
 				{
 					this.stuffProps?.ApplyStats(t.stuffProps);
 				}
+
+				if (this.plant != null && t.plant != null)
+                {
+					this.plant?.ApplyStats(t.plant);
+                }
 #if DEBUG_THINGDEF
             Log.Warning("ApplyStats Done");
 #endif

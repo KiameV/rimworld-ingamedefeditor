@@ -35,7 +35,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Consume Fuel", (VerbProperties parent) => parent.consumeFuelPerShot, (VerbProperties parent, float f) => parent.consumeFuelPerShot = f),
 				new IntInputWidget<VerbProperties>(this.VerbProperties, "Base Melee Dmg", (VerbProperties parent) => parent.meleeDamageBaseAmount, (VerbProperties parent, int i) => parent.meleeDamageBaseAmount = i),
 				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Base Armor Penetration", (VerbProperties parent) => parent.meleeArmorPenetrationBase, (VerbProperties parent, float f) => parent.meleeArmorPenetrationBase = f),
-				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Forced Miss Radius", (VerbProperties parent) => parent.forcedMissRadius, (VerbProperties parent, float f) => parent.forcedMissRadius = f),
+				//new FloatInputWidget<VerbProperties>(this.VerbProperties, "Forced Miss Radius", (VerbProperties parent) => parent.forcedMissRadius, (VerbProperties parent, float f) => parent.forcedMissRadius = f),
 				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Accuracy Touch", (VerbProperties parent) => parent.accuracyTouch, (VerbProperties parent, float f) => parent.accuracyTouch = f),
 				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Accuracy Short", (VerbProperties parent) => parent.accuracyShort, (VerbProperties parent, float f) => parent.accuracyShort = f),
 				new FloatInputWidget<VerbProperties>(this.VerbProperties, "Accuracy Medium", (VerbProperties parent) => parent.accuracyMedium, (VerbProperties parent, float f) => parent.accuracyMedium = f),

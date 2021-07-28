@@ -45,6 +45,17 @@ namespace InGameDefEditor.Stats.Misc
 		public string immatureGraphicPath;
 		public bool dropLeaves;
 
+		public bool dieFromToxicFallout;
+		public bool autoHarvestable;
+		public bool humanFoodPlant;
+		public bool treeLoversCareIfChopped;
+		public bool allowAutoCut;
+		public DefStat<ThingDef> burnedThingDef;
+		public bool dieIfNoSunlight;
+		public TreeCategory treeCategory;
+		public bool showGrowthInInspectPane;
+		public float minSpacingBetweenSamePlant;
+
 		public MinMaxFloatStats visualSizeRange;
 
 		public DefStat<ThingDef> harvestedThingDef;
@@ -86,9 +97,18 @@ namespace InGameDefEditor.Stats.Misc
 			this.purpose = p.purpose;
 			this.topWindExposure = p.topWindExposure;
 			this.maxMeshCount = p.maxMeshCount;
-			this.leaflessGraphicPath = GetLeaflessGraphicPath(p);
-			this.immatureGraphicPath = GetImmatureGraphicPath(p);
+			//this.leaflessGraphicPath = GetLeaflessGraphicPath(p);
+			//this.immatureGraphicPath = GetImmatureGraphicPath(p);
 			this.dropLeaves = p.dropLeaves;
+			this.dieFromToxicFallout = p.dieFromToxicFallout;
+			this.autoHarvestable = p.autoHarvestable;
+			this.humanFoodPlant = p.humanFoodPlant;
+			this.treeLoversCareIfChopped = p.treeLoversCareIfChopped;
+			this.allowAutoCut = p.allowAutoCut;
+			this.dieIfNoSunlight = p.dieIfNoSunlight;
+			this.treeCategory = p.treeCategory;
+			this.showGrowthInInspectPane = p.showGrowthInInspectPane;
+			this.minSpacingBetweenSamePlant = p.minSpacingBetweenSamePlant;
 
 			if (p.visualSizeRange != null)
 				this.visualSizeRange = new MinMaxFloatStats(p.visualSizeRange);
@@ -96,13 +116,14 @@ namespace InGameDefEditor.Stats.Misc
 			Util.AssignDefStat(p.harvestedThingDef, out this.harvestedThingDef);
 			Util.AssignDefStat(p.soundHarvesting, out this.soundHarvesting);
 			Util.AssignDefStat(p.soundHarvestFinish, out this.soundHarvestFinish);
+			Util.AssignDefStat(p.burnedThingDef, out this.burnedThingDef);
 
 			Util.Populate(out this.sowTags, p.sowTags);
 			Util.Populate(out this.wildBiomes, p.wildBiomes, (v) => new FloatValueDefStat<BiomeDef>(v.biome, v.commonality));
 			this.sowResearchPrerequisites = Util.CreateDefStatList(p.sowResearchPrerequisites);
 		}
 
-		public static string GetLeaflessGraphicPath(PlantProperties p)
+		/*public static string GetLeaflessGraphicPath(PlantProperties p)
 		{
 			return (string)typeof(PlantProperties).GetField("leaflessGraphicPath", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(p);
 		}
@@ -120,6 +141,62 @@ namespace InGameDefEditor.Stats.Misc
 		public static void SetImmatureGraphicPath(PlantProperties p, string s)
 		{
 			typeof(PlantProperties).GetField("immatureGraphicPath", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(p, s);
+		}*/
+
+        public void ApplyStats(PlantProperties to)
+		{
+			to.wildClusterRadius = this.wildClusterRadius;
+			to.wildClusterWeight = this.wildClusterWeight;
+			to.wildOrder = this.wildOrder;
+			to.wildEqualLocalDistribution = this.wildEqualLocalDistribution;
+			to.cavePlant = this.cavePlant;
+			to.cavePlantWeight = this.cavePlantWeight;
+			to.sowWork = this.sowWork;
+			to.sowMinSkill = this.sowMinSkill;
+			to.blockAdjacentSow = this.blockAdjacentSow;
+			to.mustBeWildToSow = this.mustBeWildToSow;
+			to.harvestWork = this.harvestWork;
+			to.harvestYield = this.harvestYield;
+			to.harvestTag = this.harvestTag;
+			to.harvestMinGrowth = this.harvestMinGrowth;
+			to.harvestAfterGrowth = this.harvestAfterGrowth;
+			to.harvestFailable = this.harvestFailable;
+			to.growDays = this.growDays;
+			to.lifespanDaysPerGrowDays = this.lifespanDaysPerGrowDays;
+			to.growMinGlow = this.growMinGlow;
+			to.growOptimalGlow = this.growOptimalGlow;
+			to.fertilityMin = this.fertilityMin;
+			to.fertilitySensitivity = this.fertilitySensitivity;
+			to.dieIfLeafless = this.dieIfLeafless;
+			to.neverBlightable = this.neverBlightable;
+			to.interferesWithRoof = this.interferesWithRoof;
+			to.purpose = this.purpose;
+			to.topWindExposure = this.topWindExposure;
+			to.maxMeshCount = this.maxMeshCount;
+			//to.leaflessGraphicPath = GetLeaflessGraphicPath(p);
+			//to.immatureGraphicPath = GetImmatureGraphicPath(p);
+			to.dropLeaves = this.dropLeaves;
+			to.dieFromToxicFallout = this.dieFromToxicFallout;
+			to.autoHarvestable = this.autoHarvestable;
+			to.humanFoodPlant = this.humanFoodPlant;
+			to.treeLoversCareIfChopped = this.treeLoversCareIfChopped;
+			to.allowAutoCut = this.allowAutoCut;
+			to.dieIfNoSunlight = this.dieIfNoSunlight;
+			to.treeCategory = this.treeCategory;
+			to.showGrowthInInspectPane = this.showGrowthInInspectPane;
+			to.minSpacingBetweenSamePlant = this.minSpacingBetweenSamePlant;
+
+			if (this.visualSizeRange != null)
+				to.visualSizeRange = this.visualSizeRange.ToFloatRange();
+
+			Util.AssignDef(this.harvestedThingDef, out to.harvestedThingDef);
+			Util.AssignDef(this.soundHarvesting, out to.soundHarvesting);
+			Util.AssignDef(this.soundHarvestFinish, out to.soundHarvestFinish);
+			Util.AssignDef(this.burnedThingDef, out to.burnedThingDef);
+
+			Util.Populate(out to.sowTags, this.sowTags);
+			Util.Populate(out to.wildBiomes, this.wildBiomes, (v) => new PlantBiomeRecord() { biome = v.Def, commonality = v.value });
+			Util.Populate(out to.sowResearchPrerequisites, this.sowResearchPrerequisites, (v) => v.Def, false);
 		}
 	}
 }

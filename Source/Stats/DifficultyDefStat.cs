@@ -9,9 +9,6 @@ namespace InGameDefEditor.Stats
 	[Serializable]
 	public class DifficultyDefStat : DefStat<DifficultyDef>, IParentStat
 	{
-		public ColorStats drawColor;
-		public bool isExtreme;
-		public int difficulty;
 		public float threatScale;
 		public bool allowBigThreats;
 		public bool allowIntroThreats;
@@ -39,9 +36,6 @@ namespace InGameDefEditor.Stats
 		public DifficultyDefStat() { }
 		public DifficultyDefStat(DifficultyDef d) : base(d)
 		{
-			this.drawColor = new ColorStats(d.drawColor);
-			this.isExtreme = d.isExtreme;
-			this.difficulty = d.difficulty;
 			this.threatScale = d.threatScale;
 			this.allowBigThreats = d.allowBigThreats;
 			this.allowCaveHives = d.allowCaveHives;
@@ -71,9 +65,6 @@ namespace InGameDefEditor.Stats
 		{
 			if (def is DifficultyDef to)
 			{
-				to.drawColor = this.drawColor.ToColor();
-				to.isExtreme = this.isExtreme;
-				to.difficulty = this.difficulty;
 				to.threatScale = this.threatScale;
 				to.allowBigThreats = this.allowBigThreats;
 				to.allowCaveHives = this.allowCaveHives;
@@ -116,9 +107,6 @@ namespace InGameDefEditor.Stats
 				obj is DifficultyDefStat d)
 			{
 				return
-					object.Equals(this.drawColor, d.drawColor) &&
-					this.isExtreme == d.isExtreme &&
-					this.difficulty == d.difficulty &&
 					this.threatScale == d.threatScale &&
 					this.allowBigThreats == d.allowBigThreats &&
 					this.allowCaveHives == d.allowCaveHives &&

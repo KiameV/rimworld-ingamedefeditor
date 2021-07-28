@@ -15,6 +15,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 		private BuildingPropertiesWidget buildingPropertiesWidget = null;
 		private ApparelPropertiesWidget apparelPropertiesWidget = null;
 		private StuffPropertiesWidget stuffPropertiesWidget = null;
+		private PlantPropertiesWidget plantPropertiesWidget = null;
 
 		public ThingDefWidget(ThingDef def, DefType type) : base(def, type)
         {
@@ -45,6 +46,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			this.ingestiblePropertiesWidget?.Draw(x, ref y, width);
 			this.buildingPropertiesWidget?.Draw(x, ref y, width);
 			this.stuffPropertiesWidget?.Draw(x, ref y, width);
+			this.plantPropertiesWidget?.Draw(x, ref y, width);
 		}
 
         public override void DrawRightInput(float x, ref float y, float width)
@@ -100,6 +102,10 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			if (base.Def.stuffProps != null)
 				this.stuffPropertiesWidget = new StuffPropertiesWidget(base.Def.stuffProps);
 
+			this.plantPropertiesWidget = null;
+			if (base.Def.plant != null)
+				this.plantPropertiesWidget = new PlantPropertiesWidget(base.Def.plant);
+
 			this.ResetBuffers();
 		}
 
@@ -113,6 +119,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			this.ingestiblePropertiesWidget?.ResetBuffers();
 			this.buildingPropertiesWidget?.ResetBuffers();
 			this.stuffPropertiesWidget?.ResetBuffers();
+			this.plantPropertiesWidget?.ResetBuffers();
 		}
 
 		private void DrawVerbs(float x, ref float y, float width)

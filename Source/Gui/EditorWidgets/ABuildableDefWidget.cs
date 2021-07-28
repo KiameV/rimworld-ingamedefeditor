@@ -34,7 +34,6 @@ namespace InGameDefEditor.Gui.EditorWidgets
 				new EnumInputWidget<D, TechLevel>(base.Def, "Min Tech Level To Build", 200, d => d.minTechLevelToBuild, (d, v) => d.minTechLevelToBuild = v),
 				new EnumInputWidget<D, TechLevel>(base.Def, "Max Tech Level To Build", 200, d => d.maxTechLevelToBuild, (d, v) => d.maxTechLevelToBuild = v),
 				new EnumInputWidget<D, AltitudeLayer>(base.Def, "Altitude Layer", 200, d => d.altitudeLayer, (d, v) => d.altitudeLayer = v),
-				new BoolInputWidget<D>(base.Def, "Menu Hidden", d => d.menuHidden, (d, v) => d.menuHidden = v),
 				new FloatInputWidget<D>(base.Def, "Special Display Radius", d => d.specialDisplayRadius, (d, v) => d.specialDisplayRadius = v),
 
 				new DefInputWidget<D, TerrainAffordanceDef>(base.Def, "Terrain Affordance Needed", 200, d => d.terrainAffordanceNeeded, (d, v) => d.terrainAffordanceNeeded = v, true),

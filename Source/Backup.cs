@@ -226,7 +226,33 @@ namespace InGameDefEditor
                             Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
                     }
                 }
-			}
+
+                foreach (ThingDef d in Defs.PlantDefs.Values)
+                {
+                    try
+                    {
+                        backupDefs[d.defName] = new ThingDefStats(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
+
+                /*foreach (ThingDef d in Defs.AnimalDefs.Values)
+                {
+                    try
+                    {
+                        backupDefs[d.defName] = new ThingDefStats(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }*/
+            }
         }
 
         public static bool ApplyStats(Backstory b)

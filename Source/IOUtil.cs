@@ -98,6 +98,12 @@ namespace InGameDefEditor
 					if (Load(DefType.Resource, out RootResource resource))
 						resource?.stats.ForEach((d) => Initialize(d, sb));
 
+					/*if (Load(DefType.Animal, out RootAnimals animal))
+						animal?.stats.ForEach((d) => Initialize(d, sb));*/
+
+					if (Load(DefType.Plant, out RootPlants plant))
+						plant?.stats.ForEach((d) => Initialize(d, sb));
+
 					// Do Last
 					sb.AppendLine("Disabling the following defs:");
 					if (Load("DisabledDefs", out RootDisabledDefs rdd))
@@ -306,6 +312,24 @@ namespace InGameDefEditor
 			catch (Exception e)
 			{
 				Log.Error("Problem saving " + DefType.Resource + ".\n" + e.GetType().Name + "\n" + e.Message);
+			}
+
+			/*try
+			{
+				Save(DefType.Animal, new RootAnimals() { stats = GetChangedDefs(Defs.AnimalDefs.Values, (d) => new ThingDefStats(d)) });
+			}
+			catch (Exception e)
+			{
+				Log.Error("Problem saving " + DefType.Animal + ".\n" + e.GetType().Name + "\n" + e.Message);
+			}*/
+
+			try
+			{
+				Save(DefType.Plant, new RootPlants() { stats = GetChangedDefs(Defs.PlantDefs.Values, (d) => new ThingDefStats(d)) });
+			}
+			catch (Exception e)
+			{
+				Log.Error("Problem saving " + DefType.Plant + ".\n" + e.GetType().Name + "\n" + e.Message);
 			}
 		}
 

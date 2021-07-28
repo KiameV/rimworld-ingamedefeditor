@@ -18,5 +18,7 @@
 		Building,
 		Hediff,
 		Resource,
+		//Animal,
+		Plant,
 	};
 }

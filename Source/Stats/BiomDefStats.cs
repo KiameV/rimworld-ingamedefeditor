@@ -27,6 +27,7 @@ namespace InGameDefEditor.Stats
         public float wildPlantRegrowDays;
         public float movementDifficulty;
         public bool hasBedrock;
+        public bool isExtremeBiome;
 
         public List<FloatValueDefStat<WeatherDef>> weatherCommonalities = null;
         public List<MinMaxFloatDefStat<TerrainDef>> terrainsByFertility = null;
@@ -57,6 +58,7 @@ namespace InGameDefEditor.Stats
             this.wildPlantRegrowDays = d.wildPlantRegrowDays;
             this.movementDifficulty = d.movementDifficulty;
             this.hasBedrock = d.hasBedrock;
+            this.isExtremeBiome = d.isExtremeBiome;
 
             if (d.baseWeatherCommonalities != null)
             {
@@ -210,7 +212,9 @@ namespace InGameDefEditor.Stats
                 t.wildPlantRegrowDays = this.wildPlantRegrowDays;
                 t.movementDifficulty = this.movementDifficulty;
                 t.hasBedrock = this.hasBedrock;
-                
+                t.isExtremeBiome = this.isExtremeBiome;
+
+
                 if (this.weatherCommonalities != null && t.baseWeatherCommonalities == null)
                     t.baseWeatherCommonalities = new List<WeatherCommonalityRecord>(this.weatherCommonalities.Count);
                 Util.Populate(t.baseWeatherCommonalities, this.weatherCommonalities, delegate (FloatValueDefStat<WeatherDef> s)
@@ -335,7 +339,8 @@ namespace InGameDefEditor.Stats
                 "wildPlantsCareAboutLocalFertility: " + this.wildPlantsCareAboutLocalFertility + Environment.NewLine +
                 "wildPlantRegrowDays: " + this.wildPlantRegrowDays + Environment.NewLine +
                 "movementDifficulty: " + this.movementDifficulty + Environment.NewLine +
-                "hasBedrock: " + this.hasBedrock + Environment.NewLine);
+                "hasBedrock: " + this.hasBedrock + Environment.NewLine +
+                "isExtremeBiome: " + this.isExtremeBiome + Environment.NewLine);
             sb.AppendLine("Weather Commonalities:");
             if (base.Def.baseWeatherCommonalities != null)
             {
@@ -373,6 +378,7 @@ namespace InGameDefEditor.Stats
                     this.wildPlantRegrowDays == s.wildPlantRegrowDays &&
                     this.movementDifficulty == s.movementDifficulty &&
                     this.hasBedrock == s.hasBedrock &&
+                    this.isExtremeBiome == s.isExtremeBiome &&
                     object.Equals(this.foragedFood, s.foragedFood)&&
                     Util.AreEqual(this.weatherCommonalities, s.weatherCommonalities) &&
                     Util.AreEqual(this.terrainsByFertility, s.terrainsByFertility) &&
