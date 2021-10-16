@@ -20,5 +20,6 @@
 		Resource,
 		//Animal,
 		Plant,
+		PawnKind,
 	};
 }

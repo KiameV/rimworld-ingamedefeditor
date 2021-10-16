@@ -43,9 +43,9 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 				new FloatInputWidget<TraitDegreeData>(this.data, "Random Disease Mtb Days", d => d.randomDiseaseMtbDays, (d, v) => d.randomDiseaseMtbDays = v),
 				new DefInputWidget<TraitDegreeData, ThinkTreeDef>(this.data, "Think Tree", 200, d => d.thinkTree, (d, v) => d.thinkTree = v, true),
 				new DefInputWidget<TraitDegreeData, MentalStateDef>(this.data, "Random Mental State", 200, d => d.randomMentalState, (d, v) => d.randomMentalState = v, true),
-				new DefPlusMinusInputWidget<InspirationDef>("Disallowed Inspirations", 200, this.data.disallowedInspirations),
-				new DefPlusMinusInputWidget<MentalStateDef>("Disallowed Mental States", 200, this.data.disallowedMentalStates),
-				new DefPlusMinusInputWidget<MentalBreakDef>("The Only Allowed Mental Breaks", 200, this.data.theOnlyAllowedMentalBreaks),
+				new DefPlusMinusInputWidget<InspirationDef>("Disallowed Inspirations", 200, () => this.data.disallowedInspirations),
+				new DefPlusMinusInputWidget<MentalStateDef>("Disallowed Mental States", 200, () => this.data.disallowedMentalStates),
+				new DefPlusMinusInputWidget<MentalBreakDef>("The Only Allowed Mental Breaks", 200, () => this.data.theOnlyAllowedMentalBreaks),
 			};
 			
 			this.skillGainsArgs = new WindowUtil.PlusMinusArgs<SkillDef>()

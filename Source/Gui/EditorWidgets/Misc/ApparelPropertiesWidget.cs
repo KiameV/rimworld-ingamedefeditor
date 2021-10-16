@@ -30,7 +30,7 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
                 new BoolInputWidget<ApparelProperties>(this.apparelProperties, "Use Worn Graphic Mask", s => s.useWornGraphicMask, (s, b) => s.useWornGraphicMask = b),
                 new BoolInputWidget<ApparelProperties>(this.apparelProperties, "Can Be Generated for Warmth", s => s.canBeGeneratedToSatisfyWarmth, (s, b) => s.canBeGeneratedToSatisfyWarmth = b),
                 new EnumInputWidget<ApparelProperties, Gender>(this.apparelProperties, "Gender", 100f, s => s.gender, (s, v) => s.gender = v),
-				new TextPlusMinusInputWidget("Tags", 100f, this.apparelProperties.tags)
+				new TextPlusMinusInputWidget("Tags", 100f, () => this.apparelProperties.tags)
             };
 
 			this.bodyPartGroupArgs = new WindowUtil.PlusMinusArgs<BodyPartGroupDef>()

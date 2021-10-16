@@ -104,6 +104,9 @@ namespace InGameDefEditor
 					if (Load(DefType.Plant, out RootPlants plant))
 						plant?.stats.ForEach((d) => Initialize(d, sb));
 
+					if (Load(DefType.PawnKind, out RootPawnKinds pawnKind))
+						pawnKind?.stats.ForEach((d) => Initialize(d, sb));
+
 					// Do Last
 					sb.AppendLine("Disabling the following defs:");
 					if (Load("DisabledDefs", out RootDisabledDefs rdd))
@@ -330,6 +333,15 @@ namespace InGameDefEditor
 			catch (Exception e)
 			{
 				Log.Error("Problem saving " + DefType.Plant + ".\n" + e.GetType().Name + "\n" + e.Message);
+			}
+
+			try
+			{
+				Save(DefType.PawnKind, new RootPawnKinds() { stats = GetChangedDefs(Defs.PawnKindDefs.Values, (d) => new PawnKindDefStats(d)) });
+			}
+			catch (Exception e)
+			{
+				Log.Error("Problem saving " + DefType.PawnKind + ".\n" + e.GetType().Name + "\n" + e.Message);
 			}
 		}
 

@@ -122,4 +122,10 @@ namespace InGameDefEditor.Stats
 	{
 		public List<ThingDefStats> stats;
 	}
+
+	[XmlRoot("IGDE", Namespace = "http://www.InGameDefEditor.kiamev.com", IsNullable = false)]
+	public class RootPawnKinds
+	{
+		public List<PawnKindDefStats> stats;
+	}
 }

@@ -8,7 +8,9 @@ using static InGameDefEditor.WindowUtil;
 
 namespace InGameDefEditor.Gui.EditorWidgets.Misc
 {
-    abstract class AInputWidget<P, V> : IInputWidget
+	public delegate V GetValue<P, V>(P d);
+	public delegate void SetValue<P, V>(P d, V v);
+	abstract class AInputWidget<P, V> : IInputWidget
     {
         public delegate V GetValue(P d);
         public delegate void SetValue(P d, V v);
@@ -175,9 +177,9 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
             this.min = min;
             this.max = max;
             this.ResetBuffers();
-        }
+		}
 
-        public void Draw(float x, ref float y, float width)
+		public void Draw(float x, ref float y, float width)
         {
             DrawLabel(x, y, width, label, true);
             x += 10;
@@ -190,8 +192,27 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
         {
             this.min.ResetBuffers();
             this.max.ResetBuffers();
-        }
-    }
+		}
+	}
+
+	static class WidgetFactory<P>
+    {
+		public static MinMaxInputWidget<P, int> CreateMinMaxIntWidget(P parent, string label, GetValue<P, int> getMinValue, SetValue<P, int> setMinValue, GetValue<P, int> getMaxValue, SetValue<P, int> setMaxValue)
+		{
+			return new MinMaxInputWidget<P, int>(
+				label,
+				new IntInputWidget<P>(parent, "Min", p => getMinValue(p), (p, v) => setMinValue(p, v)),
+				new IntInputWidget<P>(parent, "Max", p => getMaxValue(p), (p, v) => setMaxValue(p, v)));
+		}
+
+		public static MinMaxInputWidget<P, float> CreateMinMaxFloatWidget(P parent, string label, GetValue<P, float> getMinValue, SetValue<P, float> setMinValue, GetValue<P, float> getMaxValue, SetValue<P, float> setMaxValue)
+		{
+			return new MinMaxInputWidget<P, float>(
+				label,
+				new FloatInputWidget<P>(parent, "Min", p => getMinValue(p), (p, v) => setMinValue(p, v)),
+				new FloatInputWidget<P>(parent, "Max", p => getMaxValue(p), (p, v) => setMaxValue(p, v)));
+		}
+	}
 
 	class EnumInputWidget<P, E> : AInputWidget<P, E>
 	{
@@ -244,24 +265,25 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 	class DefPlusMinusInputWidget<D> : IInputWidget where D : Def, new()
 	{
+		public delegate List<D> GetItems();
 		private readonly string label;
 		private readonly float labelWidth;
-		private readonly List<D> items;
+		private readonly GetItems getItems;
 		private WindowUtil.PlusMinusArgs<D> args;
 
-		public DefPlusMinusInputWidget(string label, float labelWidth, List<D> items)
+		public DefPlusMinusInputWidget(string label, float labelWidth, GetItems getItems)
 		{
 			this.label = label;
 			this.labelWidth = labelWidth;
-			this.items = items;
+			this.getItems = getItems;
 
 			args = new PlusMinusArgs<D>()
 			{
 				getDisplayName = def => Util.GetLabel(def),
 				allItems = DefDatabase<D>.AllDefs,
-				onAdd = def => Util.AddTo(this.items, def),
-				onRemove = def => Util.RemoveFrom(this.items, def),
-				beingUsed = () => this.items
+				onAdd = def => Util.AddTo(this.getItems(), def),
+				onRemove = def => Util.RemoveFrom(this.getItems(), def),
+				beingUsed = () => this.getItems()
 			};
 		}
 
@@ -287,22 +309,23 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 
 	class TextPlusMinusInputWidget : IInputWidget
 	{
+		public delegate List<string> GetItems();
 		private readonly string label;
 		private readonly float labelWidth;
-		private readonly List<string> items;
+		private readonly GetItems getItems;
 		private WindowUtil.PlusMinusArgs<string> args;
 
-		public TextPlusMinusInputWidget(string label, float labelWidth, List<string> items)
+		public TextPlusMinusInputWidget(string label, float labelWidth, GetItems getItems)
 		{
 			this.label = label;
 			this.labelWidth = labelWidth;
-			this.items = items;
+			this.getItems = getItems;
 
 			args = new PlusMinusArgs<string>()
 			{
 				getDisplayName = s => s,
-				onRemove = s => this.items.Remove(s),
-				beingUsed = () => this.items,
+				onRemove = s => this.getItems().Remove(s),
+				beingUsed = () => this.getItems(),
 				addArgs = new FloatOptionsArgs<string>()
 				{
 					skipListCustomOnly = true,
@@ -310,18 +333,18 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 						"Tag",
 						delegate (string s)
 						{
-							this.items.Add(s);
+							this.getItems().Add(s);
 						},
 						delegate (string s)
 						{
-							return s.Trim().Length > 0 && !this.items.Contains(s);
+							return s.Trim().Length > 0 && !this.getItems().Contains(s);
 						})),
 				},
 				removeArgs = new FloatOptionsArgs<string>()
 				{
 					getDisplayName = (s) => s,
-					items = this.items,
-					onSelect = (s) => this.items.Remove(s),
+					items = this.getItems(),
+					onSelect = (s) => this.getItems().Remove(s),
 				},
 			};
 		}
@@ -340,6 +363,9 @@ namespace InGameDefEditor.Gui.EditorWidgets.Misc
 			}
 		}
 
-		public void ResetBuffers() { }
+		public void ResetBuffers()
+		{
+
+		}
 	}
 }

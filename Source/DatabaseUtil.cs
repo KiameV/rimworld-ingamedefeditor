@@ -87,6 +87,9 @@ namespace InGameDefEditor
                 case HediffDef _:
                     dt = DefType.Hediff;
                     return true;
+                case PawnKindDef _:
+                    dt = DefType.PawnKind;
+                    return true;
                 case RecipeDef _:
                     dt = DefType.Recipe;
                     return true;

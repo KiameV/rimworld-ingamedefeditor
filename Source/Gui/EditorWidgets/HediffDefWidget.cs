@@ -35,7 +35,7 @@ namespace InGameDefEditor.Gui.EditorWidgets
 			{
 				new DefInputWidget<HediffDef, ThingDef>(base.Def, "Spawn Thing On Removed", 150, d => d.spawnThingOnRemoved, (d, v) => d.spawnThingOnRemoved = v, true),
 				new DefInputWidget<HediffDef, NeedDef>(base.Def, "Causes Need", 150, d => d.causesNeed, (d, v) => d.causesNeed = v, true),
-				new DefPlusMinusInputWidget<NeedDef>("Disables Needs", 150, def.disablesNeeds),
+				new DefPlusMinusInputWidget<NeedDef>("Disables Needs", 150, () => def.disablesNeeds),
 				new DefInputWidget<HediffDef, TaleDef>(base.Def, "Tale On Visible", 150, d => d.taleOnVisible, (d, v) => d.taleOnVisible = v, true),
 				//new SimpleCurveToggleableWidget<HediffDef>(base.Def, "Remove On Redress Chance By Days Curve", d => d.removeOnRedressChanceByDaysCurve, (d, v) => d.removeOnRedressChanceByDaysCurve = v),
 			};

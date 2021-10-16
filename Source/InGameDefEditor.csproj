@@ -129,6 +129,7 @@
     <Compile Include="Gui\EditorWidgets\Misc\ThoughtStageWidget.cs" />
     <Compile Include="Gui\EditorWidgets\Misc\TraitDegreeDataWidget.cs" />
     <Compile Include="Gui\EditorWidgets\ABuildableDefWidget.cs" />
+    <Compile Include="Gui\EditorWidgets\PawnKindDefWidget.cs" />
     <Compile Include="Gui\EditorWidgets\PlantPropertiesWidget.cs" />
     <Compile Include="Gui\EditorWidgets\ThoughtDefWidget.cs" />
     <Compile Include="Gui\EditorWidgets\TraitWidget.cs" />
@@ -152,6 +153,8 @@
     <Compile Include="Stats\BackstoryStats.cs" />
     <Compile Include="Stats\BiomDefStats.cs" />
     <Compile Include="Stats\ABuildableDefStat.cs" />
+    <Compile Include="Stats\Misc\TraitRequirementStat.cs" />
+    <Compile Include="Stats\PawnKindDefStats.cs" />
     <Compile Include="Stats\DifficultyDefStat.cs" />
     <Compile Include="Stats\HediffDefStat.cs" />
     <Compile Include="Stats\Misc\AddedBodyPartPropsStats.cs" />

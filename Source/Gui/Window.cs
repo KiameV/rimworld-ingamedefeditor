@@ -279,6 +279,9 @@ namespace InGameDefEditor
 				case DefType.Hediff:
 					selectedDef = new HediffDefWidget(d as HediffDef, type);
 					break;
+				case DefType.PawnKind:
+					selectedDef = new PawnKindDefWidget(d as PawnKindDef, type);
+					break;
 			}
             this.ResetScrolls();
 			IngredientCountWidget.ResetUniqueId();
@@ -396,6 +399,7 @@ namespace InGameDefEditor
 				new EditableDefType<HediffDef>("Hediffs", DefType.Hediff, Defs.HediffDefs.Values),
 				new EditableDefType<ThingDef>("Ingestibles", DefType.Ingestible, Defs.IngestibleDefs.Values),
 				new EditableDefType<ThingDef>("Mineables", DefType.Mineable, Defs.MineableDefs.Values),
+				new EditableDefType<PawnKindDef>("Pawn Kind", DefType.PawnKind, Defs.PawnKindDefs.Values),
 				new EditableDefType<ThingDef>("Plants", DefType.Plant, Defs.PlantDefs.Values),
 				new EditableDefType<ThingDef>("Projectiles", DefType.Projectile, Defs.ProjectileDefs.Values),
 				new EditableDefType<RecipeDef>("Recipes", DefType.Recipe, Defs.RecipeDefs.Values),

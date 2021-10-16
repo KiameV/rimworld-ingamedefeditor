@@ -162,7 +162,20 @@ namespace InGameDefEditor
                     }
                 }
 
-				foreach (ThingDef d in Defs.IngestibleDefs.Values)
+                foreach (HediffDef d in Defs.HediffDefs.Values)
+                {
+                    try
+                    {
+                        backupDefs[d.defName] = new HediffDefStats(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
+
+                foreach (ThingDef d in Defs.IngestibleDefs.Values)
                 {
                     try
                     {
@@ -232,6 +245,19 @@ namespace InGameDefEditor
                     try
                     {
                         backupDefs[d.defName] = new ThingDefStats(d);
+                    }
+                    catch (Exception e)
+                    {
+                        if (d != null)
+                            Log.Warning("Failed to initialize backup for " + d.defName + ". " + e.Message);
+                    }
+                }
+
+                foreach (PawnKindDef d in Defs.PawnKindDefs.Values)
+                {
+                    try
+                    {
+                        backupDefs[d.defName] = new PawnKindDefStats(d);
                     }
                     catch (Exception e)
                     {

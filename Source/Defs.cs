@@ -26,6 +26,7 @@ namespace InGameDefEditor
 		public static readonly SortedDictionary<string, ThingDef> ResourceDefs = new SortedDictionary<string, ThingDef>();
 		//public static readonly SortedDictionary<string, ThingDef> AnimalDefs = new SortedDictionary<string, ThingDef>();
 		public static readonly SortedDictionary<string, ThingDef> PlantDefs = new SortedDictionary<string, ThingDef>();
+		public static readonly SortedDictionary<string, PawnKindDef> PawnKindDefs = new SortedDictionary<string, PawnKindDef>();
 		private static bool isInit = false;
 		
 		public static void Initialize()
@@ -124,6 +125,9 @@ namespace InGameDefEditor
 
 				foreach (var d in DefDatabase<HediffDef>.AllDefs)
 					HediffDefs[Util.GetLabel(d)] = d;
+
+				foreach (var d in DefDatabase<PawnKindDef>.AllDefs)
+					PawnKindDefs[Util.GetLabel(d)] = d;
 
 				foreach (var b in BackstoryDatabase.allBackstories.Values)
 					Backstories[b.title] = b;
