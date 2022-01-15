@@ -42,5 +42,11 @@ namespace InGameDefEditor.Stats.Misc
 			this.acceleration = new Vector3Stats(p.acceleration);
 			this.attachedDrawOffset = new Vector3Stats(p.attachedDrawOffset);
 		}
-	}
+
+        internal bool Initialize()
+		{
+			Util.InitializeDefStat(this.landSound);
+			return true;
+		}
+    }
 }

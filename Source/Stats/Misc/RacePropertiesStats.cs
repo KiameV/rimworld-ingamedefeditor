@@ -114,7 +114,7 @@ namespace InGameDefEditor.Stats.Misc
 			if (p.litterSizeCurve != null)
 				this.litterSizeCurve = new SimpleCurveStats(p.litterSizeCurve);
 
-			Util.Populate(out this.wildBiomes, p.wildBiomes, (v) => new FloatValueDefStat<BiomeDef> (v.biome, v.commonality));
+			Util.Populate(out this.wildBiomes, p.wildBiomes, (v) => new FloatValueDefStat<BiomeDef>(v.biome, v.commonality));
 			Util.Populate(out this.lifeStageAges, p.lifeStageAges, (v) => new LifeStageAgeStats(v));
 			Util.Populate(out this.untrainableTags, p.untrainableTags);
 			Util.Populate(out this.trainableTags, p.trainableTags);
@@ -177,6 +177,28 @@ namespace InGameDefEditor.Stats.Misc
 		public static void SetNameGeneratorFemale(RaceProperties p, RulePackDef d)
 		{
 			typeof(RaceProperties).GetField("nameGeneratorFemale", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(p, d);
+		}
+
+		public bool Initialize()
+		{
+			Util.InitializeDefStat(this.fleshType);
+			Util.InitializeDefStat(this.bloodDef);
+			Util.InitializeDefStat(this.thinkTreeMain);
+			Util.InitializeDefStat(this.thinkTreeConstant);
+			Util.InitializeDefStat(this.body);
+			Util.InitializeDefStat(this.trainability);
+			Util.InitializeDefStat(this.nameGenerator);
+			Util.InitializeDefStat(this.nameGeneratorFemale);
+			Util.InitializeDefStat(this.useMeatFrom);
+			Util.InitializeDefStat(this.useLeatherFrom);
+			Util.InitializeDefStat(this.leatherDef);
+			Util.InitializeDefStat(this.soundMeleeHitPawn);
+			Util.InitializeDefStat(this.soundMeleeHitBuilding);
+			Util.InitializeDefStat(this.soundMeleeMiss);
+			Util.InitializeDefStat(this.meatDef);
+			Util.InitializeDefStat(this.corpseDef);
+			Util.InitializeDefStat(this.hediffGiverSets);
+			return true;
 		}
 	}
 }

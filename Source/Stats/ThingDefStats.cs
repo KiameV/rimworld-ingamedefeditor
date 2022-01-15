@@ -290,6 +290,14 @@ namespace InGameDefEditor.Stats
 				Log.Warning($"Failed to initialize Building portion");
 			if (this.stuffProps?.Initialize() == false)
 				Log.Warning($"Failed to initialize Stuff Properties portion");
+			if (this.plant?.Initialize() == false)
+				Log.Warning($"Failed to initialize Plant Properties portion");
+			if (this.skyfaller?.Initialize() == false)
+				Log.Warning($"Failed to initialize Skyfaller Properties portion");
+			if (this.race?.Initialize() == false)
+				Log.Warning($"Failed to initialize Race Properties portion");
+			if (this.mote?.Initialize() == false)
+				Log.Warning($"Failed to initialize Mote Properties portion");
 			return true;
         }
 

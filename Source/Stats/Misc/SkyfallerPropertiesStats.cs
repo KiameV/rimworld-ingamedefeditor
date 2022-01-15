@@ -58,5 +58,14 @@ namespace InGameDefEditor.Stats.Misc
 			Util.AssignDefStat(p.impactSound, out this.impactSound);
 			Util.AssignDefStat(p.anticipationSound, out this.anticipationSound);
 		}
+
+		public bool Initialize()
+		{
+			//Util.InitializeDefStat(this.parent);
+			Util.InitializeDefStat(this.explosionDamage);
+			Util.InitializeDefStat(this.impactSound);
+			Util.InitializeDefStat(this.anticipationSound);
+			return true;
+		}
 	}
 }

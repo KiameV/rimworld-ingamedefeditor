@@ -59,8 +59,8 @@ namespace InGameDefEditor.Stats.Misc
 		public MinMaxFloatStats visualSizeRange;
 
 		public DefStat<ThingDef> harvestedThingDef;
-		public DefStat<SoundDef> soundHarvesting;
-		public DefStat<SoundDef> soundHarvestFinish;
+		//public DefStat<SoundDef> soundHarvesting;
+		//public DefStat<SoundDef> soundHarvestFinish;
 
 		public List<string> sowTags;
 		public List<FloatValueDefStat<BiomeDef>> wildBiomes;
@@ -114,8 +114,8 @@ namespace InGameDefEditor.Stats.Misc
 				this.visualSizeRange = new MinMaxFloatStats(p.visualSizeRange);
 
 			Util.AssignDefStat(p.harvestedThingDef, out this.harvestedThingDef);
-			Util.AssignDefStat(p.soundHarvesting, out this.soundHarvesting);
-			Util.AssignDefStat(p.soundHarvestFinish, out this.soundHarvestFinish);
+			//Util.AssignDefStat(p.soundHarvesting, out this.soundHarvesting);
+			//Util.AssignDefStat(p.soundHarvestFinish, out this.soundHarvestFinish);
 			Util.AssignDefStat(p.burnedThingDef, out this.burnedThingDef);
 
 			Util.Populate(out this.sowTags, p.sowTags);
@@ -190,13 +190,24 @@ namespace InGameDefEditor.Stats.Misc
 				to.visualSizeRange = this.visualSizeRange.ToFloatRange();
 
 			Util.AssignDef(this.harvestedThingDef, out to.harvestedThingDef);
-			Util.AssignDef(this.soundHarvesting, out to.soundHarvesting);
-			Util.AssignDef(this.soundHarvestFinish, out to.soundHarvestFinish);
+			//Util.AssignDef(this.soundHarvesting, out to.soundHarvesting);
+			//Util.AssignDef(this.soundHarvestFinish, out to.soundHarvestFinish);
 			Util.AssignDef(this.burnedThingDef, out to.burnedThingDef);
 
 			Util.Populate(out to.sowTags, this.sowTags);
 			Util.Populate(out to.wildBiomes, this.wildBiomes, (v) => new PlantBiomeRecord() { biome = v.Def, commonality = v.value });
 			Util.Populate(out to.sowResearchPrerequisites, this.sowResearchPrerequisites, (v) => v.Def, false);
+		}
+
+		public bool Initialize()
+		{
+			//Util.InitializeDefStat(this.parent);
+			Util.InitializeDefStat(this.burnedThingDef);
+			Util.InitializeDefStat(this.harvestedThingDef);
+			//Util.InitializeDefStat(this.soundHarvesting);
+			//Util.InitializeDefStat(this.soundHarvestFinish);
+			Util.InitializeDefStat(this.sowResearchPrerequisites);
+			return true;
 		}
 	}
 }
